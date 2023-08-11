@@ -11,9 +11,17 @@ public class ARTaggedImageManager : MonoBehaviour, IManager {
 
 	//Dictionary<string, GameObject> bookImgName2Prefab = new Dictionary<string, GameObject>();
 	public FieldEntityManager entityManager;
+	public FieldStageManager stageManager;
 	//public GameObject prefabPhone;
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
 
+	}
+	public void RegisterManager(IManager manager) {
+		if (manager is FieldEntityManager) {
+			entityManager = manager as FieldEntityManager;
+		} else if (manager is FieldStageManager) {
+			stageManager = manager as FieldStageManager;
+		}
 	}
 	void Awake() {
 		TrackedImgManager = GetComponent<ARTrackedImageManager>();
@@ -30,10 +38,12 @@ public class ARTaggedImageManager : MonoBehaviour, IManager {
 	void OnTrackedImagesChanged(ARTrackedImagesChangedEventArgs eventArgs) {
 		//FieldEntityInfo info;
 		foreach (ARTrackedImage trackedImage in eventArgs.added) {
+			stageManager.ImageFound(trackedImage.referenceImage.name);
+
 			// Give the initial image a reasonable default scale
 			trackedImage.transform.localScale = Vector3.one;
 			GameObject obj = entityManager.PlaceImageTrackingEntity(trackedImage.referenceImage.name);
-			if (obj !=null) {
+			if (obj != null) {
 				obj.transform.parent = trackedImage.transform;
 				obj.transform.localPosition = Vector3.zero;
 				obj.transform.localRotation = Quaternion.identity;
