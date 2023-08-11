@@ -124,8 +124,8 @@ public class EntityActionManager : MonoBehaviour, IManager {
 			case EntityActionType.CollectableItem:
 				entityInfo.enumActionType = entityInfo.enumItemType;
 
-				UIEventManager.CallEvent("InventoryItemManager", "AddItem", entityInfo);
 				UIEventManager.CallEvent("FieldEntityManager", "RemoveFieldEntitys", entityInfo);
+				UIEventManager.CallEvent("InventoryItemManager", "AddItem", entityInfo);
 				//InventoryItemManager.getInstance().AddItem(entityInfo);
 				break;
 			case EntityActionType.Debug:

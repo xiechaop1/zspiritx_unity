@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(FieldStageManager))]
 public class FieldEntityManager : MonoBehaviour, IManager {
 	//public static FieldEntityManager getInstance() {
 	//	if (instance != null) {
@@ -18,10 +19,10 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	//private static FieldEntityManager instance;
 
 	//public ARSightManager arSightManager;
-	public GameObject[] lstFieldEntity;
-	public GameObject[] lstTaggedEntity;
+	//public GameObject[] lstFieldEntity;
+	//public GameObject[] lstTaggedEntity;
 	public GameObject goCamera;
-	public GameObject goRoot;
+	//public GameObject goRoot;
 	private ARPlaneInfo arPlane;
 	Queue<GameObject> queFieldEntity = new Queue<GameObject>();
 	List<GameObject> queTaggedEntity = new List<GameObject>();
@@ -30,6 +31,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	public bool isLoadFinish => queFieldEntity.Count == 0;
 	//public delegate void OnEntityFound(FieldEntityInfo entityInfo);
 	private EntityActionManager actionManager;
+	private FieldStageManager stageManager;
 
 	private bool isPlaneVisible = false;
 
@@ -53,20 +55,13 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	public void RegisterManager(IManager manager) {
 		if (manager is EntityActionManager) {
 			actionManager = manager as EntityActionManager;
+		} else if (manager is FieldStageManager) {
+			stageManager = manager as FieldStageManager;
 		}
 	}
 	public void PrepareScene(/*EntityActionManager actionManager*/) {
-		GameObject obj;
-		foreach (GameObject entity in lstFieldEntity) {
-			if (PrepareEntity(entity, out obj)) {
-				queFieldEntity.Enqueue(obj);
-			}
-		}
-		foreach (GameObject entity in lstTaggedEntity) {
-			if (PrepareEntity(entity, out obj)) {
-				queTaggedEntity.Add(obj);
-			}
-		}
+		//GameObject obj;
+		PrepareStage();
 		isPlaneVisible = true;
 		foreach (ARPlaneInfo plane in planeHorizontal) {
 			if (plane != null) {
@@ -79,14 +74,27 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			}
 		}
 	}
-	private bool PrepareEntity(GameObject entity, out GameObject obj) {
+	public void PrepareStage() {
+		foreach (GameObject entity in stageManager.lstFieldEntity) {
+			if (PrepareEntity(entity/*, out obj*/)) {
+				queFieldEntity.Enqueue(entity);
+			}
+		}
+		foreach (GameObject entity in stageManager.lstTaggedEntity) {
+			if (PrepareEntity(entity/*, out obj*/)) {
+				queTaggedEntity.Add(entity);
+			}
+		}
+	}
+
+	private bool PrepareEntity(GameObject entity/*, out GameObject obj*/) {
 		if (entity == null) {
-			obj = null;
+			//obj = null;
 			return false;
 		}
 		FieldEntityInfo info;
-		obj = Instantiate(entity, goRoot.transform);
-		if (obj.TryGetComponent(out info)) {
+		//obj = Instantiate(entity, goRoot.transform);
+		if (entity.TryGetComponent(out info)) {
 			info.actionManager = actionManager;
 			return true;
 		}
@@ -94,6 +102,21 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	}
 
 	public void StopScene() {
+		StopStage();
+		isPlaneVisible = false;
+
+		foreach (ARPlaneInfo plane in planeHorizontal) {
+			if (plane != null) {
+				plane.SetPlaneVisibility(isPlaneVisible);
+			}
+		}
+		foreach (ARPlaneInfo plane in planeVertical) {
+			if (plane != null) {
+				plane.SetPlaneVisibility(isPlaneVisible);
+			}
+		}
+	}
+	public void StopStage() {
 		GameObject go;
 		while (queFieldEntity.Count > 0) {
 			go = queFieldEntity.Dequeue();
@@ -116,18 +139,6 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 				StopEntity(go);
 			}
 		}
-		isPlaneVisible = false;
-
-		foreach (ARPlaneInfo plane in planeHorizontal) {
-			if (plane != null) {
-				plane.SetPlaneVisibility(isPlaneVisible);
-			}
-		}
-		foreach (ARPlaneInfo plane in planeVertical) {
-			if (plane != null) {
-				plane.SetPlaneVisibility(isPlaneVisible);
-			}
-		}
 	}
 
 	private void StopEntity(GameObject entity) {
@@ -140,7 +151,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 				OnEntityRemoved.Invoke(info);
 			}
 		}
-		Destroy(entity);
+		//Destroy(entity);
 	}
 
 	public GameObject PlaceImageTrackingEntity(string entityName) {
@@ -257,6 +268,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		if (lstPlacedEntity.Contains(entity.gameObject)) {
 			lstPlacedEntity.Remove(entity.gameObject);
 		}
+		stageManager.OnRemoveFieldEntity(entity.gameObject);
 		if (OnEntityRemoved != null) {
 			OnEntityRemoved.Invoke(entity);
 		}

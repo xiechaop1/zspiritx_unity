@@ -17,13 +17,17 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	public WebViewBehaviour SplashWebView;
 	public event Action<string> eventDebugInfo;
 
+	public FieldStageInfo startingStage;
+
 	//Utility
 	private UIEventManager eventManager;
 	public InventoryItemManager inventoryItemManager;
+	private Network.WWWManager networkManager;
 
 	//AR
 	public UnityEngine.XR.ARFoundation.ARSession arSession;
-	public FieldEntityManager fieldEntityManager;
+	public FieldStageManager fieldStageManager;
+	private FieldEntityManager fieldEntityManager;
 	private EntityActionManager entityActionManager;
 	private ARSightManager arSightManager;
 
@@ -43,14 +47,19 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	void WorldInit() {
 		//Utility Init
 		eventManager = UIEventManager.getInstance();
+		eventManager.Init(eventManager);
 		eventManager.SubscribeBroadcast("WebViewCall", WebviewCallbackSceneControl);
+
+		networkManager = Network.WWWManager.getInstance();
 
 		inventoryItemManager.Init(eventManager);
 		entityActionManager = inventoryItemManager.GetComponent<EntityActionManager>();
 		entityActionManager.Init(eventManager);
 
 		//AR Init
-		fieldEntityManager.Init(eventManager, entityActionManager);
+		fieldEntityManager = fieldStageManager.GetComponent<FieldEntityManager>();
+		fieldStageManager.Init(eventManager, fieldEntityManager);
+		fieldEntityManager.Init(eventManager, entityActionManager,fieldStageManager);
 		arSightManager = fieldEntityManager.GetComponent<ARSightManager>();
 		arSightManager.Init(eventManager);
 
@@ -99,6 +108,8 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		isLoading = true;
 		sceneMode = SceneMode.AR;
 		arSession.enabled = true;
+		yield return null;
+		fieldStageManager.PrepareBackstage(startingStage);
 		yield return null;
 		fieldEntityManager.PrepareScene();
 

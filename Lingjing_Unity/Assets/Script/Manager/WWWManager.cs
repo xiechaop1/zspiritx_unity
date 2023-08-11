@@ -54,15 +54,29 @@
 	}
 
 
-	public class WWWManager : MonoBehaviour {
-		private static WWWManager m_Instance = null;
+	public class WWWManager : MonoBehaviour,IManager {
+		private static WWWManager instance = null;
 		public static WWWManager getInstance() {
-			if (!m_Instance) {
-				GameObject go = new GameObject("WWWManager");
+			if (instance != null) {
+				return instance;
+			} else {
+
+				GameObject go = GameObject.Find("WWWManager");
+				if (go != null && go.TryGetComponent(out instance)) {
+					DontDestroyOnLoad(go);
+					instance = go.AddComponent<WWWManager>();
+					return instance;
+				}
+				//GameObject go = new GameObject("WWWManager");
 				DontDestroyOnLoad(go);
-				m_Instance = go.AddComponent<WWWManager>();
+				//m_Instance = go.AddComponent<WWWManager>();
+				//return m_Instance;
 			}
-			return m_Instance;
+			Debug.LogError("MISSING WWWManager ");
+			return null;
+		}
+		public void Init(UIEventManager eventManager, params IManager[] managers) {
+
 		}
 
 		#region GET-Info
