@@ -4,22 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(FieldEntityManager))]
 public class ARSightManager : MonoBehaviour, IManager {
-	//public static ARSightManager getInstance() {
-	//	if (instance != null) {
-	//		return instance;
-	//	} else {
-	//		GameObject go = GameObject.Find("ARSightManager");
-	//		if (go != null && go.TryGetComponent(out instance)) {
-	//			return instance;
-	//		}
-	//	}
-	//	Debug.LogError("MISSING ARSightManager ");
-	//	return null;
-	//}
-	//private static ARSightManager instance;
-
 	public GameObject fingerPrintMask;
-	//public FieldEntityManager fieldEntityManager;
 	private List<FieldEntityInfo> fieldFingerPrintEntities = new List<FieldEntityInfo>();
 	private List<FieldEntityInfo> inventoryFingerPrintEntities = new List<FieldEntityInfo>();
 	private bool isFPMode = false;
