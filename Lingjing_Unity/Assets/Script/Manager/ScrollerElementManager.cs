@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ScrollerElementManager : MonoBehaviour, IManager {
-	public EntityActionManager actionManager;
+	private EntityActionManager actionManager;
 	public GameObject backgroundImageRoot;
 	public GameObject uiRoot;
 	public GameObject scrollerScenePrefab;
