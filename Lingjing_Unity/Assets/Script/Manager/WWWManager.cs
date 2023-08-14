@@ -60,15 +60,13 @@
 			if (instance != null) {
 				return instance;
 			} else {
-
 				GameObject go = GameObject.Find("WWWManager");
 				if (go != null && go.TryGetComponent(out instance)) {
 					DontDestroyOnLoad(go);
-					instance = go.AddComponent<WWWManager>();
 					return instance;
 				}
 				//GameObject go = new GameObject("WWWManager");
-				DontDestroyOnLoad(go);
+				//DontDestroyOnLoad(go);
 				//m_Instance = go.AddComponent<WWWManager>();
 				//return m_Instance;
 			}

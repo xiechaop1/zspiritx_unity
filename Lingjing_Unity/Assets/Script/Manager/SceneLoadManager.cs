@@ -23,6 +23,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	private UIEventManager eventManager;
 	public InventoryItemManager inventoryItemManager;
 	private Network.WWWManager networkManager;
+	private InputGPSManager gpsManager;
 
 	//AR
 	public UnityEngine.XR.ARFoundation.ARSession arSession;
@@ -52,6 +53,9 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 
 		networkManager = Network.WWWManager.getInstance();
 
+		gpsManager = InputGPSManager.getInstance();
+		gpsManager.Init(eventManager);
+
 		inventoryItemManager.Init(eventManager);
 		entityActionManager = inventoryItemManager.GetComponent<EntityActionManager>();
 		entityActionManager.Init(eventManager);
@@ -59,7 +63,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		//AR Init
 		fieldEntityManager = fieldStageManager.GetComponent<FieldEntityManager>();
 		fieldStageManager.Init(eventManager, fieldEntityManager);
-		fieldEntityManager.Init(eventManager, entityActionManager,fieldStageManager);
+		fieldEntityManager.Init(eventManager, entityActionManager, fieldStageManager,this);
 		arSightManager = fieldEntityManager.GetComponent<ARSightManager>();
 		arSightManager.Init(eventManager);
 
@@ -81,6 +85,8 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		}
 		yield return null;
 		SplashWebView.StartWebViewHome();
+		yield return null;
+		gpsManager.BackStagePrepare();
 		yield return null;
 		sceneMode = SceneMode.Ready;
 		isLoading = false;
@@ -122,8 +128,36 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 			yield return new WaitForSeconds(1);
 		}
 		eventDebugInfo?.Invoke("环境扫描 " + (fieldEntityManager.isSurfacesReady ? "成功" : "失败"));
+		
+		isLoading = false;
+		yield break;
 
 		yield return null;
+		for (int i = 0; i < 10; i++) {
+			if (fieldEntityManager.isLoadFinish) {
+				break;
+			}
+			fieldEntityManager.TryPlaceEntitys(10);
+			yield return new WaitForSeconds(1);
+		}
+		eventDebugInfo?.Invoke("模型放置 " + (fieldEntityManager.isLoadFinish ? "成功" : "失败"));
+
+		isLoading = false;
+		yield break;
+	}
+
+	public void ForceReloadScene(){
+		StartCoroutine(StageReload());
+	} 
+	IEnumerator StageReload() {
+		yield return null;
+		while (isLoading) {
+			yield return null;
+		}
+		if (sceneMode != SceneMode.AR) {
+			yield break;
+		}
+		isLoading = true;
 		for (int i = 0; i < 10; i++) {
 			if (fieldEntityManager.isLoadFinish) {
 				break;

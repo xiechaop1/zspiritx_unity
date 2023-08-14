@@ -12,6 +12,7 @@ public class UIEventManager : MonoBehaviour, IManager {
 		} else {
 			GameObject go = GameObject.Find("UIEventManager");
 			if (go != null && go.TryGetComponent(out instance)) {
+				DontDestroyOnLoad(go);
 				return instance;
 			}
 		}
@@ -29,8 +30,8 @@ public class UIEventManager : MonoBehaviour, IManager {
 	public static void CallEvent(string managerName, string actionName, IEventMessage arInfo) {
 		instance.CallEventOnManager(managerName, actionName, arInfo);
 	}
-	public static void BroadcastEvent(string actionName,string info){
-		instance.BroadcastEventByName(actionName,info);
+	public static void BroadcastEvent(string actionName, string info) {
+		instance.BroadcastEventByName(actionName, info);
 	}
 
 
@@ -61,13 +62,13 @@ public class UIEventManager : MonoBehaviour, IManager {
 		bookEventAtManager.Add(actionName, action);
 	}
 
-	public void SubscribeBroadcast(string actionName, Action<string> action){
+	public void SubscribeBroadcast(string actionName, Action<string> action) {
 		List<Action<string>> broadcast;
 		if (bookBroadcastbyAddress.ContainsKey(actionName)) {
 			broadcast = bookBroadcastbyAddress[actionName];
-		}else{
+		} else {
 			broadcast = new List<Action<string>>();
-			bookBroadcastbyAddress.Add(actionName,broadcast);
+			bookBroadcastbyAddress.Add(actionName, broadcast);
 		}
 		broadcast.Add(action);
 	}
@@ -86,9 +87,9 @@ public class UIEventManager : MonoBehaviour, IManager {
 		}
 	}
 
-	private void BroadcastEventByName(string actionName,string info){
+	private void BroadcastEventByName(string actionName, string info) {
 		List<Action<string>> broadcast;
-		if (bookBroadcastbyAddress.TryGetValue(actionName,out broadcast)) {
+		if (bookBroadcastbyAddress.TryGetValue(actionName, out broadcast)) {
 			foreach (var call in broadcast) {
 				call?.Invoke(info);
 			}

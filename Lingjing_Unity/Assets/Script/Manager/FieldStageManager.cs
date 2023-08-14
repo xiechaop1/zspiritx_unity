@@ -35,6 +35,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		FieldStageInfo[] nextStages = currentStage.nextStages;
 		foreach (var stageInfo in nextStages) {
 			if (stageInfo.stageToggleType == FieldStageInfo.StageToggleType.Location) {
+				Debug.Log(InputGPSManager.GetDistance(stageInfo.lat, stageInfo.lng, newLatLng.x, newLatLng.y));
 				if ((stageInfo.lat == 0 && stageInfo.lng == 0) ||
 					InputGPSManager.GetDistance(stageInfo.lat, stageInfo.lng, newLatLng.x, newLatLng.y) < 10.0f) {
 					StageAdvanced(stageInfo);
@@ -53,6 +54,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 	public void PrepareBackstage(FieldStageInfo targetStage) {
 		lstFieldEntity = LoadStageEntities(targetStage.lstFieldEntityUUID);
 		lstTaggedEntity = LoadStageEntities(targetStage.lstTaggedEntityUUID);
+		currentStage = targetStage;
 	}
 
 	GameObject[] LoadStageEntities(string[] entityPrefabs) {

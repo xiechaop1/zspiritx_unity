@@ -32,6 +32,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	//public delegate void OnEntityFound(FieldEntityInfo entityInfo);
 	private EntityActionManager actionManager;
 	private FieldStageManager stageManager;
+	private SceneLoadManager loadManager;
 
 	private bool isPlaneVisible = false;
 
@@ -57,6 +58,8 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			actionManager = manager as EntityActionManager;
 		} else if (manager is FieldStageManager) {
 			stageManager = manager as FieldStageManager;
+		} else if (manager is SceneLoadManager) {
+			loadManager = manager as SceneLoadManager;
 		}
 	}
 	public void PrepareScene(/*EntityActionManager actionManager*/) {
@@ -85,6 +88,8 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 				queTaggedEntity.Add(entity);
 			}
 		}
+
+		loadManager.ForceReloadScene();
 	}
 
 	private bool PrepareEntity(GameObject entity/*, out GameObject obj*/) {
@@ -136,6 +141,8 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			go = lstPlacedEntity[i];
 			lstPlacedEntity.RemoveAt(i);
 			if (go != null) {
+				go.transform.parent = stageManager.goRoot.transform;
+				go.transform.localPosition = Vector3.zero;
 				StopEntity(go);
 			}
 		}

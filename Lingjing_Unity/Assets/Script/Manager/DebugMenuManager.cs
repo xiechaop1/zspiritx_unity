@@ -22,6 +22,7 @@ public class DebugMenuManager : MonoBehaviour {
 	public GameObject Notch;
 	public Text txtHint;
 	public SceneLoadManager sceneLoadManager;
+	public FieldStageManager fieldStageManager;
 	public FieldEntityManager fieldEntityManager;
 	public EntityActionManager entityActionManager;
 	public ARSightManager arSightManager;
@@ -58,9 +59,12 @@ public class DebugMenuManager : MonoBehaviour {
 	}
 	bool isDebugMode = false;
 	public void DebugBtn() {
+		var locInfo = InputGPSManager.getInstance().GetCurrentLatLon();
+		//ShowHint("lat: " + locInfo.x + "\nlon: " + locInfo.y /*+ "\nalt: " + locInfo.altitude*/);
+		
 		//StartCoroutine(GPSTest());
-
-		sceneLoadManager.Pause();
+		fieldStageManager.LocationUpdate(Config.ConfigInfo.test.testLatLon);
+		//sceneLoadManager.Pause();
 
 		//isDebugMode = !isDebugMode;
 		//UIEventManager.BroadcastEvent("ARTagDebug", isDebugMode.ToString());
