@@ -2,16 +2,21 @@
 using Config;
 using System.Collections;
 
-public class InputGPSManager : MonoBehaviour {
+public class InputGPSManager : MonoBehaviour,IManager {
 	#region SI
 	private static InputGPSManager instance = null;
-	public static InputGPSManager getInstance(){
-		if (!instance) {
-			GameObject go = new GameObject("InputGPSManager");  
-			DontDestroyOnLoad(go);  
-			instance = go.AddComponent<InputGPSManager>();
+	public static InputGPSManager getInstance() {
+		if (instance != null) {
+			return instance;
+		} else {
+			GameObject go = GameObject.Find("InputGPSManager");
+			if (go != null && go.TryGetComponent(out instance)) {
+				DontDestroyOnLoad(go);
+				return instance;
+			}
 		}
-		return instance;
+		Debug.LogError("MISSING InputGPSManager ");
+		return null;
 	}
 	#endregion
 	private void Start() {
@@ -23,11 +28,29 @@ public class InputGPSManager : MonoBehaviour {
 		}
 	}
 
+	public void Init(UIEventManager eventManager, params IManager[] managers){ 
+		locServ = Input.location;
+	}
+
 	#region Update Info
+	LocationService locServ;
+	public void BackStagePrepare() {
+		locServ.Start();
+	}
+
+	public void Pause() {
+		locServ.Stop();
+	}
+
+	public Vector2 GetCurrentLatLon(){
+		LocationInfo locInfo = locServ.lastData;
+		Vector2 latlon = new Vector2(locInfo.latitude, locInfo.longitude);
+		return latlon;
+	}
 	//logic process
 
 	//相对位置的经纬度
-	public Vector2	m_vec2GroundLatLon = Vector2.zero;
+	public Vector2 m_vec2GroundLatLon = Vector2.zero;
 	public double m_camLatitude = 0f;
 	public double m_camLongitude = 0f;
 	public Vector3 m_camPos = Vector3.zero;
@@ -87,35 +110,35 @@ public class InputGPSManager : MonoBehaviour {
 	}
 
 	//备注：z轴为北
-	public double GetDeltaDistanceN(double lat1, double lng1, double lat2, double lng2){
+	public double GetDeltaDistanceN(double lat1, double lng1, double lat2, double lng2) {
 		double dRet = 0.0f;
-		dRet = GetDistance (lat1, lng1, lat2, lng1);
-		if(lat2 < lat1){
+		dRet = GetDistance(lat1, lng1, lat2, lng1);
+		if (lat2 < lat1) {
 			dRet *= -1;
 		}
 		return dRet;
 	}
 
 	//备注：x轴为东
-	public double GetDeltaDistanceE(double lat1, double lng1, double lat2, double lng2){
+	public double GetDeltaDistanceE(double lat1, double lng1, double lat2, double lng2) {
 		double dRet = 0.0f;
-		dRet = GetDistance (lat1, lng1, lat1, lng2);
-		if(lng2 < lng1){
+		dRet = GetDistance(lat1, lng1, lat1, lng2);
+		if (lng2 < lng1) {
 			dRet *= -1;
 		}
 		return dRet;
 	}
 
 	//将经纬度转换为偏移量坐标
-	public Vector3 GetDeltaDistance(Vector2 startLatLng, Vector2 endLatLng){
-		return new Vector3 ((float)(GetDeltaDistanceE(startLatLng.x, startLatLng.y, endLatLng.x, endLatLng.y))
+	public Vector3 GetDeltaDistance(Vector2 startLatLng, Vector2 endLatLng) {
+		return new Vector3((float)(GetDeltaDistanceE(startLatLng.x, startLatLng.y, endLatLng.x, endLatLng.y))
 			, 0
 			, (float)GetDeltaDistanceN(startLatLng.x, startLatLng.y, endLatLng.x, endLatLng.y));
 	}
 
 	//根据当前的经纬度计算出一个相对偏移量
-	public Vector3 GetGroundDistance(Vector2 endLatLng){
-		return GetDeltaDistance (m_vec2GroundLatLon, endLatLng);
+	public Vector3 GetGroundDistance(Vector2 endLatLng) {
+		return GetDeltaDistance(m_vec2GroundLatLon, endLatLng);
 	}
 	public Vector3 GetCamDistance(Vector2 endLatLng) {
 		return GetDeltaDistance(new Vector2((float)m_camLatitude, (float)m_camLongitude), endLatLng);
