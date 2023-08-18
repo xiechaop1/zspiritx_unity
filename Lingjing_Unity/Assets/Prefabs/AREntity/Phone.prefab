@@ -223,17 +223,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actionManager: {fileID: 0}
-  enumSurfaceType: 1
   enumActionType: 11
   enumItemType: -1
-  arUtiity: {fileID: 0}
-  lstEntityCorner: []
-  goInteractionMode: {fileID: 1859037249983814374}
-  goFPSightMode: {fileID: 7978133358413937823}
   icon: {fileID: 0}
   iconHint: 
   strName: phone
   strHintbox: "\u8FD9\u662F\u4E00\u90E8\u7535\u8BDD\uFF0C\u53EF\u4EE5\u62E8\u901A\u3002"
+  goInteractionMode: {fileID: 1859037249983814374}
+  arUtiity: {fileID: 0}
+  enumARType: 1
+  uuidImageTracking: phone
+  offset: {x: 0, y: 0, z: 0}
+  enumSurfaceType: 1
+  lstEntityCorner: []
+  goFPSightMode: {fileID: 7978133358413937823}
 --- !u!114 &6496807366593760362
 MonoBehaviour:
   m_ObjectHideFlags: 0

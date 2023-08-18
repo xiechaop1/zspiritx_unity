@@ -461,7 +461,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actionManager: {fileID: 0}
-  enumSurfaceType: 1
   enumActionType: 12
   enumItemType: 14
   icon: {fileID: 21300000, guid: bb74bf04df427624f8fd689a523952c5, type: 3}
@@ -469,10 +468,13 @@ MonoBehaviour:
   strName: FPSightGlasses
   strHintbox: "\u8FD9\u662F\u4E00\u4E2A\u6307\u7EB9\u63A2\u6D4B\u773C\u955C\uFF0C\u4F69\u6234\u540E\u53EF\u4EE5\u770B\u89C1\u6307\u7EB9\u3002\u70B9\u51FB\u80CC\u5305\u4E2D\u7684\u7269\u54C1\u5207\u6362\u72B6\u6001\u3002"
   goInteractionMode: {fileID: 0}
-  hARUtiity: {fileID: 3093252365412281332}
-  lstEntityCorner: []
-  goFPSightMode: {fileID: 0}
   arUtiity: {fileID: 3093252365412281332}
+  enumARType: 0
+  uuidImageTracking: 
+  offset: {x: 0, y: 0, z: 0}
+  enumSurfaceType: 1
+  goReference: {fileID: 0}
+  goFPSightMode: {fileID: 0}
 --- !u!114 &3093252365412281332
 MonoBehaviour:
   m_ObjectHideFlags: 0

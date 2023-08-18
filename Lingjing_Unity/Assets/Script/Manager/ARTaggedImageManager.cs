@@ -42,12 +42,13 @@ public class ARTaggedImageManager : MonoBehaviour, IManager {
 
 			// Give the initial image a reasonable default scale
 			trackedImage.transform.localScale = Vector3.one;
-			GameObject obj = entityManager.PlaceImageTrackingEntity(trackedImage.referenceImage.name);
-			if (obj != null) {
-				obj.transform.parent = trackedImage.transform;
-				obj.transform.localPosition = Vector3.zero;
-				obj.transform.localRotation = Quaternion.identity;
-			}
+			/*GameObject obj =*/
+			entityManager.PlaceImageTrackingEntity(trackedImage.referenceImage.name, trackedImage.gameObject);
+			//if (obj != null) {
+			//	obj.transform.parent = trackedImage.transform;
+			//	obj.transform.localPosition = Vector3.zero;
+			//	obj.transform.localRotation = Quaternion.identity;
+			//}
 			//GameObject prefab = GetPrefab(trackedImage);
 			//if (prefab != null) {
 			//	var obj = Instantiate(prefab, trackedImage.transform);
@@ -57,7 +58,11 @@ public class ARTaggedImageManager : MonoBehaviour, IManager {
 			//}
 			//UpdateInfo(trackedImage);
 		}
-
+		foreach (ARTrackedImage trackedImage in eventArgs.added) {
+			stageManager.ImageFound(trackedImage.referenceImage.name);
+			trackedImage.transform.localScale = Vector3.one;
+			entityManager.PlaceImageTrackingEntity(trackedImage.referenceImage.name, trackedImage.gameObject);
+		}
 		//foreach (ARTrackedImage trackedImage in eventArgs.updated) 
 		//UpdateInfo(trackedImage);
 	}

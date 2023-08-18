@@ -233,12 +233,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6595787e0e9dbed4a923778f8d93d022, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enumSurfaceType: -1
+  actionManager: {fileID: 0}
   enumActionType: 1
-  lstEntityCorner: []
-  goInteractionMode: {fileID: 0}
+  enumItemType: -1
+  icon: {fileID: 0}
+  iconHint: 
   strName: DebugObj
   strHintbox: debug_object
+  goInteractionMode: {fileID: 0}
+  arUtiity: {fileID: 0}
+  enumARType: 0
+  uuidImageTracking: 
+  offset: {x: 0, y: -1, z: 0}
+  enumSurfaceType: -1
+  goReference: {fileID: 0}
+  goFPSightMode: {fileID: 0}
 --- !u!1 &4112823188356564742
 GameObject:
   m_ObjectHideFlags: 0

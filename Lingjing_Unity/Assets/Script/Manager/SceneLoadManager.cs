@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SceneLoadManager : MonoBehaviour, IManager {
-	private enum SceneMode {
+	public enum SceneMode {
 		None,
 		Loading,
 		Ready,
@@ -35,8 +35,8 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	//Scroller
 	public ScrollerElementManager scrollerElementManager;
 
-	private SceneMode sceneMode = SceneMode.None;
-	private bool isLoading = true;
+	public SceneMode sceneMode = SceneMode.None;
+	public bool isLoading = true;
 	//private bool isForcedStop = false;
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
 
@@ -44,6 +44,9 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	void Awake() {
 		WorldInit();
 		StartCoroutine(InitStartUp());
+	}
+	public void DebugLog(string log){ 
+		eventDebugInfo?.Invoke(log);
 	}
 	void WorldInit() {
 		//Utility Init
@@ -63,7 +66,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		//AR Init
 		fieldEntityManager = fieldStageManager.GetComponent<FieldEntityManager>();
 		fieldStageManager.Init(eventManager, fieldEntityManager);
-		fieldEntityManager.Init(eventManager, entityActionManager, fieldStageManager,this);
+		fieldEntityManager.Init(eventManager, entityActionManager, fieldStageManager, this);
 		arSightManager = fieldEntityManager.GetComponent<ARSightManager>();
 		arSightManager.Init(eventManager);
 
@@ -120,15 +123,15 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		fieldEntityManager.PrepareScene();
 
 		LoadingScreen.SetActive(false);
-		eventDebugInfo?.Invoke("正在扫描构建环境，请使用手机缓慢扫描地面与墙壁");
+		DebugLog("正在扫描构建环境，请使用手机缓慢扫描地面与墙壁");
 		for (int i = 0; i < 20; i++) {
 			if (fieldEntityManager.isSurfacesReady) {
 				break;
 			}
 			yield return new WaitForSeconds(1);
 		}
-		eventDebugInfo?.Invoke("环境扫描 " + (fieldEntityManager.isSurfacesReady ? "成功" : "失败"));
-		
+		DebugLog("环境扫描 " + (fieldEntityManager.isSurfacesReady ? "成功" : "失败"));
+
 		isLoading = false;
 		yield break;
 
@@ -137,39 +140,39 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 			if (fieldEntityManager.isLoadFinish) {
 				break;
 			}
-			fieldEntityManager.TryPlaceEntitys(10);
+			fieldEntityManager.TryPlaceRamdomEntitys(10);
 			yield return new WaitForSeconds(1);
 		}
-		eventDebugInfo?.Invoke("模型放置 " + (fieldEntityManager.isLoadFinish ? "成功" : "失败"));
+		DebugLog("模型放置 " + (fieldEntityManager.isLoadFinish ? "成功" : "失败"));
 
 		isLoading = false;
 		yield break;
 	}
 
-	public void ForceReloadScene(){
-		StartCoroutine(StageReload());
-	} 
-	IEnumerator StageReload() {
-		yield return null;
-		while (isLoading) {
-			yield return null;
-		}
-		if (sceneMode != SceneMode.AR) {
-			yield break;
-		}
-		isLoading = true;
-		for (int i = 0; i < 10; i++) {
-			if (fieldEntityManager.isLoadFinish) {
-				break;
-			}
-			fieldEntityManager.TryPlaceEntitys(10);
-			yield return new WaitForSeconds(1);
-		}
-		eventDebugInfo?.Invoke("模型放置 " + (fieldEntityManager.isLoadFinish ? "成功" : "失败"));
+	//public void ForceReloadScene() {
+	//	StartCoroutine(StageReload());
+	//}
+	//IEnumerator StageReload() {
+	//	yield return null;
+	//	while (isLoading) {
+	//		yield return null;
+	//	}
+	//	if (sceneMode != SceneMode.AR) {
+	//		yield break;
+	//	}
+	//	isLoading = true;
+	//	for (int i = 0; i < 10; i++) {
+	//		if (fieldEntityManager.isLoadFinish) {
+	//			break;
+	//		}
+	//		fieldEntityManager.TryPlaceRamdomEntitys(10);
+	//		yield return new WaitForSeconds(1);
+	//	}
+	//	DebugLog("模型放置 " + (fieldEntityManager.isLoadFinish ? "成功" : "失败"));
 
-		isLoading = false;
-		yield break;
-	}
+	//	isLoading = false;
+	//	yield break;
+	//}
 
 	IEnumerator ScrollerLoader() {
 		LoadingScreen.SetActive(true);

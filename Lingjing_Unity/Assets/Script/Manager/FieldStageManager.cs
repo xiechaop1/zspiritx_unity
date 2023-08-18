@@ -46,9 +46,27 @@ public class FieldStageManager : MonoBehaviour, IManager {
 	}
 
 	public void StageAdvanced(FieldStageInfo targetStage) {
+		StartCoroutine(AdvanceStages(targetStage));
+	}
+
+	bool isStaging = false;
+	private IEnumerator AdvanceStages(FieldStageInfo targetStage) {
+		if (isStaging) {
+			yield break;
+		}
+		isStaging = true;
+		yield return null;
 		entityManager.StopStage();
+		yield return null;
 		PrepareBackstage(targetStage);
+		yield return null;
 		entityManager.PrepareStage();
+		yield return null;
+		isStaging = false;
+		if (targetStage.stageToggleType == FieldStageInfo.StageToggleType.ARTag) {
+			entityManager.UpdateImageTracking(targetStage.uuidARTag);
+		}
+		yield break;
 	}
 
 	public void PrepareBackstage(FieldStageInfo targetStage) {
@@ -63,13 +81,18 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		FieldEntityInfo info;
 		for (int i = 0; i < entityPrefabs.Length; i++) {
 			if (!string.IsNullOrWhiteSpace(entityPrefabs[i])) {
-				foreach (var prefab in prefabs.lstPrefabs) {
-					if (prefab != null && prefab.TryGetComponent(out info)) {
-						if (info.strName == entityPrefabs[i]) {
-							obj = Instantiate(prefab, goRoot.transform);
-							lstOutput.Add(obj);
-							goManaged.Add(obj);
-							break;
+				obj = goManaged.Find(x => x.GetComponent<FieldEntityInfo>().strName == entityPrefabs[i]);
+				if (obj != null) {
+					lstOutput.Add(obj);
+				} else {
+					foreach (var prefab in prefabs.lstPrefabs) {
+						if (prefab != null && prefab.TryGetComponent(out info)) {
+							if (info.strName == entityPrefabs[i]) {
+								obj = Instantiate(prefab, goRoot.transform);
+								lstOutput.Add(obj);
+								goManaged.Add(obj);
+								break;
+							}
 						}
 					}
 				}
