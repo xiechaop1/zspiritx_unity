@@ -155,17 +155,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6595787e0e9dbed4a923778f8d93d022, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enumSurfaceType: 1
+  actionManager: {fileID: 0}
   enumActionType: 2
   enumItemType: 3
-  arUtiity: {fileID: 0}
-  lstEntityCorner: []
-  goInteractionMode: {fileID: 0}
-  goFPSightMode: {fileID: 0}
   icon: {fileID: 0}
   iconHint: 
   strName: FlowerPot2
   strHintbox: "\u8FD9\u662F\u4E00\u4E2A\u82B1\u76C6\uFF0C\u4E0A\u9762\u5199\u4E86\u4E00\u6BB5\u6587\u5B57\uFF1A\u201C1527\u201D"
+  goInteractionMode: {fileID: 0}
+  arUtiity: {fileID: 0}
+  enumARType: 2
+  uuidImageTracking: UnityLogo
+  offset: {x: 3, y: 0, z: 0}
+  enumSurfaceType: 1
+  goReference: {fileID: 0}
+  goFPSightMode: {fileID: 0}
 --- !u!1 &6976992608162493991
 GameObject:
   m_ObjectHideFlags: 0

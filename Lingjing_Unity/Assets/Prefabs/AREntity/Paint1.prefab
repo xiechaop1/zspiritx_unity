@@ -67,12 +67,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6595787e0e9dbed4a923778f8d93d022, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enumSurfaceType: 2
+  actionManager: {fileID: 0}
   enumActionType: 1
-  lstEntityCorner: []
-  goInteractionMode: {fileID: 0}
+  enumItemType: -1
+  icon: {fileID: 0}
+  iconHint: 
   strName: paint1
   strHintbox: "\u4E00\u5E45\u98CE\u666F\u753B"
+  goInteractionMode: {fileID: 0}
+  arUtiity: {fileID: 0}
+  enumARType: 2
+  uuidImageTracking: 
+  offset: {x: 0, y: 0, z: 0}
+  enumSurfaceType: 2
+  goReference: {fileID: 0}
+  goFPSightMode: {fileID: 0}
 --- !u!1 &9088097393396132418
 GameObject:
   m_ObjectHideFlags: 0

@@ -22,6 +22,8 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	//public GameObject[] lstFieldEntity;
 	//public GameObject[] lstTaggedEntity;
 	public GameObject goCamera;
+	public GameObject goCamDir;
+	public GameObject prefabARDir;
 	//public GameObject goRoot;
 	private ARPlaneInfo arPlane;
 	Queue<GameObject> queFieldEntity = new Queue<GameObject>();
@@ -35,6 +37,25 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	private SceneLoadManager loadManager;
 
 	private bool isPlaneVisible = false;
+	private float timeLastCheck = 1f;
+
+	private void Update() {
+		if (timeLastCheck < 0) {
+			if (!loadManager.isLoading && loadManager.sceneMode == SceneLoadManager.SceneMode.AR) {
+				if (!isLoadFinish) {
+					TryPlaceRamdomEntitys(10);
+					if (isLoadFinish) {
+						loadManager.DebugLog("模型放置 " + (isLoadFinish ? "成功" : "失败"));
+					}
+				}
+			}
+			timeLastCheck = 1f;
+		} else {
+			timeLastCheck -= Time.deltaTime;
+		}
+
+
+	}
 
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
 		//EntityActionManager entityActionManager=null;
@@ -89,7 +110,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			}
 		}
 
-		loadManager.ForceReloadScene();
+		//loadManager.ForceReloadScene();
 	}
 
 	private bool PrepareEntity(GameObject entity/*, out GameObject obj*/) {
@@ -161,25 +182,60 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		//Destroy(entity);
 	}
 
-	public GameObject PlaceImageTrackingEntity(string entityName) {
-		GameObject obj = null;
+	Dictionary<string, GameObject> imageDirs = new Dictionary<string, GameObject>();
+	Dictionary<string, GameObject> imageTrackers = new Dictionary<string, GameObject>();
+	public void PlaceImageTrackingEntity(string imgName, GameObject goImageTracker) {
+		GameObject obj;
+		if (imageDirs.ContainsKey(imgName)) {
+
+		} else {
+			//obj = new GameObject(imgName + "-ImageDir");
+			obj = Instantiate(prefabARDir);
+			obj.name = imgName + "-ImagDir";
+			obj.AddComponent<ImageDirMover>().Init(goImageTracker);
+			obj.transform.parent = transform;
+			imageDirs.Add(imgName, obj);
+		}
+		if (imageTrackers.ContainsKey(imgName)) {
+			imageTrackers[imgName] = goImageTracker;
+		}else{
+			imageTrackers.Add(imgName, goImageTracker);
+		}
+		//obj.transform.position = goImageTracker.transform.position;
+		//obj.transform.rotation = goImageTracker.transform.rotation;
+		UpdateImageTracking(imgName);
+	}
+
+
+	public void UpdateImageTracking(string imgName) {
 		FieldEntityInfo entityInfo;
+		if (queTaggedEntity.Count==0) {
+			return;
+		}
 		foreach (GameObject entity in queTaggedEntity) {
 			entityInfo = entity.GetComponent<FieldEntityInfo>();
-			if (entityInfo.strName == entityName) {
-				obj = entity;
-				if (OnEntityPlaced != null) {
-					OnEntityPlaced.Invoke(entityInfo);
+			if (entityInfo.uuidImageTracking == imgName) {
+				if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagTracking) {
+					entity.transform.parent = imageTrackers[imgName].transform;
+					entity.transform.localPosition = Vector3.zero;
+					entity.transform.localRotation = Quaternion.identity;
+					queTaggedEntity.Remove(entity);
+					lstPlacedEntity.Add(entity);
+					if (OnEntityPlaced != null) {
+						OnEntityPlaced.Invoke(entityInfo);
+					}
+				} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagAround) {
+					entityInfo.goReference = imageDirs[imgName];
+					queTaggedEntity.Remove(entity);
+					queFieldEntity.Enqueue(entity);
 				}
 			}
 		}
-		if (obj != null) {
-			queTaggedEntity.Remove(obj);
-			lstPlacedEntity.Add(obj);
-		}
-		return obj;
+
+		//return obj;
 	}
 
+	#region ARPlane
 	private List<ARPlaneInfo> planeHorizontal = new List<ARPlaneInfo>();
 	private List<ARPlaneInfo> planeVertical = new List<ARPlaneInfo>();
 	private float areaFloor = 0f;
@@ -231,15 +287,21 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	private void OnFloorUpdate() {
 		areaFloor = CalculateArea(planeHorizontal);
 		foreach (var entity in entityHorizontal) {
-			ShiftOnNormal(entity);
+			if (entity) {
+				ShiftOnNormal(entity);
+			}
 		}
 	}
 	private void OnWallUpdate() {
 		areaWall = CalculateArea(planeVertical);
 		foreach (var entity in entityVertical) {
-			ShiftOnNormal(entity);
+			if (entity) {
+				ShiftOnNormal(entity);
+			}
 		}
 	}
+
+	#endregion
 	private List<FieldEntityInfo> entityHorizontal = new List<FieldEntityInfo>();
 	private List<FieldEntityInfo> entityVertical = new List<FieldEntityInfo>();
 	//private Dictionary<ARPlaneInfo, List<FieldEntityInfo>> bookEntitiesOnPlane = new Dictionary<ARPlaneInfo, List<FieldEntityInfo>>();
@@ -281,8 +343,14 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		}
 		//arSightManager.RemoveEntity(entity);
 	}
-	public void TryPlaceEntitys(int maxTries) {
+	public void TryPlaceRamdomEntitys(int maxTries) {
 		if (queFieldEntity.Count <= 0) return;
+
+		goCamDir.transform.position = goCamera.transform.position;
+		if (Vector3.Angle(Vector3.up, goCamera.transform.forward) > 0.01f) {
+			Vector3 fwd = new Vector3(goCamera.transform.forward.x, 0, goCamera.transform.forward.z);
+			goCamDir.transform.rotation.SetLookRotation(fwd.normalized, Vector3.up);
+		}
 
 		GameObject goEntity;
 		for (int i = 0; i < maxTries; i++) {
@@ -291,44 +359,66 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			goEntity = queFieldEntity.Dequeue();
 			FieldEntityInfo entityInfo;
 			if (goEntity.TryGetComponent(out entityInfo)) {
-				if (TryPlaceEntity(entityInfo)) {
+				if (!entityInfo.goReference) {
+					entityInfo.goReference = goCamDir;
+					//if (TryPlaceEntityAround(entityInfo, goCamDir.transform.position, goCamDir.transform.rotation, 4f)) {
+					//	if (OnEntityPlaced != null) {
+					//		OnEntityPlaced.Invoke(entityInfo);
+					//	}
+					//	lstPlacedEntity.Add(goEntity);
+					//} else {
+					//	queFieldEntity.Enqueue(goEntity);
+					//}
+				}// else {
+				if (TryPlaceEntityAround(entityInfo, entityInfo.goReference.transform.position, entityInfo.goReference.transform.rotation, 1f)) {
 					if (OnEntityPlaced != null) {
 						OnEntityPlaced.Invoke(entityInfo);
 					}
 					lstPlacedEntity.Add(goEntity);
-					//arSightManager.AddEntity(entityInfo);
 				} else {
 					queFieldEntity.Enqueue(goEntity);
 				}
+				//}
 			}
 		}
 
 
 	}
-	public bool TryPlaceEntity(FieldEntityInfo entityInfo) {
+	public bool TryPlaceEntityAround(FieldEntityInfo entityInfo, Vector3 originPos, Quaternion originRot, float marginError) {
 		Debug.Log("tryPlaceEntity" + entityInfo.strName);
-		(bool hasPos, RaycastHit hit, int enumSurfaceType) = TryGetPos(goCamera.transform.position, entityInfo.enumSurfaceType);
+		Vector3 targetPos = originPos + originRot * entityInfo.offset;
+		(bool hasPos, RaycastHit hit, int enumSurfaceType) = TryGetPos(targetPos, entityInfo.enumSurfaceType, marginError);
 		if (hasPos) {
-			if (entityInfo.TryPlacing(hit.point, hit.collider.gameObject.transform.rotation, arPlane.gameObject, transform)) {
-				if (enumSurfaceType == 1) {
+			if (enumSurfaceType == 1) {
+				if (entityInfo.TryPlacing(hit.point, originRot, arPlane.gameObject, transform)) {
 					entityHorizontal.Add(entityInfo);
-				} else if (enumSurfaceType == 2) {
-					entityVertical.Add(entityInfo);
+					return true;
 				}
-				return true;
+			} else if (enumSurfaceType == 2) {
+				if (entityInfo.TryPlacing(hit.point, hit.collider.gameObject.transform.rotation, arPlane.gameObject, transform)) {
+					entityVertical.Add(entityInfo);
+					return true;
+				}
 			}
+			//if (entityInfo.TryPlacing(hit.point, hit.collider.gameObject.transform.rotation, arPlane.gameObject, transform)) {
+			//	if (enumSurfaceType == 1) {
+			//		entityHorizontal.Add(entityInfo);
+			//	} else if (enumSurfaceType == 2) {
+			//		entityVertical.Add(entityInfo);
+			//	}
+			//	return true;
+			//}
 		}
-
 		return false;
 	}
 
-	(bool, RaycastHit, int) TryGetPos(Vector3 origin, int enumSurfaceType) {
+	(bool, RaycastHit, int) TryGetPos(Vector3 origin, int enumSurfaceType, float marginError) {
 		RaycastHit hit = new RaycastHit();
 		//bool isHorizontal;
 		if (enumSurfaceType == 1) {
 			for (int i = 0; i < 50; i++) {
 				//Debug.Log("tryGetPos horizontal, attempt: " + i);
-				if (Physics.Raycast(origin + new Vector3(UnityEngine.Random.Range(-2f, 2f), 0, UnityEngine.Random.Range(-2f, 2f)), Vector3.down, out hit, 4f, 8)) {
+				if (Physics.Raycast(origin + new Vector3(UnityEngine.Random.Range(-marginError, marginError), 1f, UnityEngine.Random.Range(-marginError, marginError)), Vector3.down, out hit, 4f, 8)) {
 					if (hit.collider.gameObject.TryGetComponent(out arPlane) && arPlane.isHorizontal) {
 						return (true, hit, 1);
 					}
@@ -338,7 +428,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			Ray ray;
 			for (int i = 0; i < 50; i++) {
 				//Debug.Log("tryGetPos omni, attempt: " + i);
-				if (Physics.Raycast(origin, new Vector3(UnityEngine.Random.Range(-2f, 2f), 0, UnityEngine.Random.Range(-2f, 2f)).normalized, out hit, 4f, 8)) {
+				if (Physics.Raycast(origin, new Vector3(UnityEngine.Random.Range(-2f, 2f), 0, UnityEngine.Random.Range(-2f, 2f)).normalized, out hit, marginError, 8)) {
 					if (hit.collider.gameObject.TryGetComponent(out arPlane) && !arPlane.isHorizontal) {
 						ray = new Ray(hit.point + arPlane.up * 0.01f + new Vector3(0, UnityEngine.Random.Range(-0.5f, 0.5f), 0), -arPlane.up);
 						//Debug.Log("wallfound at: "+ hit.point+" raycast from: "+ray.origin);
@@ -351,7 +441,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		} else if (enumSurfaceType == -1) {
 			for (int i = 0; i < 50; i++) {
 				//Debug.Log("tryGetPos omni, attempt: " + i);
-				if (Physics.Raycast(origin, new Vector3(UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f)).normalized, out hit, 4f, 8)) {
+				if (Physics.Raycast(origin, new Vector3(UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f)).normalized, out hit, marginError, 8)) {
 					if (hit.collider.gameObject.TryGetComponent(out arPlane)) {
 						//isHorizontal = Physics.Raycast(hit.point + new Vector3(0, 0.01f, 0), Vector3.down);
 						return (true, hit, arPlane.isHorizontal ? 1 : 2);

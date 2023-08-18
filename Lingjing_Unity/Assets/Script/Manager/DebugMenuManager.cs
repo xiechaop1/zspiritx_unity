@@ -32,6 +32,9 @@ public class DebugMenuManager : MonoBehaviour {
 	//public UnityEngine.XR.ARFoundation.ARTrackedImageManager imageManager;
 	//public UnityEngine.XR.ARSubsystems.XRReferenceImageLibrary altImageLib;
 
+	public GameObject fakeImage;
+	public string fakeImageName;
+
 	private void Awake() {
 		//WorldInit();
 	}
@@ -59,10 +62,11 @@ public class DebugMenuManager : MonoBehaviour {
 	}
 	bool isDebugMode = false;
 	public void DebugBtn() {
-		var locInfo = InputGPSManager.getInstance().GetCurrentLatLon();
+		//var locInfo = InputGPSManager.getInstance().GetCurrentLatLon();
 		//ShowHint("lat: " + locInfo.x + "\nlon: " + locInfo.y /*+ "\nalt: " + locInfo.altitude*/);
-		
+
 		//StartCoroutine(GPSTest());
+		//FakeImageFound();
 		fieldStageManager.LocationUpdate(Config.ConfigInfo.test.testLatLon);
 		//sceneLoadManager.Pause();
 
@@ -82,26 +86,32 @@ public class DebugMenuManager : MonoBehaviour {
 		UIEventManager.BroadcastEvent("WebViewCall", "StartARScene");
 	}
 	public void TryPlaceEntity() {
-		fieldEntityManager.TryPlaceEntitys(10);
+		fieldEntityManager.TryPlaceRamdomEntitys(10);
 		ShowHint("模型放置 " + (fieldEntityManager.isLoadFinish ? "成功" : "失败"));
 	}
 
-	IEnumerator GPSTest() {
-		isDebugMode = !isDebugMode;
-		LocationService locServ = Input.location;
-		if (!isDebugMode) {
-			locServ.Stop();
-			yield break;
-		}
-		locServ.Start();
-		LocationInfo locInfo;
-		while (isDebugMode) {
-			locInfo = locServ.lastData;
-			ShowHint("lat: " + locInfo.latitude + "\nlon: " + locInfo.longitude + "\nalt: " + locInfo.altitude);
-			yield return new WaitForSeconds(2f);
-		}
-
+	public void FakeImageFound(){ 
+			fieldStageManager.ImageFound(fakeImageName);
+			//trackedImage.transform.localScale = Vector3.one;
+			fieldEntityManager.PlaceImageTrackingEntity(fakeImageName, fakeImage);
 	}
+
+	//IEnumerator GPSTest() {
+	//	isDebugMode = !isDebugMode;
+	//	LocationService locServ = Input.location;
+	//	if (!isDebugMode) {
+	//		locServ.Stop();
+	//		yield break;
+	//	}
+	//	locServ.Start();
+	//	LocationInfo locInfo;
+	//	while (isDebugMode) {
+	//		locInfo = locServ.lastData;
+	//		ShowHint("lat: " + locInfo.latitude + "\nlon: " + locInfo.longitude + "\nalt: " + locInfo.altitude);
+	//		yield return new WaitForSeconds(2f);
+	//	}
+
+	//}
 	//void WorldInit() {
 	//	UIEventManager eventManager = UIEventManager.getInstance();
 	//	inventoryItemManager.Init(eventManager);

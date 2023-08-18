@@ -3,8 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class FieldEntityInfo : ItemInfo{
+	public enum EntityToggleType {
+		RamdomAround,
+		ARTagTracking,
+		ARTagAround,
+		Location,
+	}
+	public EntityToggleType enumARType = EntityToggleType.RamdomAround;
+	public string uuidImageTracking = "";
+	public Vector3 offset = Vector3.zero;
 	public int enumSurfaceType = -1;
-	public GameObject[] lstEntityCorner;
+	public GameObject goReference;
+	//public GameObject[] lstEntityCorner;
 	public GameObject goFPSightMode;
 	public bool TryPlacing(Vector3 posTarget, Quaternion rotTarget, GameObject targetSurface, Transform rootWorld) {
 		var posOld = transform.position;
