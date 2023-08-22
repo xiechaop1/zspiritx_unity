@@ -67,13 +67,13 @@ public class DebugMenuManager : MonoBehaviour {
 
 		//StartCoroutine(GPSTest());
 		//FakeImageFound();
-		//fieldStageManager.LocationUpdate(Config.ConfigInfo.test.testLatLon);
+		fieldStageManager.LocationUpdate(Config.ConfigInfo.test.testLatLon);
 		//sceneLoadManager.Pause();
 
 		//Debug.Log(Camera.main.WorldToScreenPoint(fakeImage.transform.position));
 
-		isDebugMode = !isDebugMode;
-		UIEventManager.BroadcastEvent("ARTagDebug", isDebugMode.ToString());
+		//isDebugMode = !isDebugMode;
+		//UIEventManager.BroadcastEvent("ARTagDebug", isDebugMode.ToString());
 		//UIEventManager.BroadcastEvent("WebViewCall", "StartARScene");
 		//UnityEngine.XR.ARSubsystems.XRReferenceImageLibrary tmpLib = imageManager.referenceLibrary as UnityEngine.XR.ARSubsystems.XRReferenceImageLibrary;
 		//imageManager.referenceLibrary = altImageLib;

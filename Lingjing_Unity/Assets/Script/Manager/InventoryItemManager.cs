@@ -3,37 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryItemManager : MonoBehaviour, IManager {
-	//public static InventoryItemManager getInstance() {
-	//	if (instance != null) {
-	//		return instance;
-	//	} else {
-	//		GameObject go = GameObject.Find("InventoryItemManager");
-	//		if (go != null && go.TryGetComponent(out instance)) {
-	//			return instance;
-	//		}
-	//	}
-	//	Debug.LogError("MISSING InventoryItemManager ");
-	//	return null;
-	//}
-	//private static InventoryItemManager instance;
+	public InteractionView interactionView;
 
-	private InteractionView interactionView;
+	public InventoryView inventoryView;
 	private List<IEventMessage> lstItems = new List<IEventMessage>();
 	public IEventMessage[] getItemList => lstItems.ToArray();
 
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
-		interactionView = InteractionView.getInstance();
+		//interactionView = InteractionView.getInstance();
 		//var eventManager = UIEventManager.getInstance();
 		eventManager.RegisteredAction("InventoryItemManager", "AddInfo", AddInfo);
 		eventManager.RegisteredAction("InventoryItemManager", "AddItem", AddItem);
 		eventManager.RegisteredAction("InventoryItemManager", "RemoveInfo", RemoveInfo);
+		eventManager.RegisteredAction("InventoryItemManager", "ShowInventoryItem", ShowInventoryItem);
 	}
 
 	public void AddInfo(IEventMessage info) {
 		FileInfo entityInfo = new FileInfo(info as ItemInfo);
 		if (!lstItems.Contains(entityInfo)) {
 			lstItems.Add(entityInfo);
-			interactionView.UpdateInventory();
+			inventoryView.UpdateInventory();
 		}
 	}
 	public void AddItem(IEventMessage info) {
@@ -43,16 +32,21 @@ public class InventoryItemManager : MonoBehaviour, IManager {
 			GameObject go = entityInfo.gameObject;
 			go.transform.SetParent(transform);
 			go.SetActive(false);
-			interactionView.UpdateInventory();
+			inventoryView.UpdateInventory();
 		}
 	}
 	public void RemoveInfo(IEventMessage info) {
 		ItemInfo entityInfo = info as ItemInfo;
 		if (lstItems.Contains(entityInfo)) {
 			lstItems.Remove(entityInfo);
-			interactionView.UpdateInventory();
+			inventoryView.UpdateInventory();
 		}
 	}
-	public void ShowInventoryItem(InventoryItemIcon info) {
+	public void ShowInventoryItem(IEventMessage info) {
+		InventoryItemIcon itemInfo = info as InventoryItemIcon;
+		if (itemInfo != null) {
+			inventoryView.InteractWithEntity(itemInfo);
+		}
+
 	}
 }

@@ -11,7 +11,6 @@ public class FieldStageManager : MonoBehaviour, IManager {
 	public GameObject[] lstFieldEntity = new GameObject[0];
 	public GameObject[] lstTaggedEntity = new GameObject[0];
 
-
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
 		foreach (var manager in managers) {
 			RegisterManager(manager);
