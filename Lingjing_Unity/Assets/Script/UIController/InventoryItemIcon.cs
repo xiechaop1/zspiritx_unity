@@ -9,7 +9,6 @@ public class InventoryItemIcon : MonoBehaviour,IEventMessage {
 	public Image img;
 	public Text hint;
 	public void OpenFile() {
-		//Debug.Log("this");
-		InteractionView.getInstance().InteractWithEntity(this);
+		UIEventManager.CallEvent("InventoryItemManager", "ShowInventoryItem", this);
 	}
 }

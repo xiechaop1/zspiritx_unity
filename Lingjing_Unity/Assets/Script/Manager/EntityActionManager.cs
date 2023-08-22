@@ -4,24 +4,9 @@ using UnityEngine;
 
 [RequireComponent(typeof(InventoryItemManager))]
 public class EntityActionManager : MonoBehaviour, IManager {
-	//public static EntityActionManager getInstance() {
-	//	if (instance != null) {
-	//		return instance;
-	//	} else {
-	//		GameObject go = GameObject.Find("EntityActionManager");
-	//		if (go != null && go.TryGetComponent(out instance)) {
-	//			return instance;
-	//		}
-	//	}
-	//	Debug.LogError("MISSING EntityActionManager ");
-	//	return null;
-	//}
-	//private static EntityActionManager instance;
-
 	//public InventoryItemManager itemManager;
 	public event Action<ItemInfo> eventEntityFound;
-	//private UIEventManager eventManager;
-	private InteractionView interactionView;
+	public InteractionView interactionView;
 	private ActionMode actionMode = ActionMode.World;
 	public void Update() {
 #if !UNITY_EDITOR
@@ -58,9 +43,6 @@ public class EntityActionManager : MonoBehaviour, IManager {
 		}
 	}
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
-		interactionView = InteractionView.getInstance();
-		//GetComponent<FieldEntityManager>().RegisterManager(this);
-		//this.eventManager = eventManager;
 	}
 	public void InteractWithEntity(ItemInfo entityInfo) {
 		interactionView.ExitHint();
@@ -122,7 +104,6 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				entityInfo.enumActionType = entityInfo.enumItemType;
 				UIEventManager.CallEvent("InventoryItemManager", "AddInfo", entityInfo);
 				interactionView.ExitHint();
-				//InventoryItemManager.getInstance().AddInfo(entityInfo);
 				break;
 			case EntityActionType.CollectableItem:
 				entityInfo.enumActionType = entityInfo.enumItemType;
@@ -130,7 +111,6 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				UIEventManager.CallEvent("FieldEntityManager", "RemoveFieldEntitys", entityInfo);
 				UIEventManager.CallEvent("InventoryItemManager", "AddItem", entityInfo);
 				interactionView.ExitHint();
-				//InventoryItemManager.getInstance().AddItem(entityInfo);
 				break;
 			case EntityActionType.DialogActor:
 				interactionView.AdvancedDialog();

@@ -1996,6 +1996,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0a3ff4341328b4da9db27ed9fa7cbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactionView: {fileID: 1444424130}
+  inventoryView: {fileID: 1444424132}
 --- !u!4 &390938062
 Transform:
   m_ObjectHideFlags: 0
@@ -2023,6 +2025,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 925463dd94764c64f9c7edd025b926bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactionView: {fileID: 1444424130}
 --- !u!1 &417192576
 GameObject:
   m_ObjectHideFlags: 0
@@ -3903,8 +3906,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1444424130}
-        m_TargetAssemblyTypeName: InteractionController, Assembly-CSharp
+      - m_Target: {fileID: 1444424132}
+        m_TargetAssemblyTypeName: InventoryView, Assembly-CSharp
         m_MethodName: BackPackToggle
         m_Mode: 1
         m_Arguments:
@@ -5690,7 +5693,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1259804206}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.04, y: 0, z: 2.01}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6086,6 +6089,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1444424131}
   - component: {fileID: 1444424130}
+  - component: {fileID: 1444424132}
   m_Layer: 5
   m_Name: InteractionUIRoot
   m_TagString: Untagged
@@ -6106,16 +6110,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actionManager: {fileID: 390938063}
-  inventoryManager: {fileID: 390938061}
   goHintBox: {fileID: 58386504}
   txtHint: {fileID: 1341515078}
   btnComfirm: {fileID: 1452596367}
   txtConfirmBtn: {fileID: 917227732}
   txtExitBtn: {fileID: 1301484802}
-  goBackPack: {fileID: 346280582}
-  goInfoIcon: {fileID: 7855822151305451961, guid: 828815f74db50804d9fe178b47df6f5e,
-    type: 3}
-  goInventoryTray: {fileID: 560937563}
 --- !u!224 &1444424131
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6139,6 +6138,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1444424132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444424129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc83d236542078d44b406f8ac9ead853, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionManager: {fileID: 390938063}
+  inventoryManager: {fileID: 390938061}
+  goBackPack: {fileID: 346280582}
+  goInfoIcon: {fileID: 7855822151305451961, guid: 828815f74db50804d9fe178b47df6f5e,
+    type: 3}
+  goInventoryTray: {fileID: 560937563}
 --- !u!1 &1452596367
 GameObject:
   m_ObjectHideFlags: 0
