@@ -28,7 +28,7 @@ public class EntityActionManager : MonoBehaviour, IManager {
 		if (Input.GetTouch(0).phase==TouchPhase.Began) {
 #else
 		if (Input.GetMouseButtonDown(0)) {
-			Debug.Log(actionMode);
+			//Debug.Log(actionMode);
 
 #endif
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -70,34 +70,38 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				break;
 			case EntityActionType.ViewableInfo:
 				actionMode = ActionMode.Idle;
-				interactionView.ShowHint(entityInfo, "");
+				interactionView.ShowHint(entityInfo);
 				break;
 			case EntityActionType.CollectableInfo:
 				actionMode = ActionMode.Idle;
-				interactionView.ShowHint(entityInfo, "记录信息");
+				interactionView.ShowCollectableHint(entityInfo);
 				break;
 			case EntityActionType.CollectedInfo:
 				actionMode = ActionMode.Idle;
-				interactionView.ShowHint(entityInfo, "");
+				interactionView.ShowHint(entityInfo);
 				break;
 			case EntityActionType.InteractiveItem:
 				actionMode = ActionMode.Interactive;
-				interactionView.ShowHint(entityInfo, "");
+				interactionView.ShowHint(entityInfo);
 				entityInfo.SetInteractionMode(true);
 				break;
 			case EntityActionType.CollectableItem:
 				actionMode = ActionMode.Interactive;
-				interactionView.ShowHint(entityInfo, "收集道具");
+				interactionView.ShowCollectableItem(entityInfo);
 				entityInfo.SetInteractionMode(true);
 				break;
 			case EntityActionType.CollectedItem:
 				actionMode = ActionMode.Idle;
-				interactionView.ShowHint(entityInfo, "");
+				interactionView.ShowHint(entityInfo);
 				break;
 			case EntityActionType.UtilityItem:
 				actionMode = ActionMode.Idle;
 				entityInfo.GetComponent<ARUtilityListener>()?.UseARUtility();
-				interactionView.ShowHint(entityInfo, "", "确认");
+				interactionView.ShowHint(entityInfo, "确认");
+				break;
+			case EntityActionType.DialogActor:
+				actionMode = ActionMode.Idle;
+				interactionView.ShowDialog(entityInfo);
 				break;
 			case EntityActionType.PlacableItem:
 			default:
@@ -117,21 +121,26 @@ public class EntityActionManager : MonoBehaviour, IManager {
 			case EntityActionType.CollectableInfo:
 				entityInfo.enumActionType = entityInfo.enumItemType;
 				UIEventManager.CallEvent("InventoryItemManager", "AddInfo", entityInfo);
+				interactionView.ExitHint();
 				//InventoryItemManager.getInstance().AddInfo(entityInfo);
-				break;
-			case EntityActionType.InteractiveItem:
 				break;
 			case EntityActionType.CollectableItem:
 				entityInfo.enumActionType = entityInfo.enumItemType;
 
 				UIEventManager.CallEvent("FieldEntityManager", "RemoveFieldEntitys", entityInfo);
 				UIEventManager.CallEvent("InventoryItemManager", "AddItem", entityInfo);
+				interactionView.ExitHint();
 				//InventoryItemManager.getInstance().AddItem(entityInfo);
+				break;
+			case EntityActionType.DialogActor:
+				interactionView.AdvancedDialog();
 				break;
 			case EntityActionType.Debug:
 			case EntityActionType.ViewableInfo:
 			case EntityActionType.CollectedInfo:
+			case EntityActionType.InteractiveItem:
 			default:
+				interactionView.ExitHint();
 				break;
 		}
 	}
@@ -177,4 +186,5 @@ public enum EntityActionType {
 	CollectedItem = 13,
 	UtilityItem = 14,
 	PlacableItem = 15,
+	DialogActor = 21,
 }

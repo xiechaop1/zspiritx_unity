@@ -8,13 +8,14 @@ public class ImageDirMover : MonoBehaviour {
 		goImageOrigin = origin;
 		transform.position = origin.transform.position;
 		transform.rotation.SetLookRotation(GetForward());
+		timeFactor = 1f;
 	}
 
 	Vector3 GetForward() {
-		Vector3 fwd = goImageOrigin.transform.forward;
-		if (fwd.y > -0.1f && fwd.y < 0.1f) {
-			fwd = -goImageOrigin.transform.up;
-		}
+		Vector3 fwd = goImageOrigin.transform.forward - goImageOrigin.transform.up;
+		//if (fwd.y > -0.1f && fwd.y < 0.1f) {
+		//	fwd = -goImageOrigin.transform.up;
+		//}
 		fwd.y = 0;
 		return fwd.normalized;
 	}
@@ -23,6 +24,7 @@ public class ImageDirMover : MonoBehaviour {
 	void Update() {
 		if (timeFactor<10f) {
 			timeFactor += Time.deltaTime;
+			transform.rotation.SetLookRotation(GetForward());
 		}
 	}
 }

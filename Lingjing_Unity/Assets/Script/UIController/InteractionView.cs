@@ -43,18 +43,68 @@ public class InteractionView : MonoBehaviour {
 			txtConfirmBtn.text = textComfirm;
 		}
 	}
-	public void ShowHint(ItemInfo info, string textComfirm, string textCancel = "取消") {
+	public void ShowHint(ItemInfo info, string textCancel = "取消") {
 		goHintBox.SetActive(true);
 		txtHint.text = info.strHintbox;
 		entityInfo = info;
-		if (string.IsNullOrWhiteSpace(textComfirm)) {
-			btnComfirm.SetActive(false);
-		} else {
-			btnComfirm.SetActive(true);
-			txtConfirmBtn.text = textComfirm;
-		}
+		//if (string.IsNullOrWhiteSpace(textComfirm)) {
+		btnComfirm.SetActive(false);
+		//} else {
+		//	btnComfirm.SetActive(true);
+		//	txtConfirmBtn.text = textComfirm;
+		//}
 		//actHintbox = action;
 	}
+	public void ShowCollectableHint(ItemInfo info, string textCancel = "取消") {
+		goHintBox.SetActive(true);
+		txtHint.text = info.strHintbox;
+		entityInfo = info;
+		//if (string.IsNullOrWhiteSpace("记录信息")) {
+		//	btnComfirm.SetActive(false);
+		//} else {
+		btnComfirm.SetActive(true);
+		txtConfirmBtn.text = "记录信息";
+		//}
+	}
+	public void ShowCollectableItem(ItemInfo info, string textCancel = "取消") {
+		goHintBox.SetActive(true);
+		txtHint.text = info.strHintbox;
+		entityInfo = info;
+		//if (string.IsNullOrWhiteSpace("收集道具")) {
+		//	btnComfirm.SetActive(false);
+		//} else {
+		btnComfirm.SetActive(true);
+		txtConfirmBtn.text = "收集道具";
+		//}
+	}
+	Queue<string> queDialog = new Queue<string>();
+	public void ShowDialog(ItemInfo info, string textCancel = "取消") {
+		goHintBox.SetActive(true);
+		string rawString = info.strHintbox;
+		queDialog = new Queue<string>(rawString.Split('^'));
+		//string[] lstString = 
+		//queDialog.Clear();
+		//for (int i = 0; i < lstString.Length; i++) {
+		//	if (!string.IsNullOrWhiteSpace(lstString[i])) {
+		//		queDialog.Enqueue(lstString[i]);
+		//	}
+		//}
+
+		entityInfo = info;
+		AdvancedDialog();
+	}
+	public void AdvancedDialog() {
+		if (queDialog.Count > 0) {
+			txtHint.text = queDialog.Dequeue();
+		}
+		if (queDialog.Count > 0) {
+			btnComfirm.SetActive(true);
+			txtConfirmBtn.text = "继续";
+		} else {
+			btnComfirm.SetActive(false);
+		}
+	}
+
 	public void UpdateHint(string newText) {
 		txtHint.text = newText;
 	}
@@ -64,7 +114,7 @@ public class InteractionView : MonoBehaviour {
 		}
 		//actHintbox?.Invoke(entityInfo);
 		//actHintbox = null;
-		ExitHint();
+		//ExitHint();
 	}
 	public void ExitHint() {
 		goHintBox.SetActive(false);
@@ -139,7 +189,7 @@ public class InteractionView : MonoBehaviour {
 			trans = null;
 		}
 		trans = goInventoryTray.GetComponent<RectTransform>();
-		trans.sizeDelta = new Vector2(200 * (cntItems+lstFiles.Count)+50, 000);
+		trans.sizeDelta = new Vector2(200 * (cntItems + lstFiles.Count) + 50, 000);
 		//var rect = trans.rect;
 		//rect.width = 200 * lstItems.Length;
 		//trans.set = rect;

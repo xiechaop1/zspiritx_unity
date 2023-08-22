@@ -192,13 +192,15 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			//obj = new GameObject(imgName + "-ImageDir");
 			obj = Instantiate(prefabARDir);
 			obj.name = imgName + "-ImagDir";
-			obj.AddComponent<ImageDirMover>().Init(goImageTracker);
+			obj.GetComponent<ImageDirMover>().Init(goImageTracker);
 			obj.transform.parent = transform;
 			imageDirs.Add(imgName, obj);
 		}
 		if (imageTrackers.ContainsKey(imgName)) {
-			imageTrackers[imgName] = goImageTracker;
-		}else{
+			if (goImageTracker != null) {
+				imageTrackers[imgName] = goImageTracker;
+			}
+		} else {
 			imageTrackers.Add(imgName, goImageTracker);
 		}
 		//obj.transform.position = goImageTracker.transform.position;
@@ -209,7 +211,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 
 	public void UpdateImageTracking(string imgName) {
 		FieldEntityInfo entityInfo;
-		if (queTaggedEntity.Count==0) {
+		if (queTaggedEntity.Count == 0) {
 			return;
 		}
 		foreach (GameObject entity in queTaggedEntity) {
