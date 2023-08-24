@@ -162,7 +162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6595787e0e9dbed4a923778f8d93d022, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionManager: {fileID: 0}
+  entityManager: {fileID: 0}
   enumActionType: 21
   enumItemType: -1
   icon: {fileID: 0}
@@ -177,6 +177,7 @@ MonoBehaviour:
   enumSurfaceType: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  proximityDialog: 2
 --- !u!1 &549549277162223324
 GameObject:
   m_ObjectHideFlags: 0

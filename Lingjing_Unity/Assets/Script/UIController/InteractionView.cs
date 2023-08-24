@@ -26,12 +26,24 @@ public class InteractionView : MonoBehaviour {
 	public void ShowHint(ItemInfo info, string textCancel = "取消") {
 		goHintBox.SetActive(true);
 		txtHint.text = info.strHintbox;
+		if (info is FieldEntityInfo) {
+			Vector3 pos;
+			if (((FieldEntityInfo)info).TryGetScenePos(out pos)) {
+				txtHint.text += "\n 相对坐标:" + pos.ToString();
+			}
+		}
 		entityInfo = info;
 		btnComfirm.SetActive(false);
 	}
 	public void ShowCollectableHint(ItemInfo info, string textCancel = "取消") {
 		goHintBox.SetActive(true);
 		txtHint.text = info.strHintbox;
+		if (info is FieldEntityInfo) {
+			Vector3 pos;
+			if (((FieldEntityInfo)info).TryGetScenePos(out pos)) {
+				txtHint.text += "\n 相对坐标:" + pos.ToString();
+			}
+		}
 		entityInfo = info;
 		btnComfirm.SetActive(true);
 		txtConfirmBtn.text = "记录信息";
@@ -39,6 +51,12 @@ public class InteractionView : MonoBehaviour {
 	public void ShowCollectableItem(ItemInfo info, string textCancel = "取消") {
 		goHintBox.SetActive(true);
 		txtHint.text = info.strHintbox;
+		if (info is FieldEntityInfo) {
+			Vector3 pos;
+			if (((FieldEntityInfo)info).TryGetScenePos(out pos)) {
+				txtHint.text += "\n 相对坐标:" + pos.ToString();
+			}
+		}
 		entityInfo = info;
 		btnComfirm.SetActive(true);
 		txtConfirmBtn.text = "收集道具";
@@ -52,6 +70,12 @@ public class InteractionView : MonoBehaviour {
 		queDialog = new Queue<string>(rawString.Split('^'));
 		entityInfo = info;
 		AdvancedDialog();
+		if (info is FieldEntityInfo) {
+			Vector3 pos;
+			if (((FieldEntityInfo)info).TryGetScenePos(out pos)) {
+				txtHint.text += "\n 相对坐标:" + pos.ToString();
+			}
+		}
 	}
 	public void AdvancedDialog() {
 		if (queDialog.Count > 0) {

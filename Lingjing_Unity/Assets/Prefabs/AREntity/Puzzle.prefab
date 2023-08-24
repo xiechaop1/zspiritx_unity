@@ -77,8 +77,8 @@ MonoBehaviour:
   strHintbox: "\u4E00\u5957\u513F\u7AE5\u79EF\u6728"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
-  enumARType: 0
-  uuidImageTracking: 
+  enumARType: 2
+  uuidImageTracking: toy2
   offset: {x: 0, y: -1, z: 0}
   enumSurfaceType: 1
   goReference: {fileID: 0}

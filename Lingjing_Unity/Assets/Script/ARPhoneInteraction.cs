@@ -10,7 +10,7 @@ public class ARPhoneInteraction : ARInteractListener {
 	private EntityActionManager actionManager;
 
 	private void Start() {
-		actionManager = GetComponent<FieldEntityInfo>().actionManager;//EntityActionManager.getInstance();
+		actionManager = GetComponent<FieldEntityInfo>().entityManager.actionManager;//EntityActionManager.getInstance();
 	}
 	public override void HasARInteract(string info) {
 		int num;

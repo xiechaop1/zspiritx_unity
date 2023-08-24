@@ -4,10 +4,10 @@ using UnityEngine;
 
 [RequireComponent(typeof(InventoryItemManager))]
 public class EntityActionManager : MonoBehaviour, IManager {
-	//public InventoryItemManager itemManager;
+	public FieldEntityManager entityManager;
 	public event Action<ItemInfo> eventEntityFound;
 	public InteractionView interactionView;
-	private ActionMode actionMode = ActionMode.World;
+	private ActionMode actionMode = ActionMode.Idle;
 	public void Update() {
 #if !UNITY_EDITOR
 		if (Input.GetTouch(0).phase==TouchPhase.Began) {
@@ -41,8 +41,43 @@ public class EntityActionManager : MonoBehaviour, IManager {
 			}
 
 		}
+		if (actionMode == ActionMode.World && timer < 0) {
+			var lstPlacedEntity = entityManager.arrPlacedEntity;
+			FieldEntityInfo entityInfo;
+			Vector3 pos;
+			foreach (GameObject entity in lstPlacedEntity) {
+				entityInfo = entity.GetComponent<FieldEntityInfo>();
+				if (!entityInfo || !entityInfo.hasProximityDialog) {
+					continue;
+				}
+				entityInfo.hasProximityDialog = false;
+				if (entityInfo.TryGetUserPos(out pos) && pos.sqrMagnitude < entityInfo.proximityDialog * entityInfo.proximityDialog) {
+					switch (entityInfo.enumActionType) {
+						case EntityActionType.DialogActor:
+							actionMode = ActionMode.Idle;
+							interactionView.ShowDialog(entityInfo);
+							break;
+						default:
+							break;
+					}
+				}
+			}
+			timer = 1f;
+		} else {
+			timer -= Time.deltaTime;
+		}
 	}
+	float timer = 1f;
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
+		foreach (var manager in managers) {
+			RegisterManager(manager);
+		}
+		actionMode = ActionMode.World;
+	}
+	public void RegisterManager(IManager manager) {
+		if (manager is FieldEntityManager) {
+			entityManager = manager as FieldEntityManager;
+		}
 	}
 	public void InteractWithEntity(ItemInfo entityInfo) {
 		interactionView.ExitHint();

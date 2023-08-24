@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class ItemInfo : MonoBehaviour, IEventMessage {
-	public EntityActionManager actionManager;
+	public FieldEntityManager entityManager;
 	public EntityActionType enumActionType = EntityActionType.Debug;
 	public EntityActionType enumItemType = EntityActionType.Debug;
 	public Sprite icon;

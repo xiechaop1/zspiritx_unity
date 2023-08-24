@@ -268,8 +268,8 @@ MonoBehaviour:
   strHintbox: "\u8FD9\u662F\u4E00\u4E2A\u82B1\u76C6\uFF0C\u4E0A\u9762\u5199\u4E86\u4E00\u6BB5\u6587\u5B57\uFF1A\u201C1135\u201D"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
-  enumARType: 2
-  uuidImageTracking: two
+  enumARType: 1
+  uuidImageTracking: Dino1
   offset: {x: 3, y: 0, z: 0}
   enumSurfaceType: 1
   goReference: {fileID: 0}
