@@ -72,12 +72,12 @@ MonoBehaviour:
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
-  strName: paint1
+  strName: Paint1
   strHintbox: "\u4E00\u5E45\u98CE\u666F\u753B"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
-  enumARType: 2
-  uuidImageTracking: 
+  enumARType: 1
+  uuidImageTracking: Mc2
   offset: {x: 0, y: 0, z: 0}
   enumSurfaceType: 2
   goReference: {fileID: 0}

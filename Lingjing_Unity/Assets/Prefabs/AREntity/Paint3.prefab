@@ -158,7 +158,7 @@ MonoBehaviour:
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
-  strName: paint3
+  strName: Paint3
   strHintbox: "\u4E00\u5E45\u98CE\u666F\u753B"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}

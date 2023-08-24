@@ -13,7 +13,7 @@ namespace Network
 
 		//public static string urlLingjingForGet = ;
 		//public static string urlLingjingForPost = ;
-		public static string urlLingjingWebAddress = "https://api.zspiritx.com.cn";
+		public static string urlLingjingWebAddress = "https://api.zspiritx.com.cn/";
 
 		//public static string urlYunForGet = "http://60.205.227.230/";
 		//public static string urlYunWebAddress = "http://60.205.227.230/";

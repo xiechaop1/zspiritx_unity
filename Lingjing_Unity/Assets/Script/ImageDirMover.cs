@@ -7,7 +7,7 @@ public class ImageDirMover : MonoBehaviour {
 	public void Init(GameObject origin) {
 		goImageOrigin = origin;
 		transform.position = origin.transform.position;
-		transform.rotation.SetLookRotation(GetForward());
+		transform.rotation = Quaternion.LookRotation(GetForward());
 		timeFactor = 1f;
 	}
 
@@ -24,7 +24,7 @@ public class ImageDirMover : MonoBehaviour {
 	void Update() {
 		if (timeFactor<10f) {
 			timeFactor += Time.deltaTime;
-			transform.rotation.SetLookRotation(GetForward());
+			//transform.rotation.SetLookRotation(GetForward());
 		}
 	}
 }

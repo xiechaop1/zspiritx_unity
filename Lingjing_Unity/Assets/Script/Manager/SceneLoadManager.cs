@@ -45,7 +45,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		WorldInit();
 		StartCoroutine(InitStartUp());
 	}
-	public void DebugLog(string log){ 
+	public void DebugLog(string log) {
 		eventDebugInfo?.Invoke(log);
 	}
 	void WorldInit() {
@@ -61,10 +61,12 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 
 		inventoryItemManager.Init(eventManager);
 		entityActionManager = inventoryItemManager.GetComponent<EntityActionManager>();
-		entityActionManager.Init(eventManager);
+
+		fieldEntityManager = fieldStageManager.GetComponent<FieldEntityManager>();
+		entityActionManager.Init(eventManager, fieldEntityManager);
 
 		//AR Init
-		fieldEntityManager = fieldStageManager.GetComponent<FieldEntityManager>();
+
 		fieldStageManager.Init(eventManager, fieldEntityManager);
 		fieldEntityManager.Init(eventManager, entityActionManager, fieldStageManager, this);
 		arSightManager = fieldEntityManager.GetComponent<ARSightManager>();

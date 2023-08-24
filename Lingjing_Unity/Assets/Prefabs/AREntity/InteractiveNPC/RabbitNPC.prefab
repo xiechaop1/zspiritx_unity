@@ -946,7 +946,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6595787e0e9dbed4a923778f8d93d022, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionManager: {fileID: 0}
+  entityManager: {fileID: 0}
   enumActionType: 21
   enumItemType: -1
   icon: {fileID: 0}
@@ -956,11 +956,12 @@ MonoBehaviour:
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
   enumARType: 0
-  uuidImageTracking: 
+  uuidImageTracking: Mc1
   offset: {x: -3, y: 0, z: 0}
   enumSurfaceType: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  proximityDialog: 1
 --- !u!1 &2908473849723947925
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FieldEntityInfo : ItemInfo{
+public class FieldEntityInfo : ItemInfo {
 	public enum EntityToggleType {
 		RamdomAround,
 		ARTagTracking,
@@ -16,6 +16,8 @@ public class FieldEntityInfo : ItemInfo{
 	public GameObject goReference;
 	//public GameObject[] lstEntityCorner;
 	public GameObject goFPSightMode;
+	public float proximityDialog = 0f;
+	public bool hasProximityDialog = false;
 	public bool TryPlacing(Vector3 posTarget, Quaternion rotTarget, GameObject targetSurface, Transform rootWorld) {
 		var posOld = transform.position;
 		var rotOld = transform.rotation;
@@ -28,6 +30,7 @@ public class FieldEntityInfo : ItemInfo{
 			//if (hit.collider.gameObject == targetSurface) 
 			//Debug.Log("place at " + posTarget);
 			gameObject.transform.parent = rootWorld;
+			hasProximityDialog = proximityDialog > 0;
 			return true;
 			//}
 		}
@@ -35,9 +38,27 @@ public class FieldEntityInfo : ItemInfo{
 		transform.rotation = rotOld;
 		return false;
 	}
+
+	public bool TryGetScenePos(out Vector3 pos) {
+		if (goReference != entityManager.goCamDir) {
+			pos = goReference.transform.InverseTransformPoint(transform.position);
+			return true;
+		}
+		GameObject go = entityManager.GetStageImgDir();
+		if (go != null) {
+			pos = go.transform.InverseTransformPoint(transform.position);
+			return true;
+		}
+		pos = Vector3.zero;
+		return false;
+	}
+	public bool TryGetUserPos(out Vector3 pos) {
+		GameObject go = entityManager.goCamDir;
+		pos = go.transform.InverseTransformPoint(transform.position);
+		return true;
+	}
 	public void OnDestroy() {
 		UIEventManager.CallEvent("FieldEntityManager", "RemoveFieldEntitys", this);
-		//FieldEntityManager.getInstance().RemoveFieldEntitys(this);
 	}
 
 }
