@@ -211,15 +211,20 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 
 
 	public void UpdateImageTracking(string imgName) {
+
 		FieldEntityInfo entityInfo;
 		if (queTaggedEntity.Count == 0) {
 			return;
 		}
-		for (int i = queTaggedEntity.Count - 1; i > 0; i--) {
+		//Debug.Log(imgName + " "+ queTaggedEntity.Count);
+		for (int i = queTaggedEntity.Count - 1; i >= 0; i--) {
+
 			GameObject entity = queTaggedEntity[i];
 			entityInfo = entity.GetComponent<FieldEntityInfo>();
+			//Debug.Log(entityInfo.uuidImageTracking +" "+ i);
 			if (entityInfo.uuidImageTracking == imgName) {
 				if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagTracking) {
+					//Debug.Log("queued item" + imgName);
 					entity.transform.parent = imageTrackers[imgName].transform;
 					entity.transform.localPosition = Vector3.zero;
 					entity.transform.localRotation = Quaternion.identity;
@@ -230,6 +235,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 					}
 				} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagAround) {
 					entityInfo.goReference = imageDirs[imgName];
+					Debug.Log("queued item" + imgName);
 					queTaggedEntity.RemoveAt(i);
 					queFieldEntity.Enqueue(entity);
 				}

@@ -11,6 +11,7 @@ public class InteractionView : MonoBehaviour {
 	public Text txtConfirmBtn;
 	public Text txtExitBtn;
 	private ItemInfo entityInfo;
+	public WebViewBehaviour webViewQuiz;
 
 	public void ShowHint(string hint, string textComfirm = "确认") {
 		goHintBox.SetActive(true);
@@ -62,6 +63,9 @@ public class InteractionView : MonoBehaviour {
 		txtConfirmBtn.text = "收集道具";
 	}
 
+	public void ShowQuiz(ItemInfo info){
+		webViewQuiz.StartWebView("quiz.html");
+	}
 
 	Queue<string> queDialog = new Queue<string>();
 	public void ShowDialog(ItemInfo info, string textCancel = "取消") {

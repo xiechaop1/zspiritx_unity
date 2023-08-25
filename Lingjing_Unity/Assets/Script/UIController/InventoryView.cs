@@ -8,6 +8,7 @@ public class InventoryView : MonoBehaviour {
 	public GameObject goBackPack;
 	public GameObject goInfoIcon;
 	public GameObject goInventoryTray;
+
 	public void Start() {
 		UpdateInventory();
 	}

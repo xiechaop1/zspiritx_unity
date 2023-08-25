@@ -30,7 +30,9 @@ public class FieldEntityInfo : ItemInfo {
 			//if (hit.collider.gameObject == targetSurface) 
 			//Debug.Log("place at " + posTarget);
 			gameObject.transform.parent = rootWorld;
-			hasProximityDialog = proximityDialog > 0;
+			if (proximityDialog > 0) {
+				hasProximityDialog = true;
+			}
 			return true;
 			//}
 		}
