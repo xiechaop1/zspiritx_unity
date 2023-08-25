@@ -50,12 +50,12 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				if (!entityInfo || !entityInfo.hasProximityDialog) {
 					continue;
 				}
-				entityInfo.hasProximityDialog = false;
 				if (entityInfo.TryGetUserPos(out pos) && pos.sqrMagnitude < entityInfo.proximityDialog * entityInfo.proximityDialog) {
 					switch (entityInfo.enumActionType) {
 						case EntityActionType.DialogActor:
 							actionMode = ActionMode.Idle;
 							interactionView.ShowDialog(entityInfo);
+							entityInfo.hasProximityDialog = false;
 							break;
 						default:
 							break;
@@ -109,7 +109,7 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				break;
 			case EntityActionType.CollectedItem:
 				actionMode = ActionMode.Idle;
-				interactionView.ShowHint(entityInfo);
+				interactionView.ShowCollectableHint(entityInfo);
 				break;
 			case EntityActionType.UtilityItem:
 				actionMode = ActionMode.Idle;
@@ -119,6 +119,10 @@ public class EntityActionManager : MonoBehaviour, IManager {
 			case EntityActionType.DialogActor:
 				actionMode = ActionMode.Idle;
 				interactionView.ShowDialog(entityInfo);
+				break;
+			case EntityActionType.Quiz:
+				actionMode = ActionMode.Idle;
+				interactionView.ShowQuiz(entityInfo);
 				break;
 			case EntityActionType.PlacableItem:
 			default:
@@ -202,4 +206,5 @@ public enum EntityActionType {
 	UtilityItem = 14,
 	PlacableItem = 15,
 	DialogActor = 21,
+	Quiz = 22,
 }

@@ -1,11 +1,13 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class WebViewBehaviour : MonoBehaviour {
+	public SceneLoadManager sceneLoadManager;
 	public string HomepageUrl;
-	public Text status;
+	//public Text status;
 	WebViewObject webViewObject;
 	public GameObject splashBackground;
 	public bool isActive {
@@ -14,131 +16,132 @@ public class WebViewBehaviour : MonoBehaviour {
 	}
 
 	private void Awake() {
-		Init();
+		isActive = false;
+		//Init();
 		//StartCoroutine(DebugDisplay());
 	}
-	private void Start() {
-		StartWebViewHome();
-	}
-	private void Init() {
-		isActive = true;
-		webViewObject = (new GameObject("WebViewObject")).AddComponent<WebViewObject>();
-		webViewObject.Init(
-			cb: (msg) => {
-				Debug.Log(string.Format("CallFromJS[{0}]", msg));
-				UnityWebViewListener(msg);
-				status.text = msg;
-			},
-			err: (msg) => {
-				Debug.Log(string.Format("CallOnError[{0}]", msg));
-				status.text = msg;
-			},
-			httpErr: (msg) => {
-				Debug.Log(string.Format("CallOnHttpError[{0}]", msg));
-				status.text = msg;
-			},
-			started: (msg) => {
-				Debug.Log(string.Format("CallOnStarted[{0}]", msg));
-			},
-			hooked: (msg) => {
-				Debug.Log(string.Format("CallOnHooked[{0}]", msg));
-			},
-			cookies: (msg) => {
-				Debug.Log(string.Format("CallOnCookies[{0}]", msg));
-			},
-			ld: (msg) => {
-				Debug.Log(string.Format("CallOnLoaded[{0}]", msg));
-#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IOS
-				// NOTE: the following js definition is required only for UIWebView; if
-				// enabledWKWebView is true and runtime has WKWebView, Unity.call is defined
-				// directly by the native plugin.
-#if true
-				var js = @"
-                    if (!(window.webkit && window.webkit.messageHandlers)) {
-                        window.Unity = {
-                            call: function(msg) {
-                                window.location = 'unity:' + msg;
-                            }
-                        };
-                    }
-                ";
-#else
-                // NOTE: depending on the situation, you might prefer this 'iframe' approach.
-                // cf. https://github.com/gree/unity-webview/issues/189
-                var js = @"
-                    if (!(window.webkit && window.webkit.messageHandlers)) {
-                        window.Unity = {
-                            call: function(msg) {
-                                var iframe = document.createElement('IFRAME');
-                                iframe.setAttribute('src', 'unity:' + msg);
-                                document.documentElement.appendChild(iframe);
-                                iframe.parentNode.removeChild(iframe);
-                                iframe = null;
-                            }
-                        };
-                    }
-                ";
-#endif
-#elif UNITY_WEBPLAYER || UNITY_WEBGL
-                var js = @"
-                    window.Unity = {
-                        call:function(msg) {
-                            parent.unityWebView.sendMessage('WebViewObject', msg);
-                        }
-                    };
-                ";
-#else
-                var js = "";
-#endif
-				webViewObject.EvaluateJS(js + @"Unity.call('ua=' + navigator.userAgent)");
-			}
-			//transparent: false,
-			//zoom: true,
-			//ua: "custom user agent string",
-			//radius: 0,  // rounded corner radius in pixel
-			//// android
-			//androidForceDarkMode: 0,  // 0: follow system setting, 1: force dark off, 2: force dark on
-			//// ios
-			//enableWKWebView: true,
-			//wkContentMode: 0,  // 0: recommended, 1: mobile, 2: desktop
-			//wkAllowsLinkPreview: true,
-			//// editor
-			//separated: false
-			);
-#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
-        webViewObject.bitmapRefreshCycle = 1;
-#endif
-		// cf. https://github.com/gree/unity-webview/pull/512
-		// Added alertDialogEnabled flag to enable/disable alert/confirm/prompt dialogs. by KojiNakamaru ， Pull Request #512 ， gree/unity-webview
-		//webViewObject.SetAlertDialogEnabled(false);
+	//private void Start() {
+	//	//StartWebViewHome();
+	//}
+	//	private void Init() {
+	//		isActive = true;
+	//		webViewObject = (new GameObject("WebViewObject")).AddComponent<WebViewObject>();
+	//		webViewObject.Init(
+	//			cb: (msg) => {
+	//				Debug.Log(string.Format("CallFromJS[{0}]", msg));
+	//				UnityWebViewListener(msg);
+	//				status.text = msg;
+	//			},
+	//			err: (msg) => {
+	//				Debug.Log(string.Format("CallOnError[{0}]", msg));
+	//				status.text = msg;
+	//			},
+	//			httpErr: (msg) => {
+	//				Debug.Log(string.Format("CallOnHttpError[{0}]", msg));
+	//				status.text = msg;
+	//			},
+	//			started: (msg) => {
+	//				Debug.Log(string.Format("CallOnStarted[{0}]", msg));
+	//			},
+	//			hooked: (msg) => {
+	//				Debug.Log(string.Format("CallOnHooked[{0}]", msg));
+	//			},
+	//			cookies: (msg) => {
+	//				Debug.Log(string.Format("CallOnCookies[{0}]", msg));
+	//			},
+	//			ld: (msg) => {
+	//				Debug.Log(string.Format("CallOnLoaded[{0}]", msg));
+	//#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IOS
+	//				// NOTE: the following js definition is required only for UIWebView; if
+	//				// enabledWKWebView is true and runtime has WKWebView, Unity.call is defined
+	//				// directly by the native plugin.
+	//#if true
+	//				var js = @"
+	//                    if (!(window.webkit && window.webkit.messageHandlers)) {
+	//                        window.Unity = {
+	//                            call: function(msg) {
+	//                                window.location = 'unity:' + msg;
+	//                            }
+	//                        };
+	//                    }
+	//                ";
+	//#else
+	//                // NOTE: depending on the situation, you might prefer this 'iframe' approach.
+	//                // cf. https://github.com/gree/unity-webview/issues/189
+	//                var js = @"
+	//                    if (!(window.webkit && window.webkit.messageHandlers)) {
+	//                        window.Unity = {
+	//                            call: function(msg) {
+	//                                var iframe = document.createElement('IFRAME');
+	//                                iframe.setAttribute('src', 'unity:' + msg);
+	//                                document.documentElement.appendChild(iframe);
+	//                                iframe.parentNode.removeChild(iframe);
+	//                                iframe = null;
+	//                            }
+	//                        };
+	//                    }
+	//                ";
+	//#endif
+	//#elif UNITY_WEBPLAYER || UNITY_WEBGL
+	//                var js = @"
+	//                    window.Unity = {
+	//                        call:function(msg) {
+	//                            parent.unityWebView.sendMessage('WebViewObject', msg);
+	//                        }
+	//                    };
+	//                ";
+	//#else
+	//                var js = "";
+	//#endif
+	//				webViewObject.EvaluateJS(js + @"Unity.call('ua=' + navigator.userAgent)");
+	//			}
+	//			//transparent: false,
+	//			//zoom: true,
+	//			//ua: "custom user agent string",
+	//			//radius: 0,  // rounded corner radius in pixel
+	//			//// android
+	//			//androidForceDarkMode: 0,  // 0: follow system setting, 1: force dark off, 2: force dark on
+	//			//// ios
+	//			//enableWKWebView: true,
+	//			//wkContentMode: 0,  // 0: recommended, 1: mobile, 2: desktop
+	//			//wkAllowsLinkPreview: true,
+	//			//// editor
+	//			//separated: false
+	//			);
+	//#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+	//        webViewObject.bitmapRefreshCycle = 1;
+	//#endif
+	//		// cf. https://github.com/gree/unity-webview/pull/512
+	//		// Added alertDialogEnabled flag to enable/disable alert/confirm/prompt dialogs. by KojiNakamaru ， Pull Request #512 ， gree/unity-webview
+	//		//webViewObject.SetAlertDialogEnabled(false);
 
-		// cf. https://github.com/gree/unity-webview/pull/728
-		//webViewObject.SetCameraAccess(true);
-		//webViewObject.SetMicrophoneAccess(true);
+	//		// cf. https://github.com/gree/unity-webview/pull/728
+	//		//webViewObject.SetCameraAccess(true);
+	//		//webViewObject.SetMicrophoneAccess(true);
 
-		// cf. https://github.com/gree/unity-webview/pull/550
-		// introduced SetURLPattern(..., hookPattern). by KojiNakamaru ， Pull Request #550 ， gree/unity-webview
-		//webViewObject.SetURLPattern("", "^https://.*youtube.com", "^https://.*google.com");
+	//		// cf. https://github.com/gree/unity-webview/pull/550
+	//		// introduced SetURLPattern(..., hookPattern). by KojiNakamaru ， Pull Request #550 ， gree/unity-webview
+	//		//webViewObject.SetURLPattern("", "^https://.*youtube.com", "^https://.*google.com");
 
-		// cf. https://github.com/gree/unity-webview/pull/570
-		// Add BASIC authentication feature (Android and iOS with WKWebView only) by takeh1k0 ， Pull Request #570 ， gree/unity-webview
-		//webViewObject.SetBasicAuthInfo("id", "password");
+	//		// cf. https://github.com/gree/unity-webview/pull/570
+	//		// Add BASIC authentication feature (Android and iOS with WKWebView only) by takeh1k0 ， Pull Request #570 ， gree/unity-webview
+	//		//webViewObject.SetBasicAuthInfo("id", "password");
 
-		//webViewObject.SetScrollbarsVisibility(true);
+	//		//webViewObject.SetScrollbarsVisibility(true);
 
 
-		//webViewObject.SetMargins(5, 100, 5, Screen.height / 4);
-		webViewObject.SetTextZoom(100);  // android only. cf. https://stackoverflow.com/questions/21647641/android-webview-set-font-size-system-default/47017410#47017410
-		webViewObject.SetVisibility(false);
+	//		//webViewObject.SetMargins(5, 100, 5, Screen.height / 4);
+	//		webViewObject.SetTextZoom(100);  // android only. cf. https://stackoverflow.com/questions/21647641/android-webview-set-font-size-system-default/47017410#47017410
+	//		webViewObject.SetVisibility(false);
 
-	}
-	public void StartWebViewHome() {
-		StartWebView(HomepageUrl);
-	}
+	//	}
+	//public void StartWebViewHome() {
+	//	StartWebView(HomepageUrl);
+	//}
 	IEnumerator LoadURL(string PageURL) {
 #if !UNITY_WEBPLAYER && !UNITY_WEBGL
 		if (PageURL.StartsWith("http")) {
-			webViewObject.LoadURL(PageURL.Replace(" ", "%20"));
+			sceneLoadManager.webViewObject.LoadURL(PageURL.Replace(" ", "%20"));
 		} else {
 			var exts = new string[]{
 				".jpg",
@@ -169,7 +172,7 @@ public class WebViewBehaviour : MonoBehaviour {
 				}
 				System.IO.File.WriteAllBytes(dst, result);
 				if (ext == ".html") {
-					webViewObject.LoadURL("file://" + dst.Replace(" ", "%20"));
+					sceneLoadManager.webViewObject.LoadURL("file://" + dst.Replace(" ", "%20"));
 					break;
 				}
 			}
@@ -198,20 +201,30 @@ public class WebViewBehaviour : MonoBehaviour {
 
 	public void UnityWebViewListener(string msg) {
 		UIEventManager.BroadcastEvent("WebViewCall", msg);
+		string[] args = msg.Split('&');
+		if (args[0] == "WebViewOff") {
+			SetVisibility(false);
+		}
 		//if (msg == "StartARScene") {
 		//	SetVisibility(false);
 		//}
 	}
 	public void StartWebView(string pageUrl) {
 		RectOffset ret = GetRectOffset();
-		webViewObject.SetMargins(ret.left, ret.top, ret.right, ret.bottom);
+		sceneLoadManager.webViewObject.SetMargins(ret.left, ret.top, ret.right, ret.bottom);
 		StartCoroutine(LoadURL(pageUrl));
 		SetVisibility(true);
+
 	}
 	public void SetVisibility(bool state) {
 		splashBackground.SetActive(state);
-		webViewObject.SetVisibility(state);
+		sceneLoadManager.webViewObject.SetVisibility(state);
 		isActive = state;
+		if (state) {
+			sceneLoadManager.webViewCallback += UnityWebViewListener;
+		} else {
+			sceneLoadManager.webViewCallback -= UnityWebViewListener;
+		}
 	}
 
 }

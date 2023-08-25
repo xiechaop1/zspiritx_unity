@@ -497,7 +497,7 @@ MonoBehaviour:
   enumARType: 0
   uuidImageTracking: 
   offset: {x: 0, y: 0, z: -3}
-  enumSurfaceType: -1
+  enumSurfaceType: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
   proximityDialog: 2

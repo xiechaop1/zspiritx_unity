@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4ac632e8ec059a47aa3260a0e868a14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  matOnLoad: {fileID: 2100000, guid: 4a9bb33ab0c8fb149aa1a43faf6d444d, type: 2}
+  matOnLoad: {fileID: 2100000, guid: 2da0ea038f25a4fa998f183878aedf79, type: 2}
   matOnPlay: {fileID: 2100000, guid: 4a9bb33ab0c8fb149aa1a43faf6d444d, type: 2}
   size: {x: 10, y: 10}
 --- !u!114 &3216893394421479995
@@ -132,7 +132,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4a9bb33ab0c8fb149aa1a43faf6d444d, type: 2}
+  - {fileID: 2100000, guid: 2da0ea038f25a4fa998f183878aedf79, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

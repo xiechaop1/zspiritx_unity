@@ -69,7 +69,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entityManager: {fileID: 0}
-  enumActionType: 12
+  enumActionType: 22
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 

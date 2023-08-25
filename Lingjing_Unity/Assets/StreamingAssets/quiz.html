@@ -20,7 +20,7 @@
 <body>
     <br />
     <br />
-    <h1>Hello Unity WebView!</h1>
+    <h1>这是选择题使用的静态页面</h1>
     <hr />
 
     <!--
@@ -32,18 +32,19 @@
     <div id="msg">[]</div>
     -->
     <br />
-    <h2><a href="javascript:void(0)" onclick="Unity.call('StartARScene');">[进入AR游戏]</a></h2>
+    <h2><a href="javascript:void(0)" onclick="Unity.call('WebViewOff&TrueAnswer');">[这是正确选项]</a></h2>
     <br />
 
     <br />
-    <h2><a href="javascript:void(0)" onclick="Unity.call('Start2DScene');">[进入2D游戏]</a></h2>
+    <h2><a href="javascript:void(0)" onclick="Unity.call('FalseAnswer');">[这是错误选项]</a></h2>
     <br />
 
     <br />
-    <form method="get" action="form">
+   <!-- <form method="get" action="form">
         <input id="input1" type="text" value="hoge" name="msg" />
         <input type="submit" value="Send Message!" onclick="Unity.call(document.getElementById('input1').value); return false;" /><br />
-        <!--<input type="file" name="datafile" />-->
+        <input type="file" name="datafile" />
     </form>
+    -->
 </body>
 </html>
