@@ -38,8 +38,13 @@ public class JSONReader {
 	#region static methords
 
 	public static bool TryPraseString(string jsonString, string key, ref string value) {
-		JObject json = JObject.Parse(jsonString);
-		return TryPraseString(json, key, ref value);
+		try {
+			JObject json = JObject.Parse(jsonString);
+			return TryPraseString(json, key, ref value);
+		} catch (System.Exception) {
+			return false;
+		}
+
 	}
 
 	public static bool TryPraseBool(string jsonString, string key, ref bool value) {
@@ -60,8 +65,13 @@ public class JSONReader {
 		return TryPraseObject(json, key, ref value);
 	}
 	public static bool TryPraseArray(string jsonString, string key, out List<string> value) {
-		JObject json = JObject.Parse(jsonString);
-		return TryPraseArray(json,key,out value);
+		try {
+			JObject json = JObject.Parse(jsonString);
+			return TryPraseArray(json, key, out value);
+		} catch (System.Exception) {
+			value = null;
+			return false;
+		}
 	}
 
 	public static bool ContainsKey(string jsonString, string key) {
@@ -94,7 +104,7 @@ public class JSONReader {
 
 	protected static bool TryPraseInt(JToken json, string key, ref int value) {
 		if (ContainsKey(json, key)) {
-			return int.TryParse(json[key].ToString(),out value);
+			return int.TryParse(json[key].ToString(), out value);
 		}
 		return false;
 	}
@@ -128,7 +138,7 @@ public class JSONReader {
 	}
 
 	protected static object GetValue(JToken json, string key) {
-		if (ContainsKey(json,key)) {
+		if (ContainsKey(json, key)) {
 			return json[key];
 		}
 		return "";

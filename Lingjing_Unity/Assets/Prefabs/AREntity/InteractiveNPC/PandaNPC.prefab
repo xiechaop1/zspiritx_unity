@@ -414,7 +414,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   iconHint: 
   strName: PandaNPC
-  strHintbox: "\u4F60\u597D^\u6211\u662F\u5927\u718A\u732B"
+  strHintbox: "{\"Dialog\":[\"\u4F60\u597D\",\"\u6211\u662F\u5927\u718A\u732B\"]}"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
   enumARType: 0

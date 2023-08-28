@@ -81,21 +81,23 @@ public class DebugMenuManager : MonoBehaviour {
 	}
 	public void PicnicBtn() {
 		//SplashWebView.SetVisibility(false);
-		UIEventManager.BroadcastEvent("WebViewCall", "Start2DScene");
+		//UIEventManager.BroadcastEvent("WebViewCall", "Start2DScene");
+		sceneLoadManager.DebugWebViewCallback("Start2DScene");
 	}
 	public void PanicBtn() {
 		//SplashWebView.SetVisibility(false);
-		UIEventManager.BroadcastEvent("WebViewCall", "StartARScene");
+		//UIEventManager.BroadcastEvent("WebViewCall", "StartARScene");
+		sceneLoadManager.DebugWebViewCallback("StartARScene");
 	}
 	public void TryPlaceEntity() {
 		fieldEntityManager.TryPlaceRamdomEntitys(10);
 		ShowHint("模型放置 " + (fieldEntityManager.isLoadFinish ? "成功" : "失败"));
 	}
 
-	public void FakeImageFound(){ 
-			fieldStageManager.ImageFound(fakeImageName);
-			//trackedImage.transform.localScale = Vector3.one;
-			fieldEntityManager.PlaceImageTrackingEntity(fakeImageName, fakeImage);
+	public void FakeImageFound() {
+		fieldStageManager.ImageFound(fakeImageName);
+		//trackedImage.transform.localScale = Vector3.one;
+		fieldEntityManager.PlaceImageTrackingEntity(fakeImageName, fakeImage);
 	}
 
 	//IEnumerator GPSTest() {

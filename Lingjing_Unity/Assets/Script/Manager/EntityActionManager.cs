@@ -54,7 +54,7 @@ public class EntityActionManager : MonoBehaviour, IManager {
 					switch (entityInfo.enumActionType) {
 						case EntityActionType.DialogActor:
 							actionMode = ActionMode.Idle;
-							interactionView.ShowDialog(entityInfo);
+							interactionView.ShowNPCUI(entityInfo);
 							entityInfo.hasProximityDialog = false;
 							break;
 						default:
@@ -118,7 +118,7 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				break;
 			case EntityActionType.DialogActor:
 				actionMode = ActionMode.Idle;
-				interactionView.ShowDialog(entityInfo);
+				interactionView.ShowNPCUI(entityInfo);
 				break;
 			case EntityActionType.Quiz:
 				actionMode = ActionMode.Idle;
@@ -166,6 +166,7 @@ public class EntityActionManager : MonoBehaviour, IManager {
 
 
 	public void OnInteractionFinished(ItemInfo entityInfo) {
+		Debug.Log("Finished Interaction");
 		if (entityInfo != null) {
 			switch (entityInfo.enumActionType) {
 				case EntityActionType.CollectableInfo:

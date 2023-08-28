@@ -295,7 +295,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   iconHint: 
   strName: DeerNPC
-  strHintbox: "\u4F60\u597D^\u6211\u662F\u5C0F\u9E7F"
+  strHintbox: "{\"Dialog\":[\"\u4F60\u597D\",\"\u6211\u662F\u5C0F\u9E7F\"]}"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
   enumARType: 0

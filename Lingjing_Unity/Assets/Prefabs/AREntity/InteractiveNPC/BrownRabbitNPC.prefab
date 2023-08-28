@@ -74,7 +74,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   iconHint: 
   strName: BrownRabbitNPC
-  strHintbox: "\u4F60\u597D^\u6211\u624D\u662F\u771F\u6B63\u7684\u5154\u5B50\uFF01"
+  strHintbox: "{\"Intro\":\"\u4F60\u597D\uFF01\",\"Dialog\":[\"\u6211\u662F\u5C0F\u5154\u5B50\",\"\u6211\u624D\u662F\u771F\u6B63\u7684\u5154\u5B50\uFF01\"]}"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
   enumARType: 0
