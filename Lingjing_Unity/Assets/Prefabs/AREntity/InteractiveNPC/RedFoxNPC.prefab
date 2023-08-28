@@ -1455,7 +1455,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   iconHint: 
   strName: RedFoxNPC
-  strHintbox: "\u6709\u4E8B\u5C31\u95EE\u5927\u72D0\u72F8\uFF0C\u6211\u53EA\u662F\u8DDF\u73ED"
+  strHintbox: "{\"Intro\":\"\u4F60\u597D\",\"Dialog\":[\"\u6709\u4E8B\u5C31\u95EE\u5927\u72D0\u72F8\",\"\u6211\u53EA\u662F\u4ED6\u7684\u8DDF\u73ED\"]}"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
   enumARType: 2

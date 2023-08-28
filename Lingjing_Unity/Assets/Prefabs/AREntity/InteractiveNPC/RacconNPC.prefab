@@ -2124,7 +2124,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   iconHint: 
   strName: RacconNPC
-  strHintbox: "\u4F60\u597D^\u6211\u662F\u5C0F\u6D63\u718A^\u4E5F\u53EF\u4EE5\u53EB\u6211\u5C0F\u718A\u732B\u54E6"
+  strHintbox: "{\"Intro\":\"\u4F60\u597D\uFF01\",\"Quiz\":\"1\",\"Dialog\":[\"\u5F88\u9AD8\u5174\u89C1\u5230\u4F60\",\"\u6211\u662F\u5C0F\u6D63\u718A\",\"\u4E5F\u53EF\u4EE5\u53EB\u6211\u5C0F\u718A\u732B\u54E6\"]}"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
   enumARType: 2

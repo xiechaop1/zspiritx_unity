@@ -10,6 +10,8 @@ public class WebViewBehaviour : MonoBehaviour {
 	//public Text status;
 	WebViewObject webViewObject;
 	public GameObject splashBackground;
+	public event Action OnWebClose;
+
 	public bool isActive {
 		private set;
 		get;
@@ -202,7 +204,7 @@ public class WebViewBehaviour : MonoBehaviour {
 	public void UnityWebViewListener(string msg) {
 		UIEventManager.BroadcastEvent("WebViewCall", msg);
 		string[] args = msg.Split('&');
-		if (args[0] == "WebViewOff") {
+		if (args[0] == "StartARScene") {
 			SetVisibility(false);
 		}
 		//if (msg == "StartARScene") {
@@ -224,6 +226,7 @@ public class WebViewBehaviour : MonoBehaviour {
 			sceneLoadManager.webViewCallback += UnityWebViewListener;
 		} else {
 			sceneLoadManager.webViewCallback -= UnityWebViewListener;
+			OnWebClose?.Invoke();
 		}
 	}
 

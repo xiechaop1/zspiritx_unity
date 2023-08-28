@@ -952,7 +952,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   iconHint: 
   strName: RabbitNPC
-  strHintbox: "\u4F60\u597D^\u6211\u662F\u5C0F\u5154"
+  strHintbox: "{\"Intro\":\"\u4F60\u597D\uFF0C\u6211\u662F\u5C0F\u5154\u3002\"}"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
   enumARType: 0
@@ -962,6 +962,7 @@ MonoBehaviour:
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
   proximityDialog: 1
+  hasProximityDialog: 0
 --- !u!1 &2908473849723947925
 GameObject:
   m_ObjectHideFlags: 0

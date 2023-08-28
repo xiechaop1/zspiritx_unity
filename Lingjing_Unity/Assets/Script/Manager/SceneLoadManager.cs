@@ -208,6 +208,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 			//SplashWebView.GetComponent<RectTransform>().anchorMax = new Vector2(1.0f, 1.0f - notch / Screen.width);
 		}
 		yield return null;
+		SplashWebView.OnWebClose += LoadAR;
 		SplashWebView.StartWebView("splash.html");
 
 		yield return null;
@@ -218,14 +219,20 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		yield break;
 	}
 
+	public void DebugWebViewCallback(string msg){
+		webViewCallback(msg);
+	}
 	void WebviewCallbackSceneControl(string msg) {
-		if (msg == "StartARScene") {
+		if (msg == "XXX") {
 			SplashWebView.SetVisibility(false);
 			StartCoroutine(ARLoader());
 		} else if (msg == "Start2DScene") {
 			SplashWebView.SetVisibility(false);
 			StartCoroutine(ScrollerLoader());
 		}
+	}
+	void LoadAR(){ 
+		StartCoroutine(ARLoader());
 	}
 	IEnumerator ARLoader() {
 		LoadingScreen.SetActive(true);

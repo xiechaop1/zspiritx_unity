@@ -660,7 +660,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   iconHint: 
   strName: PantherNPC
-  strHintbox: "\u4F60\u597D^\u6211\u662F\u9ED1\u8C79\uFF01"
+  strHintbox: "\u4F60\u597D\uFF0C\u6211\u662F\u9ED1\u8C79\uFF01"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
   enumARType: 2
