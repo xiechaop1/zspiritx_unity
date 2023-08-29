@@ -1460,7 +1460,7 @@ MonoBehaviour:
   arUtiity: {fileID: 0}
   enumARType: 2
   uuidImageTracking: cafe2
-  offset: {x: 0, y: 0, z: 3}
+  offset: {x: 0, y: 0, z: -3}
   enumSurfaceType: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}

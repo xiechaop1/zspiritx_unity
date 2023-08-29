@@ -957,11 +957,11 @@ MonoBehaviour:
   arUtiity: {fileID: 0}
   enumARType: 0
   uuidImageTracking: Mc1
-  offset: {x: -3, y: 0, z: 0}
+  offset: {x: -4, y: 0, z: 0}
   enumSurfaceType: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
-  proximityDialog: 1
+  proximityDialog: 2
   hasProximityDialog: 0
 --- !u!1 &2908473849723947925
 GameObject:

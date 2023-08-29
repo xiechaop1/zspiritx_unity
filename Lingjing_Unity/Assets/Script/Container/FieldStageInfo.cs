@@ -9,6 +9,7 @@ public class FieldStageInfo : MonoBehaviour {
 	}
 	public StageToggleType stageToggleType;
 	public string uuidARTag = "";
+	public string uuidBGM = "";
 	public float lat = 0f;
 	public float lng = 0f;
 

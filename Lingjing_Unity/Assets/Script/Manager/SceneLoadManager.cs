@@ -223,10 +223,11 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		webViewCallback(msg);
 	}
 	void WebviewCallbackSceneControl(string msg) {
-		if (msg == "XXX") {
-			SplashWebView.SetVisibility(false);
-			StartCoroutine(ARLoader());
-		} else if (msg == "Start2DScene") {
+		//if (msg == "XXX") {
+			//SplashWebView.SetVisibility(false);
+			//StartCoroutine(ARLoader());
+		//} else
+		if (msg == "Start2DScene") {
 			SplashWebView.SetVisibility(false);
 			StartCoroutine(ScrollerLoader());
 		}
