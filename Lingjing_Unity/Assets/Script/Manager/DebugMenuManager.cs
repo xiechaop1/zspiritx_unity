@@ -66,8 +66,11 @@ public class DebugMenuManager : MonoBehaviour {
 		//ShowHint("lat: " + locInfo.x + "\nlon: " + locInfo.y /*+ "\nalt: " + locInfo.altitude*/);
 
 		//StartCoroutine(GPSTest());
-		//FakeImageFound();
+#if UNITY_EDITOR
+		FakeImageFound();
+#else
 		fieldStageManager.LocationUpdate(Config.ConfigInfo.test.testLatLon);
+#endif
 		//sceneLoadManager.Pause();
 
 		//Debug.Log(Camera.main.WorldToScreenPoint(fakeImage.transform.position));
@@ -87,7 +90,7 @@ public class DebugMenuManager : MonoBehaviour {
 	public void PanicBtn() {
 		//SplashWebView.SetVisibility(false);
 		//UIEventManager.BroadcastEvent("WebViewCall", "StartARScene");
-		sceneLoadManager.DebugWebViewCallback("StartARScene");
+		sceneLoadManager.DebugWebViewCallback("WebViewOff");
 	}
 	public void TryPlaceEntity() {
 		fieldEntityManager.TryPlaceRamdomEntitys(10);

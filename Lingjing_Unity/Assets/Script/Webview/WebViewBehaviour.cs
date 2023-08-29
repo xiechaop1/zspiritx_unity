@@ -204,7 +204,7 @@ public class WebViewBehaviour : MonoBehaviour {
 	public void UnityWebViewListener(string msg) {
 		UIEventManager.BroadcastEvent("WebViewCall", msg);
 		string[] args = msg.Split('&');
-		if (args[0] == "StartARScene") {
+		if (args[0] == "WebViewOff") {
 			SetVisibility(false);
 		}
 		//if (msg == "StartARScene") {

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class FieldStageManager : MonoBehaviour, IManager {
-	public PrefabLoadList prefabs;
+	public ResourcesLibrary resourcesManager;
+	public AudioSource backgroundMusicPlayer;
 	public FieldStageInfo currentStage;
 	private FieldEntityManager entityManager;
 	private List<GameObject> goManaged = new List<GameObject>();
@@ -72,6 +73,27 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		lstFieldEntity = LoadStageEntities(targetStage.lstFieldEntityUUID);
 		lstTaggedEntity = LoadStageEntities(targetStage.lstTaggedEntityUUID);
 		currentStage = targetStage;
+		if (!string.IsNullOrWhiteSpace(targetStage.uuidBGM)) {
+			LoadMusic(targetStage.uuidBGM);
+		}
+	}
+
+	void LoadMusic(string uuid) {
+		AudioClip clip = null;
+		foreach (var music in resourcesManager.lstMusics) {
+			//Debug.Log(music.name);
+			if (music.name == uuid) {
+				clip = music;
+				break;
+			}
+		}
+		if (clip!=null) {
+			backgroundMusicPlayer.clip = clip;
+			backgroundMusicPlayer.Play();
+		}else{ 
+			backgroundMusicPlayer.Pause();
+		}
+
 	}
 
 	GameObject[] LoadStageEntities(string[] entityPrefabs) {
@@ -84,7 +106,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 				if (obj != null) {
 					lstOutput.Add(obj);
 				} else {
-					foreach (var prefab in prefabs.lstPrefabs) {
+					foreach (var prefab in resourcesManager.lstPrefabs) {
 						if (prefab != null && prefab.TryGetComponent(out info)) {
 							if (info.strName == entityPrefabs[i]) {
 								obj = Instantiate(prefab, goRoot.transform);

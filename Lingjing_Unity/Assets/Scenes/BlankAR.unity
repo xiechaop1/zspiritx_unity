@@ -234,14 +234,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageToggleType: 0
   uuidARTag: DR1
+  uuidBGM: BGM_03
   lat: 39.9928
   lng: 116.3912
   lstFieldEntityUUID:
-  - Crystal2
   - BearNPC
   lstTaggedEntityUUID: []
   nextStages:
-  - {fileID: 1826124142}
+  - {fileID: 742374853}
   - {fileID: 1279897300}
 --- !u!4 &38379927
 Transform:
@@ -438,6 +438,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageToggleType: 1
   uuidARTag: one
+  uuidBGM: 
   lat: 39.9928
   lng: 116.3912
   lstFieldEntityUUID:
@@ -774,13 +775,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageToggleType: 0
   uuidARTag: Dino1
+  uuidBGM: BGM_04
   lat: 39.9928
   lng: 116.3912
   lstFieldEntityUUID:
   - RacconNPC
   lstTaggedEntityUUID: []
   nextStages:
-  - {fileID: 742374853}
   - {fileID: 1279897300}
 --- !u!4 &63169081
 Transform:
@@ -883,6 +884,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageToggleType: 1
   uuidARTag: two
+  uuidBGM: 
   lat: 39.9928
   lng: 116.3912
   lstFieldEntityUUID:
@@ -1007,7 +1009,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 434ab5e2e2eafe747afc4e93596d4024, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabs: {fileID: 1809045141}
+  resourcesManager: {fileID: 1809045141}
+  backgroundMusicPlayer: {fileID: 1875872146}
   currentStage: {fileID: 0}
   goRoot: {fileID: 1656574707}
   lstFieldEntity: []
@@ -1161,6 +1164,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageToggleType: 1
   uuidARTag: one
+  uuidBGM: 
   lat: 39.9928
   lng: 116.3912
   lstFieldEntityUUID:
@@ -2532,6 +2536,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageToggleType: 1
   uuidARTag: two
+  uuidBGM: 
   lat: 39.9928
   lng: 116.3912
   lstFieldEntityUUID:
@@ -2894,6 +2899,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageToggleType: 1
   uuidARTag: UnityLogo
+  uuidBGM: 
   lat: 39.9928
   lng: 116.3912
   lstFieldEntityUUID:
@@ -3896,6 +3902,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageToggleType: 0
   uuidARTag: toy1
+  uuidBGM: BGM_03
   lat: 39.9928
   lng: 116.3912
   lstFieldEntityUUID:
@@ -4192,14 +4199,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stageToggleType: 0
-  uuidARTag: DinoSk1
+  uuidARTag: DinoSk2
+  uuidBGM: BGM_04
   lat: 39.9928
   lng: 116.3912
   lstFieldEntityUUID:
   - PantherNPC
   lstTaggedEntityUUID: []
   nextStages:
-  - {fileID: 2002493503}
+  - {fileID: 1826124142}
   - {fileID: 1279897300}
 --- !u!4 &742374854
 Transform:
@@ -5879,6 +5887,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1656574708}
+  - {fileID: 1727564334}
   m_Father: {fileID: 105963888}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6515,6 +6524,7 @@ MonoBehaviour:
   - {fileID: 8671156869382491711, guid: 080f629a7957a22428996ecb1f0917b3, type: 3}
   - {fileID: 266398569412897409, guid: c6714ce6028b2094490336fe42909613, type: 3}
   - {fileID: 2643814238312456075, guid: c7011671199e0e040b65cfa06663ef61, type: 3}
+  lstMusics: []
 --- !u!4 &1215260363
 Transform:
   m_ObjectHideFlags: 0
@@ -6876,10 +6886,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageToggleType: 1
   uuidARTag: UnityLogo
+  uuidBGM: BGM_01
   lat: 39.9928
   lng: 116.3912
   lstFieldEntityUUID:
-  - FlowerPot1
+  - Gems1
+  - Crystal1
   lstTaggedEntityUUID: []
   nextStages:
   - {fileID: 63169080}
@@ -7035,7 +7047,7 @@ MonoBehaviour:
   inventoryItemManager: {fileID: 390938061}
   SplashWebView: {fileID: 1920078792}
   fakeImage: {fileID: 1236090904}
-  fakeImageName: Dino1
+  fakeImageName: Mc1
 --- !u!1 &1301484800
 GameObject:
   m_ObjectHideFlags: 0
@@ -8444,6 +8456,38 @@ MonoBehaviour:
   actionManager: {fileID: 390938063}
   btnLeftFrame: {fileID: 763649705}
   btnRightFrame: {fileID: 1647818338}
+--- !u!1 &1727564333
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1727564334}
+  m_Layer: 0
+  m_Name: GlobalAudioRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1727564334
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1727564333}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1875872145}
+  m_Father: {fileID: 1100591806}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1783038641
 GameObject:
   m_ObjectHideFlags: 0
@@ -8554,23 +8598,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lstPrefabs:
-  - {fileID: 6333281459644306404, guid: e7a26a7525ab77b49abaacfb65c0370e, type: 3}
-  - {fileID: 6167138217000286274, guid: 5f9e5e901c0127944b46d6d63e599f2f, type: 3}
+  - {fileID: 3251538775337518897, guid: cfa620068cdbe874096308fe777c1ede, type: 3}
   - {fileID: 266398569412897409, guid: c6714ce6028b2094490336fe42909613, type: 3}
-  - {fileID: 2345770334611684664, guid: 5e8bf1e2f4544034cbce96af052f2db6, type: 3}
   - {fileID: 2702187524705268128, guid: fda1cec5b2c7137498f1fc5b4287c7a5, type: 3}
   - {fileID: 7555011506518413430, guid: f43708de7b48d644887e4efedeee677c, type: 3}
   - {fileID: 7170830578676953530, guid: 67a31373bdd19224aa62de99e6c297ea, type: 3}
   - {fileID: 7474663657080261474, guid: 690230830fcb5ce4bab410c3c5dedc2d, type: 3}
-  - {fileID: 3251538775337518897, guid: cfa620068cdbe874096308fe777c1ede, type: 3}
-  - {fileID: 2643814238312456075, guid: c7011671199e0e040b65cfa06663ef61, type: 3}
-  - {fileID: 1811206365988638611, guid: 617d32b2222c8f844b5fd20e6de93285, type: 3}
   - {fileID: 1049069340766628914, guid: c64a8449a269f5a47ada93efd6de5494, type: 3}
   - {fileID: 7289013167963754488, guid: 46843cd82aed0534280f11f80947d969, type: 3}
   - {fileID: 1039941710569705975, guid: 70a2beb4aeb2df54fa1ca24d998261d5, type: 3}
   - {fileID: 7455128290784951036, guid: 026c4a8650edfb04798b421c9cc250bd, type: 3}
   - {fileID: 1860623269140290312, guid: 76b75c4afbf0ea44da3e95379b82fd50, type: 3}
   - {fileID: 1681507181188417571, guid: 36bfc668bd5267f469a017060f54748e, type: 3}
+  - {fileID: 4344030163487779139, guid: 29617d6d0d42ca64991ab84144cb28e7, type: 3}
+  - {fileID: 8139650556426440917, guid: 119f7a6c6ba405243a70f31069f8c75c, type: 3}
+  - {fileID: 9138336753067519043, guid: d6acdede46395c348984e7c6704cd00c, type: 3}
+  - {fileID: 1014750107252171735, guid: 277f79be1134a164b9e5710c60819e40, type: 3}
+  - {fileID: 1253479792052358649, guid: 84e8d5df746c8c045b6257b2c6246e10, type: 3}
+  - {fileID: 7310747714240005322, guid: 4ec3d4d3e6d8f574083c99484353ed8d, type: 3}
+  lstMusics:
+  - {fileID: 8300000, guid: 475f4837af487ce4a9e68bb227455e4c, type: 3}
+  - {fileID: 8300000, guid: 90eae78e8ce85a849b5b0ca11b2de641, type: 3}
+  - {fileID: 8300000, guid: 47f45ef7b5767674393cc401fc325705, type: 3}
+  - {fileID: 8300000, guid: 1532c7e67c2d60c4c8780da14b7e8fcf, type: 3}
 --- !u!4 &1809045142
 Transform:
   m_ObjectHideFlags: 0
@@ -8584,12 +8634,12 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1279897301}
-  - {fileID: 63169081}
-  - {fileID: 742374854}
   - {fileID: 2002493504}
   - {fileID: 38379927}
+  - {fileID: 742374854}
   - {fileID: 1826124143}
   - {fileID: 698242094}
+  - {fileID: 63169081}
   m_Father: {fileID: 0}
   m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8704,14 +8754,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageToggleType: 0
   uuidARTag: cafe1
+  uuidBGM: BGM_02
   lat: 39.9928
   lng: 116.3912
   lstFieldEntityUUID:
-  - Crystal3
+  - RacconNPC
   - Gems1
-  lstTaggedEntityUUID:
-  - FoxNPC
-  - RedFoxNPC
+  lstTaggedEntityUUID: []
   nextStages:
   - {fileID: 698242095}
   - {fileID: 1279897300}
@@ -8864,6 +8913,134 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1854371344}
   m_CullTransparentMesh: 1
+--- !u!1 &1875872144
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1875872145}
+  - component: {fileID: 1875872146}
+  m_Layer: 0
+  m_Name: BGM
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1875872145
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875872144}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1727564334}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1875872146
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875872144}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1883359737
 GameObject:
   m_ObjectHideFlags: 0
@@ -9505,14 +9682,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageToggleType: 0
   uuidARTag: Mc1
+  uuidBGM: BGM_02
   lat: 39.9928
   lng: 116.3912
   lstFieldEntityUUID:
   - BrownRabbitNPC
-  - RabbitNPC
-  - Crystal1
-  lstTaggedEntityUUID:
-  - Paint1
+  - Carrot1
+  - Carrot2
+  - Carrot3
+  - Carrot4
+  - Carrot5
+  - Carrot6
+  lstTaggedEntityUUID: []
   nextStages:
   - {fileID: 38379926}
   - {fileID: 1279897300}
@@ -9827,6 +10008,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageToggleType: 1
   uuidARTag: UnityLogo
+  uuidBGM: 
   lat: 39.9928
   lng: 116.3912
   lstFieldEntityUUID:

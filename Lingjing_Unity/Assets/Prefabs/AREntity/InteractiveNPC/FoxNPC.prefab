@@ -1994,7 +1994,7 @@ MonoBehaviour:
   enumSurfaceType: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
-  proximityDialog: 1
+  proximityDialog: 2
   hasProximityDialog: 0
 --- !u!1 &7392961716483352878
 GameObject:

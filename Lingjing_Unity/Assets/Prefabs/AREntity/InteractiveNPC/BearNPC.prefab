@@ -168,16 +168,16 @@ MonoBehaviour:
   icon: {fileID: 0}
   iconHint: 
   strName: BearNPC
-  strHintbox: "{\"Intro\":\"\u4F60\u597D\uFF0C\u6211\u662F\u5927\u718A\",\"Quiz\":\"1\"}"
+  strHintbox: "{\"Intro\":\"\u55E8\uFF0C\u4F60\u597D\u554A\uFF0C\u6211\u662F\u2F00\u53EA\u2F24\u718A\u3002\",\"Quiz\":1,\"Dialog\":[\"\u4F60\u770B\u5230\u90A3\u8FB9\u7684\u7F8E\u2FB7\u4E86\u5417\uFF0C\u6211\u771F\u60F3\u54C1\u5C1D\u2F00\u4E0B\u770B\u770B\u662F\u4EC0\u4E48\u5473\u9053\u5462\u3002\",\"\u4F46\u662F\uFF0C\u6211\u77E5\u9053\u77E5\u8BC6\u2F50\u7F8E\u2FB7\u66F4\u91CD\u8981\uFF0C\u6211\u73B0\u5728\u6B63\u5728\u601D\u8003\u2F00\u4E2A\u56F0\u60D1\u6211\u5F88\u2ED3\u65F6\u95F4\u7684\u95EE\u9898\uFF0C\u4F60\u80FD\u5E2E\u6211\u2F00\u8D77\u60F3\u60F3\u5417\uFF1F\"]}"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
   enumARType: 0
   uuidImageTracking: 
-  offset: {x: -3, y: 0, z: 0}
+  offset: {x: -4, y: 0, z: 0}
   enumSurfaceType: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
-  proximityDialog: 2
+  proximityDialog: 3
   hasProximityDialog: 0
 --- !u!1 &549549277162223324
 GameObject:
@@ -462,7 +462,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 519505644918521492}
+  - {fileID: 2252862703810800362}
   - {fileID: 394340329621006634}
   m_Father: {fileID: 1596085392671307555}
   m_RootOrder: 0
@@ -1151,39 +1151,7 @@ Transform:
   - {fileID: 851726752531652532}
   - {fileID: 6309782208051087791}
   - {fileID: 228200816931186963}
-  m_Father: {fileID: 519505644918521492}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5388161922438074949
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 519505644918521492}
-  m_Layer: 0
-  m_Name: Bear
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &519505644918521492
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5388161922438074949}
-  m_LocalRotation: {x: -0.50000036, y: 0.49999964, z: 0.49999964, w: 0.50000036}
-  m_LocalPosition: {x: 2.1634189e-10, y: 0.49052042, z: -0.000000021711044}
-  m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 527767074582820278}
-  m_Father: {fileID: 215906006527666595}
+  m_Father: {fileID: 2252862703810800362}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5904098285584528125
@@ -1702,6 +1670,38 @@ Transform:
   - {fileID: 4482686454294297313}
   m_Father: {fileID: 527767074582820278}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7505417159028175435
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2252862703810800362}
+  m_Layer: 0
+  m_Name: Bear
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2252862703810800362
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7505417159028175435}
+  m_LocalRotation: {x: -0.50000036, y: 0.49999964, z: 0.49999964, w: 0.50000036}
+  m_LocalPosition: {x: 2.1634189e-10, y: 0.49052042, z: -0.000000021711044}
+  m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 527767074582820278}
+  m_Father: {fileID: 215906006527666595}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7631949601355850864
 GameObject:

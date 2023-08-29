@@ -74,16 +74,16 @@ MonoBehaviour:
   icon: {fileID: 0}
   iconHint: 
   strName: BrownRabbitNPC
-  strHintbox: "{\"Intro\":\"\u4F60\u597D\uFF01\",\"Dialog\":[\"\u6211\u662F\u5C0F\u5154\u5B50\",\"\u6211\u624D\u662F\u771F\u6B63\u7684\u5154\u5B50\uFF01\"]}"
+  strHintbox: "\r{\"Intro\":\"\u4F60\u597D\uFF0C\u6765\u2F83\u5916\u754C\u7684\u5BA2\u2F08\u3002\u2F24\u5BB6\u90FD\u53EB\u6211\u67E5\u7406\uFF0C\u6211\u521A\u521A\u6B63\u5728\u6E05\u70B9\u6211\u7684\u80E1\u841D\u2F18\u6570\u91CF\uFF0C\u603B\u611F\u89C9\u7684\u54EA\u2FA5\u4E0D\u5BF9\uFF0C\u4F60\u53EF\u4EE5\u5E2E\u5E2E\u6211\u5417\uFF1F\",\"Quiz\":1}"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
   enumARType: 0
   uuidImageTracking: Mc1
-  offset: {x: -3, y: 0, z: 0}
+  offset: {x: -4, y: 0, z: 0}
   enumSurfaceType: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
-  proximityDialog: 0
+  proximityDialog: 2
   hasProximityDialog: 0
 --- !u!1 &4868454436297802991
 GameObject:
