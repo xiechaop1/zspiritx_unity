@@ -85,12 +85,12 @@ public class DebugMenuManager : MonoBehaviour {
 	public void PicnicBtn() {
 		//SplashWebView.SetVisibility(false);
 		//UIEventManager.BroadcastEvent("WebViewCall", "Start2DScene");
-		sceneLoadManager.DebugWebViewCallback("Start2DScene");
+		sceneLoadManager.DebugWebViewCallback("WebViewOff&FalseAnswer");
 	}
 	public void PanicBtn() {
 		//SplashWebView.SetVisibility(false);
 		//UIEventManager.BroadcastEvent("WebViewCall", "StartARScene");
-		sceneLoadManager.DebugWebViewCallback("WebViewOff");
+		sceneLoadManager.DebugWebViewCallback("WebViewOff&TrueAnswer");
 	}
 	public void TryPlaceEntity() {
 		fieldEntityManager.TryPlaceRamdomEntitys(10);

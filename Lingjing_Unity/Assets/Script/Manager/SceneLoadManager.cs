@@ -57,7 +57,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 
 		eventManager = UIEventManager.getInstance();
 		eventManager.Init(eventManager);
-		eventManager.SubscribeBroadcast("WebViewCall", WebviewCallbackSceneControl);
+		//eventManager.SubscribeBroadcast("WebViewCall", WebviewCallbackSceneControl);
 
 		networkManager = Network.WWWManager.getInstance();
 
@@ -208,7 +208,8 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 			//SplashWebView.GetComponent<RectTransform>().anchorMax = new Vector2(1.0f, 1.0f - notch / Screen.width);
 		}
 		yield return null;
-		SplashWebView.OnWebClose += LoadAR;
+		SplashWebView.OnCallback += WebviewCallbackSceneControl;
+		//SplashWebView.OnWebClose += LoadAR;
 		SplashWebView.StartWebView("splash.html");
 
 		yield return null;
@@ -219,20 +220,21 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		yield break;
 	}
 
-	public void DebugWebViewCallback(string msg){
+	public void DebugWebViewCallback(string msg) {
 		webViewCallback(msg);
 	}
 	void WebviewCallbackSceneControl(string msg) {
-		//if (msg == "XXX") {
-			//SplashWebView.SetVisibility(false);
-			//StartCoroutine(ARLoader());
-		//} else
-		if (msg == "Start2DScene") {
+		string[] args = msg.Split('&');
+		if (args[0] == "WebViewOff") {
+			SplashWebView.SetVisibility(false);
+			StartCoroutine(ARLoader());
+		} else
+		if (args[0] == "Start2DScene") {
 			SplashWebView.SetVisibility(false);
 			StartCoroutine(ScrollerLoader());
 		}
 	}
-	void LoadAR(){ 
+	void LoadAR() {
 		StartCoroutine(ARLoader());
 	}
 	IEnumerator ARLoader() {

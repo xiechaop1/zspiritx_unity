@@ -18,6 +18,7 @@ public class FieldEntityInfo : ItemInfo {
 	public GameObject goFPSightMode;
 	public float proximityDialog = 0f;
 	public bool hasProximityDialog = false;
+
 	public bool TryPlacing(Vector3 posTarget, Quaternion rotTarget, GameObject targetSurface, Transform rootWorld) {
 		var posOld = transform.position;
 		var rotOld = transform.rotation;
