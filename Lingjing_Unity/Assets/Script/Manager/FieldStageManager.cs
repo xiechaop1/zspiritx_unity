@@ -5,6 +5,7 @@ using UnityEngine;
 public class FieldStageManager : MonoBehaviour, IManager {
 	public ResourcesLibrary resourcesManager;
 	public AudioSource backgroundMusicPlayer;
+
 	public FieldStageInfo currentStage;
 	private FieldEntityManager entityManager;
 	private List<GameObject> goManaged = new List<GameObject>();
@@ -70,9 +71,9 @@ public class FieldStageManager : MonoBehaviour, IManager {
 	}
 
 	public void PrepareBackstage(FieldStageInfo targetStage) {
+		currentStage = targetStage;
 		lstFieldEntity = LoadStageEntities(targetStage.lstFieldEntityUUID);
 		lstTaggedEntity = LoadStageEntities(targetStage.lstTaggedEntityUUID);
-		currentStage = targetStage;
 		if (!string.IsNullOrWhiteSpace(targetStage.uuidBGM)) {
 			LoadMusic(targetStage.uuidBGM);
 		}
@@ -87,10 +88,10 @@ public class FieldStageManager : MonoBehaviour, IManager {
 				break;
 			}
 		}
-		if (clip!=null) {
+		if (clip != null) {
 			backgroundMusicPlayer.clip = clip;
 			backgroundMusicPlayer.Play();
-		}else{ 
+		} else {
 			backgroundMusicPlayer.Pause();
 		}
 
@@ -109,9 +110,8 @@ public class FieldStageManager : MonoBehaviour, IManager {
 					foreach (var prefab in resourcesManager.lstPrefabs) {
 						if (prefab != null && prefab.TryGetComponent(out info)) {
 							if (info.strName == entityPrefabs[i]) {
-								obj = Instantiate(prefab, goRoot.transform);
+								obj = PrepareEntity(prefab);
 								lstOutput.Add(obj);
-								goManaged.Add(obj);
 								break;
 							}
 						}
@@ -122,6 +122,36 @@ public class FieldStageManager : MonoBehaviour, IManager {
 
 		return lstOutput.ToArray();
 	}
+	GameObject PrepareEntity(GameObject prefab) {
+		GameObject obj = Instantiate(prefab, goRoot.transform);
+		FieldEntityInfo info = obj.GetComponent<FieldEntityInfo>();
+		if (info.enumActionType == EntityActionType.DialogActor) {
+			List<string> lstRawDialogs;
+			DialogSentence sentence;
+			//Debug.Log(info.strHintbox);
+			if (JSONReader.TryPraseArray(info.strHintbox, "Dialog", out lstRawDialogs)) {
+				List<DialogSentence> lstSentences = new List<DialogSentence>();
+				foreach (string rawDialog in lstRawDialogs) {
+					//Debug.Log(rawDialog);
+					sentence = new DialogSentence(rawDialog);
+					lstSentences.Add(sentence);
+				}
+				foreach (var item in lstSentences) {
+					item.LinkSentences(lstSentences);
+					item.LinkClips(currentStage.voiceLogs);
+				}
+				string tmp = "";
+				if (JSONReader.TryPraseString(info.strHintbox, "Intro", ref tmp)) {
+					info.currDialog = DialogSentence.FindSentence(tmp, lstSentences);
+				} else {
+					info.currDialog = lstSentences[0];
+				}
+			}
+		}
+		goManaged.Add(obj);
+		return obj;
+	}
+
 	public void OnRemoveFieldEntity(GameObject obj) {
 		goManaged.Remove(obj);
 	}

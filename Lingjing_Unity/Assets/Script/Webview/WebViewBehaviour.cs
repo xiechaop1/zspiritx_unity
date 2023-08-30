@@ -11,7 +11,7 @@ public class WebViewBehaviour : MonoBehaviour {
 	WebViewObject webViewObject;
 	public GameObject splashBackground;
 	public event Action OnWebClose;
-
+	public event Action<string> OnCallback;
 	public bool isActive {
 		private set;
 		get;
@@ -141,6 +141,7 @@ public class WebViewBehaviour : MonoBehaviour {
 	//	StartWebView(HomepageUrl);
 	//}
 	IEnumerator LoadURL(string PageURL) {
+		Debug.Log("TryLoadPage: " + PageURL);
 #if !UNITY_WEBPLAYER && !UNITY_WEBGL
 		if (PageURL.StartsWith("http")) {
 			sceneLoadManager.webViewObject.LoadURL(PageURL.Replace(" ", "%20"));
@@ -202,11 +203,12 @@ public class WebViewBehaviour : MonoBehaviour {
 	}
 
 	public void UnityWebViewListener(string msg) {
-		UIEventManager.BroadcastEvent("WebViewCall", msg);
+		//UIEventManager.BroadcastEvent("WebViewCall", msg);
+		OnCallback?.Invoke(msg);
 		string[] args = msg.Split('&');
-		if (args[0] == "WebViewOff") {
-			SetVisibility(false);
-		}
+		//if (args[0] == "WebViewOff") {
+		//	SetVisibility(false);
+		//}
 		//if (msg == "StartARScene") {
 		//	SetVisibility(false);
 		//}

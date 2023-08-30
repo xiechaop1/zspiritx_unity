@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class InteractionView : MonoBehaviour {
 	public EntityActionManager actionManager;
+	public AudioSource voiceLogPlayer;
 	public GameObject goHintBox;
 	public Text txtHint;
 	public GameObject btnComfirm;
@@ -14,7 +15,8 @@ public class InteractionView : MonoBehaviour {
 	public WebViewBehaviour webViewQuiz;
 
 	public void Awake() {
-		webViewQuiz.OnWebClose += OnQuizClose;
+		//webViewQuiz.OnWebClose += OnQuizClose;
+		webViewQuiz.OnCallback += OnQuizCallback;
 	}
 
 	public void ShowHint(string hint, string textComfirm = "确认") {
@@ -83,11 +85,98 @@ public class InteractionView : MonoBehaviour {
 		entityInfo = null;
 	}
 
-
 	public GameObject goNPCBox;
+	public Text txtNPC;
+
+	#region New NPC Interaction
+	public GameObject[] btnSelects;
+	public Text[] txtSelects;
+
+	public void ShowNPCLog(ItemInfo info) {
+		entityInfo = info;
+		goNPCBox.SetActive(true);
+		AdvancedLog(entityInfo.currDialog);
+		if (entityInfo is FieldEntityInfo) {
+			Vector3 pos;
+			if (((FieldEntityInfo)entityInfo).TryGetScenePos(out pos)) {
+				txtNPC.text += "\n 相对坐标:" + pos.ToString();
+			}
+		}
+	}
+
+	public void ExitNPCLog() {
+		goNPCBox.SetActive(false);
+		actionManager.OnInteractionFinished(entityInfo);
+		entityInfo = null;
+	}
+
+	public void AdvancedLog(int selection) {
+		DialogSentence nextDialog;
+		if (entityInfo.currDialog.userSelections.Length != 0) {
+			if (selection == 0 || selection > entityInfo.currDialog.userSelections.Length) return;
+			nextDialog = entityInfo.currDialog.nextSentence[selection - 1];
+
+		} else {
+			try {
+				nextDialog = entityInfo.currDialog.nextSentence[selection - 1];
+			} catch (Exception) {
+				nextDialog = entityInfo.currDialog.nextSentence[0];
+			}
+		}
+		AdvancedLog(nextDialog);
+	}
+	void AdvancedLog(DialogSentence sentence) {
+		voiceLogPlayer.Pause();
+		if (!string.IsNullOrWhiteSpace(sentence.sentence)) {
+			entityInfo.currDialog = sentence;
+			txtNPC.text = sentence.sentence;
+			for (int i = 0; i < btnSelects.Length; i++) {
+				if (i < sentence.userSelections.Length) {
+					btnSelects[i].SetActive(true);
+					txtSelects[i].text = sentence.userSelections[i];
+				} else {
+					btnSelects[i].SetActive(false);
+				}
+			}
+
+			if (sentence.sentenceClip != null) {
+				voiceLogPlayer.clip = sentence.sentenceClip;
+				voiceLogPlayer.Play();
+			}
+		} else if (!string.IsNullOrWhiteSpace(sentence.quizID)) {
+			entityInfo.currDialog = sentence;
+			webViewQuiz.StartWebView(Network.HttpUrlInfo.urlLingjingQuiz + sentence.quizID);
+		} else if (!string.IsNullOrWhiteSpace(sentence.url)) {
+			entityInfo.currDialog = sentence;
+			webViewQuiz.StartWebView(sentence.url);
+		} else {
+			entityInfo.currDialog = sentence.nextSentence[0];
+			ExitNPCLog();
+		}
+
+	}
+	void OnQuizCallback(string msg) {
+		string[] args = msg.Split('&');
+		if (args[0] == "WebViewOff") {
+			webViewQuiz.SetVisibility(false);
+		}
+		if (args.Length > 1) {
+			if (args[1] == "TrueAnswer") {
+				AdvancedLog(1);
+			} else if (args[1] == "FalseAnswer") {
+				AdvancedLog(2);
+			}
+		} else {
+			AdvancedLog(1);
+		}
+
+	}
+	#endregion
+
+	#region OLD NPC Interaction
 	public GameObject btnQuiz;
 	public GameObject btnDialog;
-	public Text txtNPC;
+
 	Queue<string> queDialog = new Queue<string>();
 
 	public void ShowNPCUI(ItemInfo info) {
@@ -174,4 +263,5 @@ public class InteractionView : MonoBehaviour {
 			btnDialog.SetActive(false);
 		}
 	}
+	#endregion
 }
