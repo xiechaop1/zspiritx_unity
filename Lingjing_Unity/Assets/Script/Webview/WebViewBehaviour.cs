@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class WebViewBehaviour : MonoBehaviour {
 	public SceneLoadManager sceneLoadManager;
 	public string HomepageUrl;
-	//public Text status;
+	public Text status;
 	WebViewObject webViewObject;
 	public GameObject splashBackground;
 	public event Action OnWebClose;
@@ -204,6 +204,9 @@ public class WebViewBehaviour : MonoBehaviour {
 
 	public void UnityWebViewListener(string msg) {
 		//UIEventManager.BroadcastEvent("WebViewCall", msg);
+		if (status != null) {
+			status.text = msg;
+		}
 		OnCallback?.Invoke(msg);
 		string[] args = msg.Split('&');
 		//if (args[0] == "WebViewOff") {
