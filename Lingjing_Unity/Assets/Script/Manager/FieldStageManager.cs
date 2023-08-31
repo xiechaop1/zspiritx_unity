@@ -146,6 +146,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 				} else {
 					info.currDialog = lstSentences[0];
 				}
+				info.lstDialogs = lstSentences.ToArray();
 			}
 		}
 		goManaged.Add(obj);

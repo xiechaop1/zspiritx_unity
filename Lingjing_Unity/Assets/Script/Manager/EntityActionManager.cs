@@ -152,7 +152,7 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				interactionView.ExitHint();
 				break;
 			case EntityActionType.DialogActor:
-				interactionView.AdvancedDialog();
+				//interactionView.AdvancedDialog();
 				break;
 			case EntityActionType.Debug:
 			case EntityActionType.ViewableInfo:
