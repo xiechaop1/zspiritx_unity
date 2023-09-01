@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6595787e0e9dbed4a923778f8d93d022, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionManager: {fileID: 0}
+  entityManager: {fileID: 0}
   enumActionType: 1
   enumItemType: -1
   icon: {fileID: 0}
@@ -168,3 +168,7 @@ MonoBehaviour:
   enumSurfaceType: 2
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  proximityDialog: 0
+  hasProximityDialog: 0
+  goAnimEmerge: {fileID: 0}
+  goVisual: {fileID: 1632026153239245586}

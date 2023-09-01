@@ -222,7 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6595787e0e9dbed4a923778f8d93d022, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionManager: {fileID: 0}
+  entityManager: {fileID: 0}
   enumActionType: 11
   enumItemType: -1
   icon: {fileID: 0}
@@ -235,8 +235,12 @@ MonoBehaviour:
   uuidImageTracking: phone
   offset: {x: 0, y: 0, z: 0}
   enumSurfaceType: 1
-  lstEntityCorner: []
+  goReference: {fileID: 0}
   goFPSightMode: {fileID: 7978133358413937823}
+  proximityDialog: 0
+  hasProximityDialog: 0
+  goAnimEmerge: {fileID: 0}
+  goVisual: {fileID: 6966257056354083220}
 --- !u!114 &6496807366593760362
 MonoBehaviour:
   m_ObjectHideFlags: 0

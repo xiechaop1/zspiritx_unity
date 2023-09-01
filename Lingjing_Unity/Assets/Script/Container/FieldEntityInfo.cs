@@ -18,6 +18,8 @@ public class FieldEntityInfo : ItemInfo {
 	public GameObject goFPSightMode;
 	public float proximityDialog = 0f;
 	public bool hasProximityDialog = false;
+	public ParticleSystem animEmerge;
+	public GameObject goVisual;
 
 	public bool TryPlacing(Vector3 posTarget, Quaternion rotTarget, GameObject targetSurface, Transform rootWorld) {
 		var posOld = transform.position;
@@ -31,8 +33,11 @@ public class FieldEntityInfo : ItemInfo {
 			//if (hit.collider.gameObject == targetSurface) 
 			//Debug.Log("place at " + posTarget);
 			gameObject.transform.parent = rootWorld;
-			if (proximityDialog > 0) {
-				hasProximityDialog = true;
+			if (animEmerge) {
+				goVisual.SetActive(false);
+				StartCoroutine(ShowAnimation());
+			} else {
+				ShowSelf();
 			}
 			return true;
 			//}
@@ -40,6 +45,16 @@ public class FieldEntityInfo : ItemInfo {
 		transform.position = posOld;
 		transform.rotation = rotOld;
 		return false;
+	}
+
+	public void RemoveFromField() {
+		if (animEmerge) {
+			//StopCoroutine(ShowAnimation());
+			StartCoroutine(HideAnimation());
+		} else {
+			HideSelf();
+			StoreSelf();
+		}
 	}
 
 	public bool TryGetScenePos(out Vector3 pos) {
@@ -60,6 +75,33 @@ public class FieldEntityInfo : ItemInfo {
 		pos = go.transform.InverseTransformPoint(transform.position);
 		return true;
 	}
+	IEnumerator ShowAnimation() {
+		animEmerge.GetComponent<ParticleSystem>().Play();
+		yield return new WaitForSeconds(0.5f);
+		ShowSelf();
+	}
+	void ShowSelf() {
+		goVisual.SetActive(true);
+		if (proximityDialog > 0) {
+			hasProximityDialog = true;
+		}
+	}
+	IEnumerator HideAnimation() {
+		animEmerge.GetComponent<ParticleSystem>().Play();
+		yield return new WaitForSeconds(0.5f);
+		HideSelf();
+		yield return new WaitForSeconds(0.5f);
+		StoreSelf();
+	}
+	void HideSelf() {
+		goVisual.SetActive(false);
+	}
+	void StoreSelf() {
+		transform.parent = entityManager.stageManager.goRoot.transform;
+		transform.localPosition = Vector3.zero;
+	}
+
+
 	public void OnDestroy() {
 		UIEventManager.CallEvent("FieldEntityManager", "RemoveFieldEntitys", this);
 	}

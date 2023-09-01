@@ -460,7 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6595787e0e9dbed4a923778f8d93d022, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionManager: {fileID: 0}
+  entityManager: {fileID: 0}
   enumActionType: 12
   enumItemType: 14
   icon: {fileID: 21300000, guid: bb74bf04df427624f8fd689a523952c5, type: 3}
@@ -475,6 +475,10 @@ MonoBehaviour:
   enumSurfaceType: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  proximityDialog: 0
+  hasProximityDialog: 0
+  goAnimEmerge: {fileID: 0}
+  goVisual: {fileID: 428198954527904213}
 --- !u!114 &3093252365412281332
 MonoBehaviour:
   m_ObjectHideFlags: 0
