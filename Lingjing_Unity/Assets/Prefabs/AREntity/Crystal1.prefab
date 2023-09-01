@@ -274,6 +274,8 @@ MonoBehaviour:
   goFPSightMode: {fileID: 0}
   proximityDialog: 0
   hasProximityDialog: 0
+  goAnimEmerge: {fileID: 0}
+  goVisual: {fileID: 5205223112781480211}
 --- !u!1 &1346581984585404547
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,6 +9,9 @@ public class FieldStageManager : MonoBehaviour, IManager {
 	public FieldStageInfo currentStage;
 	private FieldEntityManager entityManager;
 	private List<GameObject> goManaged = new List<GameObject>();
+
+	public GameObject prefabAnimEmerge;
+
 	public GameObject goRoot;
 	public GameObject[] lstFieldEntity = new GameObject[0];
 	public GameObject[] lstTaggedEntity = new GameObject[0];
@@ -149,6 +152,11 @@ public class FieldStageManager : MonoBehaviour, IManager {
 				info.lstDialogs = lstSentences.ToArray();
 			}
 		}
+		if (prefabAnimEmerge!=null) {
+			GameObject goAnim = Instantiate(prefabAnimEmerge, obj.transform);
+			info.animEmerge = goAnim.GetComponentInChildren<ParticleSystem>();
+		}
+
 		goManaged.Add(obj);
 		return obj;
 	}

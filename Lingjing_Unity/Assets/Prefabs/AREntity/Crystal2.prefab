@@ -5550,7 +5550,7 @@ Transform:
   - {fileID: 1874474097653267133}
   - {fileID: 5270061557370029029}
   m_Father: {fileID: 0}
-  m_RootOrder: 19
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &5223019116429872109
 BoxCollider:
@@ -5602,6 +5602,8 @@ MonoBehaviour:
   goFPSightMode: {fileID: 0}
   proximityDialog: 0
   hasProximityDialog: 0
+  goAnimEmerge: {fileID: 0}
+  goVisual: {fileID: 6754757740620700993}
 --- !u!1 &8672712050495630604
 GameObject:
   m_ObjectHideFlags: 0

@@ -1025,6 +1025,8 @@ MonoBehaviour:
   resourcesManager: {fileID: 1809045141}
   backgroundMusicPlayer: {fileID: 1875872146}
   currentStage: {fileID: 0}
+  prefabAnimEmerge: {fileID: 4341270787334330345, guid: afc730eb5b60bc543afa571ac00d5489,
+    type: 3}
   goRoot: {fileID: 1656574707}
   lstFieldEntity: []
   lstTaggedEntity: []
@@ -7740,8 +7742,6 @@ MonoBehaviour:
   - {fileID: 1355604290}
   - {fileID: 1784039688}
   - {fileID: 1358543991}
-  btnQuiz: {fileID: 0}
-  btnDialog: {fileID: 0}
 --- !u!224 &1444424131
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11794,6 +11794,8 @@ MonoBehaviour:
   goFPSightMode: {fileID: 0}
   proximityDialog: 0
   hasProximityDialog: 0
+  animEmerge: {fileID: 0}
+  goVisual: {fileID: 0}
 --- !u!23 &8788057794988951675
 MeshRenderer:
   m_ObjectHideFlags: 0

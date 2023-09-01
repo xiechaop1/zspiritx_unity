@@ -159,12 +159,18 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 
 			}
 		}
+		FieldEntityInfo info;
 		for (int i = lstPlacedEntity.Count - 1; i >= 0; i--) {
 			go = lstPlacedEntity[i];
 			lstPlacedEntity.RemoveAt(i);
 			if (go != null) {
-				go.transform.parent = stageManager.goRoot.transform;
-				go.transform.localPosition = Vector3.zero;
+				if (go.TryGetComponent(out info)) {
+					info.RemoveFromField();
+				} else {
+					go.transform.parent = stageManager.goRoot.transform;
+					go.transform.localPosition = Vector3.zero;
+				}
+
 				StopEntity(go);
 			}
 		}
