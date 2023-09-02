@@ -19,8 +19,6 @@ public class WebViewBehaviour : MonoBehaviour {
 
 	private void Awake() {
 		isActive = false;
-		//Init();
-		//StartCoroutine(DebugDisplay());
 	}
 	//private void Start() {
 	//	//StartWebViewHome();
@@ -203,18 +201,10 @@ public class WebViewBehaviour : MonoBehaviour {
 	}
 
 	public void UnityWebViewListener(string msg) {
-		//UIEventManager.BroadcastEvent("WebViewCall", msg);
 		if (status != null) {
 			status.text = msg;
 		}
 		OnCallback?.Invoke(msg);
-		string[] args = msg.Split('&');
-		//if (args[0] == "WebViewOff") {
-		//	SetVisibility(false);
-		//}
-		//if (msg == "StartARScene") {
-		//	SetVisibility(false);
-		//}
 	}
 	public void StartWebView(string pageUrl) {
 		RectOffset ret = GetRectOffset();

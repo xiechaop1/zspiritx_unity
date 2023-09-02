@@ -21,6 +21,44 @@ public class FieldEntityInfo : ItemInfo {
 	public ParticleSystem animEmerge;
 	public GameObject goVisual;
 
+	int stageShowAnimation = -1;
+	int stageHideAnimation = -1;
+	float animationTimer = 0f;
+	private void Update() {
+		if (stageShowAnimation >= 0) {
+			animationTimer += Time.deltaTime;
+			switch (stageShowAnimation) {
+				case 0:
+					if (animationTimer > 0.5f) {
+						ShowSelf();
+						stageHideAnimation = -1;
+					}
+					break;
+				default:
+					break;
+			}
+		}
+		if (stageHideAnimation >= 0) {
+			animationTimer += Time.deltaTime;
+			switch (stageHideAnimation) {
+				case 0:
+					if (animationTimer > 0.5f) {
+						HideSelf();
+						stageHideAnimation++;
+					}
+					break;
+				case 1:
+					if (animationTimer > 1f) {
+						StoreSelf();
+						stageHideAnimation = -1;
+					}
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
 	public bool TryPlacing(Vector3 posTarget, Quaternion rotTarget, GameObject targetSurface, Transform rootWorld) {
 		var posOld = transform.position;
 		var rotOld = transform.rotation;
@@ -34,8 +72,7 @@ public class FieldEntityInfo : ItemInfo {
 			//Debug.Log("place at " + posTarget);
 			gameObject.transform.parent = rootWorld;
 			if (animEmerge) {
-				goVisual.SetActive(false);
-				StartCoroutine(ShowAnimation());
+				ShowAnim();
 			} else {
 				ShowSelf();
 			}
@@ -49,8 +86,7 @@ public class FieldEntityInfo : ItemInfo {
 
 	public void RemoveFromField() {
 		if (animEmerge) {
-			//StopCoroutine(ShowAnimation());
-			StartCoroutine(HideAnimation());
+			HideAnim();
 		} else {
 			HideSelf();
 			StoreSelf();
@@ -75,10 +111,11 @@ public class FieldEntityInfo : ItemInfo {
 		pos = go.transform.InverseTransformPoint(transform.position);
 		return true;
 	}
-	IEnumerator ShowAnimation() {
+	void ShowAnim() {
+		stageShowAnimation = 0;
+		stageHideAnimation = -1;
+		animationTimer = 0f;
 		animEmerge.GetComponent<ParticleSystem>().Play();
-		yield return new WaitForSeconds(0.5f);
-		ShowSelf();
 	}
 	void ShowSelf() {
 		goVisual.SetActive(true);
@@ -86,12 +123,11 @@ public class FieldEntityInfo : ItemInfo {
 			hasProximityDialog = true;
 		}
 	}
-	IEnumerator HideAnimation() {
+	void HideAnim() {
+		stageShowAnimation = -1;
+		stageHideAnimation = 0;
+		animationTimer = 0f;
 		animEmerge.GetComponent<ParticleSystem>().Play();
-		yield return new WaitForSeconds(0.5f);
-		HideSelf();
-		yield return new WaitForSeconds(0.5f);
-		StoreSelf();
 	}
 	void HideSelf() {
 		goVisual.SetActive(false);

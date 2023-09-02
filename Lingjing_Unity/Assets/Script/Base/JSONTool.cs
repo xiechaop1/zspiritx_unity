@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -41,28 +42,48 @@ public class JSONReader {
 		try {
 			JObject json = JObject.Parse(jsonString);
 			return TryPraseString(json, key, ref value);
-		} catch (System.Exception) {
+		} catch (Exception) {
 			return false;
 		}
 
 	}
 
 	public static bool TryPraseBool(string jsonString, string key, ref bool value) {
-		JObject json = JObject.Parse(jsonString);
-		return TryPraseBool(json, key, ref value);
+		try {
+			JObject json = JObject.Parse(jsonString);
+			return TryPraseBool(json, key, ref value);
+		} catch (Exception) {
+			return false;
+		}
+
 	}
 	public static bool TryPraseInt(string jsonString, string key, ref int value) {
-		JObject json = JObject.Parse(jsonString);
-		return TryPraseInt(json, key, ref value);
+		try {
+			JObject json = JObject.Parse(jsonString);
+			return TryPraseInt(json, key, ref value);
+		} catch (Exception) {
+			return false;
+		}
+
 	}
 	public static bool TryPraseFloat(string jsonString, string key, ref float value) {
-		JObject json = JObject.Parse(jsonString);
-		return TryPraseFloat(json, key, ref value);
+		try {
+			JObject json = JObject.Parse(jsonString);
+			return TryPraseFloat(json, key, ref value);
+		} catch (Exception) {
+			return false;
+		}
+
 	}
 
 	public static bool TryPraseObject<T>(string jsonString, string key, ref T value) {
-		JObject json = JObject.Parse(jsonString);
-		return TryPraseObject(json, key, ref value);
+		try {
+			JObject json = JObject.Parse(jsonString);
+			return TryPraseObject(json, key, ref value);
+		} catch (Exception) {
+			return false;
+		}
+
 	}
 	public static bool TryPraseArray(string jsonString, string key, out List<string> value) {
 		try {
@@ -75,8 +96,13 @@ public class JSONReader {
 	}
 
 	public static bool ContainsKey(string jsonString, string key) {
-		JObject json = JObject.Parse(jsonString);
-		return ContainsKey(json, key);
+		try {
+			JObject json = JObject.Parse(jsonString);
+			return ContainsKey(json, key);
+		} catch (Exception) {
+			return false;
+		}
+
 	}
 
 	public static object GetValue(string jsonString, string key) {

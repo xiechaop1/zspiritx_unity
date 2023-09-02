@@ -281,31 +281,6 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		yield break;
 	}
 
-	//public void ForceReloadScene() {
-	//	StartCoroutine(StageReload());
-	//}
-	//IEnumerator StageReload() {
-	//	yield return null;
-	//	while (isLoading) {
-	//		yield return null;
-	//	}
-	//	if (sceneMode != SceneMode.AR) {
-	//		yield break;
-	//	}
-	//	isLoading = true;
-	//	for (int i = 0; i < 10; i++) {
-	//		if (fieldEntityManager.isLoadFinish) {
-	//			break;
-	//		}
-	//		fieldEntityManager.TryPlaceRamdomEntitys(10);
-	//		yield return new WaitForSeconds(1);
-	//	}
-	//	DebugLog("模型放置 " + (fieldEntityManager.isLoadFinish ? "成功" : "失败"));
-
-	//	isLoading = false;
-	//	yield break;
-	//}
-
 	IEnumerator ScrollerLoader() {
 		LoadingScreen.SetActive(true);
 		yield return null;
@@ -364,11 +339,5 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		eventDebugInfo?.Invoke("场景关闭成功");
 		yield break;
 	}
-	//IEnumerator ARUnloader() {
-	//	isLoading = true;
-	//	fieldEntityManager.StopScene();
-	//	isLoading = false;
-	//	Debug.Log("LoadFinished");
-	//	yield break;
-	//}
+
 }
