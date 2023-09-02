@@ -4,23 +4,6 @@ using UnityEngine;
 
 [RequireComponent(typeof(FieldStageManager))]
 public class FieldEntityManager : MonoBehaviour, IManager {
-	//public static FieldEntityManager getInstance() {
-	//	if (instance != null) {
-	//		return instance;
-	//	} else {
-	//		GameObject go = GameObject.Find("FieldEntityManager");
-	//		if (go != null && go.TryGetComponent(out instance)) {
-	//			return instance;
-	//		}
-	//	}
-	//	Debug.LogError("MISSING FieldEntityManager ");
-	//	return null;
-	//}
-	//private static FieldEntityManager instance;
-
-	//public ARSightManager arSightManager;
-	//public GameObject[] lstFieldEntity;
-	//public GameObject[] lstTaggedEntity;
 	public GameObject goCamera;
 	public GameObject goCamDir;
 	public GameObject prefabARDir;
@@ -32,7 +15,6 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	public GameObject[] arrPlacedEntity => lstPlacedEntity.ToArray();
 	public bool isSurfacesReady => areaFloor + areaWall > 4;
 	public bool isLoadFinish => queFieldEntity.Count == 0;
-	//public delegate void OnEntityFound(FieldEntityInfo entityInfo);
 	public EntityActionManager actionManager;
 	public FieldStageManager stageManager;
 	public SceneLoadManager loadManager;
@@ -59,21 +41,12 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	}
 
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
-		//EntityActionManager entityActionManager=null;
-		//foreach (var manager in managers) {
-		//	if (manager is EntityActionManager) {
-		//		actionManager = manager as EntityActionManager;
-		//	}
-		//}
-		//arSightManager = ARSightManager.getInstance();
-		//var eventManager = UIEventManager.getInstance();
 		eventManager.RegisteredAction("FieldEntityManager", "RegisterARPlane", RegisterARPlane);
 		eventManager.RegisteredAction("FieldEntityManager", "RemoveARPlane", RemoveARPlane);
 		eventManager.RegisteredAction("FieldEntityManager", "RemoveFieldEntitys", RemoveFieldEntitys);
 		foreach (var manager in managers) {
 			RegisterManager(manager);
 		}
-		//actionManager = entityActionManager;
 	}
 	public void RegisterManager(IManager manager) {
 		if (manager is EntityActionManager) {
@@ -84,8 +57,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			loadManager = manager as SceneLoadManager;
 		}
 	}
-	public void PrepareScene(/*EntityActionManager actionManager*/) {
-		//GameObject obj;
+	public void PrepareScene() {
 		PrepareStage();
 		isPlaneVisible = true;
 		foreach (ARPlaneInfo plane in planeHorizontal) {
@@ -110,17 +82,13 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 				queTaggedEntity.Add(entity);
 			}
 		}
-
-		//loadManager.ForceReloadScene();
 	}
 
-	private bool PrepareEntity(GameObject entity/*, out GameObject obj*/) {
+	private bool PrepareEntity(GameObject entity) {
 		if (entity == null) {
-			//obj = null;
 			return false;
 		}
 		FieldEntityInfo info;
-		//obj = Instantiate(entity, goRoot.transform);
 		if (entity.TryGetComponent(out info)) {
 			info.entityManager = this;
 			return true;
@@ -196,7 +164,6 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		if (imageDirs.ContainsKey(imgName)) {
 
 		} else {
-			//obj = new GameObject(imgName + "-ImageDir");
 			obj = Instantiate(prefabARDir);
 			obj.name = imgName + "-ImagDir";
 			obj.GetComponent<ImageDirMover>().Init(goImageTracker);
@@ -210,19 +177,15 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		} else {
 			imageTrackers.Add(imgName, goImageTracker);
 		}
-		//obj.transform.position = goImageTracker.transform.position;
-		//obj.transform.rotation = goImageTracker.transform.rotation;
 		UpdateImageTracking(imgName);
 	}
 
 
 	public void UpdateImageTracking(string imgName) {
-
 		FieldEntityInfo entityInfo;
 		if (queTaggedEntity.Count == 0) {
 			return;
 		}
-		//Debug.Log(imgName + " "+ queTaggedEntity.Count);
 		for (int i = queTaggedEntity.Count - 1; i >= 0; i--) {
 
 			GameObject entity = queTaggedEntity[i];
@@ -247,27 +210,6 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 				}
 			}
 		}
-		//foreach (GameObject entity in queTaggedEntity) {
-		//	entityInfo = entity.GetComponent<FieldEntityInfo>();
-		//	if (entityInfo.uuidImageTracking == imgName) {
-		//		if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagTracking) {
-		//			entity.transform.parent = imageTrackers[imgName].transform;
-		//			entity.transform.localPosition = Vector3.zero;
-		//			entity.transform.localRotation = Quaternion.identity;
-		//			queTaggedEntity.Remove(entity);
-		//			lstPlacedEntity.Add(entity);
-		//			if (OnEntityPlaced != null) {
-		//				OnEntityPlaced.Invoke(entityInfo);
-		//			}
-		//		} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagAround) {
-		//			entityInfo.goReference = imageDirs[imgName];
-		//			queTaggedEntity.Remove(entity);
-		//			queFieldEntity.Enqueue(entity);
-		//		}
-		//	}
-		//}
-
-		//return obj;
 	}
 
 	public GameObject GetStageImgDir() {
@@ -404,15 +346,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			if (goEntity.TryGetComponent(out entityInfo)) {
 				if (!entityInfo.goReference) {
 					entityInfo.goReference = goCamDir;
-					//if (TryPlaceEntityAround(entityInfo, goCamDir.transform.position, goCamDir.transform.rotation, 4f)) {
-					//	if (OnEntityPlaced != null) {
-					//		OnEntityPlaced.Invoke(entityInfo);
-					//	}
-					//	lstPlacedEntity.Add(goEntity);
-					//} else {
-					//	queFieldEntity.Enqueue(goEntity);
-					//}
-				}// else {
+				}
 				if (TryPlaceEntityAround(entityInfo, entityInfo.goReference.transform.position, entityInfo.goReference.transform.rotation, 1f)) {
 					if (OnEntityPlaced != null) {
 						OnEntityPlaced.Invoke(entityInfo);
@@ -428,7 +362,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 
 	}
 	public bool TryPlaceEntityAround(FieldEntityInfo entityInfo, Vector3 originPos, Quaternion originRot, float marginError) {
-		Debug.Log("tryPlaceEntity" + entityInfo.strName);
+		//Debug.Log("tryPlaceEntity" + entityInfo.strName);
 		Vector3 targetPos = originPos + originRot * entityInfo.offset;
 		(bool hasPos, RaycastHit hit, int enumSurfaceType) = TryGetPos(targetPos, entityInfo.enumSurfaceType, marginError);
 		if (hasPos) {
@@ -443,14 +377,6 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 					return true;
 				}
 			}
-			//if (entityInfo.TryPlacing(hit.point, hit.collider.gameObject.transform.rotation, arPlane.gameObject, transform)) {
-			//	if (enumSurfaceType == 1) {
-			//		entityHorizontal.Add(entityInfo);
-			//	} else if (enumSurfaceType == 2) {
-			//		entityVertical.Add(entityInfo);
-			//	}
-			//	return true;
-			//}
 		}
 		return false;
 	}

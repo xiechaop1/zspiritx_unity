@@ -85,7 +85,6 @@ public class FieldStageManager : MonoBehaviour, IManager {
 	void LoadMusic(string uuid) {
 		AudioClip clip = null;
 		foreach (var music in resourcesManager.lstMusics) {
-			//Debug.Log(music.name);
 			if (music.name == uuid) {
 				clip = music;
 				break;
@@ -155,6 +154,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		if (prefabAnimEmerge!=null) {
 			GameObject goAnim = Instantiate(prefabAnimEmerge, obj.transform);
 			info.animEmerge = goAnim.GetComponentInChildren<ParticleSystem>();
+			info.goVisual.SetActive(false);
 		}
 
 		goManaged.Add(obj);

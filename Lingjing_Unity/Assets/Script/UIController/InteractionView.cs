@@ -15,7 +15,6 @@ public class InteractionView : MonoBehaviour {
 	public WebViewBehaviour webViewQuiz;
 
 	public void Awake() {
-		//webViewQuiz.OnWebClose += OnQuizClose;
 		webViewQuiz.OnCallback += OnQuizCallback;
 	}
 
@@ -185,96 +184,4 @@ public class InteractionView : MonoBehaviour {
 		actionManager.OnInteractionFinished(entityInfo);
 		entityInfo = null;
 	}
-	#region OLD NPC Interaction
-	//public GameObject btnQuiz;
-	//public GameObject btnDialog;
-
-	//Queue<string> queDialog = new Queue<string>();
-
-	//public void ShowNPCUI(ItemInfo info) {
-	//	entityInfo = info;
-	//	goNPCBox.SetActive(true);
-	//	string npcIntro = "";
-	//	string rawString = entityInfo.strHintbox;
-	//	List<string> lstDialog;
-	//	if (JSONReader.TryPraseString(rawString, "Intro", ref npcIntro)) {
-	//		txtNPC.text = npcIntro;
-	//		btnQuiz.SetActive(JSONReader.ContainsKey(rawString, "Quiz"));
-
-	//		if (JSONReader.TryPraseArray(rawString, "Dialog", out lstDialog)) {
-	//			queDialog = new Queue<string>(lstDialog);
-	//			btnDialog.SetActive(queDialog.Count > 0);
-	//		} else {
-	//			btnDialog.SetActive(false);
-	//		}
-	//	} else if (JSONReader.TryPraseArray(rawString, "Dialog", out lstDialog)) {
-	//		queDialog = new Queue<string>(lstDialog);
-	//		btnDialog.SetActive(queDialog.Count > 0);
-	//		AdvancedDialog();
-	//	} else {
-	//		txtNPC.text = rawString;
-	//		btnQuiz.SetActive(false);
-	//		btnDialog.SetActive(false);
-	//	}
-	//	if (entityInfo is FieldEntityInfo) {
-	//		Vector3 pos;
-	//		if (((FieldEntityInfo)entityInfo).TryGetScenePos(out pos)) {
-	//			txtNPC.text += "\n 相对坐标:" + pos.ToString();
-	//		}
-	//	}
-	//}
-	//public void ShowQuiz() {
-	//	btnQuiz.SetActive(false);
-	//	btnDialog.SetActive(false);
-	//	webViewQuiz.StartWebView("quiz.html");
-	//}
-	//public void ConfirmNPCUI() {
-	//	//if (queDialog == null) {
-	//	//	ShowDialog();
-	//	//} else {
-	//	AdvancedDialog();
-	//	//}
-	//}
-
-	//public void ExitNPCUI() {
-	//	//queDialog = null;
-	//	goNPCBox.SetActive(false);
-	//	actionManager.OnInteractionFinished(entityInfo);
-	//	entityInfo = null;
-	//}
-
-	//public void ShowQuiz(ItemInfo info) {
-	//	entityInfo = info;
-	//	webViewQuiz.StartWebView("quiz.html");
-	//	//ShowQuiz();
-	//}
-	//public void OnQuizClose() {
-	//	ExitNPCUI();
-	//}
-
-	//public void ShowDialog() {
-	//	btnQuiz.SetActive(false);
-	//	List<string> lstDialog;
-	//	if (JSONReader.TryPraseArray(entityInfo.strHintbox, "Dialog", out lstDialog)) {
-	//		queDialog = new Queue<string>(lstDialog);
-	//	} else {
-	//		string rawString = entityInfo.strHintbox;
-	//		queDialog = new Queue<string>(rawString.Split('^'));
-	//	}
-
-	//	AdvancedDialog();
-	//}
-	//public void AdvancedDialog() {
-	//	btnQuiz.SetActive(false);
-	//	if (queDialog.Count > 0) {
-	//		txtNPC.text = queDialog.Dequeue();
-	//	}
-	//	if (queDialog.Count > 0) {
-	//		btnDialog.SetActive(true);
-	//		txtConfirmBtn.text = "继续";
-	//	} else {
-	//		btnDialog.SetActive(false);
-	//	}
-	//}
-	#endregion
 }
