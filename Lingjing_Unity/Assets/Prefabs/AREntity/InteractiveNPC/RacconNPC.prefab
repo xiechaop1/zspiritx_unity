@@ -2124,7 +2124,8 @@ MonoBehaviour:
   icon: {fileID: 0}
   iconHint: 
   strName: RacconNPC
-  strHintbox: "{\"Dialog\":[\r\n{\"localID\":\"huanxiong-01\", \"sentence\":\"\u5728\u2F00\u4E2A\u2F46\u9650\u7684\u5B87\u5B99\uFF0C\u6BCF\u2F00\u70B9\u90FD\u53EF\u4EE5\u8BA4\u4E3A\u662F\u4E2D\u2F3C\uFF0C\u56E0\u4E3A\u5728\u5B83\u7684\u6BCF\u2F00\u8FB9\u90FD\u6709\u2F46\u9650\u9897\u6052\u661F\u2026\u2026\u8FD9\u672C\u300A\u65F6\u95F4\u7B80\u53F2\u300B\u7684\u5185\u5BB9\u2FAE\u5E38\u6DF1\u5965\uFF0C\u6211\u73B0\u5728\u770B\u8FD8\u6709\u4E9B\u65E9\u3002\",
+  strHintbox: "{\"Name\":\"\u6D63\u718A\u76AE\u76AE\", \"Dialog\":[\r\n{\"localID\":\"huanxiong-01\",
+    \"sentence\":\"\u5728\u2F00\u4E2A\u2F46\u9650\u7684\u5B87\u5B99\uFF0C\u6BCF\u2F00\u70B9\u90FD\u53EF\u4EE5\u8BA4\u4E3A\u662F\u4E2D\u2F3C\uFF0C\u56E0\u4E3A\u5728\u5B83\u7684\u6BCF\u2F00\u8FB9\u90FD\u6709\u2F46\u9650\u9897\u6052\u661F\u2026\u2026\u8FD9\u672C\u300A\u65F6\u95F4\u7B80\u53F2\u300B\u7684\u5185\u5BB9\u2FAE\u5E38\u6DF1\u5965\uFF0C\u6211\u73B0\u5728\u770B\u8FD8\u6709\u4E9B\u65E9\u3002\",
     \"sentenceClip\":\"huanxiong-01\", \"nextID\":[\"huanxiong-02\"]},\r\n{\"localID\":\"huanxiong-02\",
     \"sentence\":\"\u770B\u770B\u662F\u8C01\u6765\u4E86\uFF0C\u52C7\u6562\u7684\u63A2\u9669\u8005\uFF0C\u6211\u7B49\u5F85\u4F60\u5F88\u4E45\u4E86\u3002\",
     \"sentenceClip\":\"huanxiong-02\", \"userSelections\":[\"\u6D63\u718A\u535A\u2F20\u3002\u4F60\u53EF\u4EE5\u5E2E\u52A9\u6211\u89E3\u5F00\u6211\u2F3C\u4E2D\u7684\u7591\u60D1\u4E48\u3002\",
@@ -2150,12 +2151,12 @@ MonoBehaviour:
     \"sentence\":\"\u4E0D\u8FC7\uFF0C\u8FD9\u672C\u4E66\u7684\u5185\u5BB9\u2FAE\u5E38\u6DF1\u5965\uFF0C\u9700\u8981\u6709\u2F00\u5B9A\u7684\u79D1\u5B66\u77E5\u8BC6\u50A8\u5907\u624D\u80FD\u7406\u89E3\u5176\u4E2D\u7684\u5185\u5BB9\u3002\u5982\u679C\u4F60\u5BF9\u4E66\u7C4D\u611F\u5174\u8DA3\uFF0C\u53EF\u4EE5\u5728\u667A\u6167\u4E66\u9986\u2FA5\u627E\u627E\u9002\u5408\u4F60\u7684\u79D1\u666E\u7C7B\u4E66\u7C4D\u8FDB\u2F8F\u9605\u8BFB\u3002\",
     \"sentenceClip\":\"huanxiong-A8\", \"nextID\":[\"huanxiong-X1\"]},\r\n{\"localID\":\"huanxiong-B1\",
     \"sentence\":\"\u597D\u7684\uFF0C\u90A3\u8BA9\u6211\u4EEC\u73B0\u5728\u5C31\u5F00\u59CB\u5427\u3002\",
-    \"sentenceClip\":\"huanxiong-B1\", \"nextID\":[\"huanxiong-03\"]},\r\n{\"localID\":\"huanxiong-B2\",
+    \"sentenceClip\":\"huanxiong-B1\", \"nextID\":[\"huanxiong-C1\"]},\r\n{\"localID\":\"huanxiong-B2\",
     \"sentence\":\"\u6CA1\u6709\u5173\u7CFB\uFF0C\u6211\u4F1A\u7B49\u5F85\u4F60\uFF0C\u8FD9\u2F5A\u68EE\u6797\u4E5F\u6C38\u8FDC\u6B22\u8FCE\u4F60\u7684\u518D\u6B21\u5230\u6765\u3002\",
     \"sentenceClip\":\"huanxiong-B2\", \"nextID\":[\"huanxiong-X1\"]},\r\n{\"localID\":\"huanxiong-C1\",
-    \"quizID\":\"15\", \"nextID\":[\"huanxiong-C2\", \"huanxiong-08\"]},\r\n{\"localID\":\"huanxiong-C2\",
-    \"quizID\":\"15\", \"nextID\":[\"huanxiong-C3\", \"huanxiong-08\"]},\r\n{\"localID\":\"huanxiong-C3\",
-    \"quizID\":\"15\", \"nextID\":[\"huanxiong-03\", \"huanxiong-08\"]},\r\n{\"localID\":\"huanxiong-03\",
+    \"quizID\":\"15\", \"nextID\":[\"huanxiong-03\", \"huanxiong-08\"]},\r\n{\"localID\":\"huanxiong-C2\",
+    \"quizID\":\"16\", \"nextID\":[\"huanxiong-C3\", \"huanxiong-08\"]},\r\n{\"localID\":\"huanxiong-C3\",
+    \"quizID\":\"17\", \"nextID\":[\"huanxiong-03\", \"huanxiong-08\"]},\r\n{\"localID\":\"huanxiong-03\",
     \"sentence\":\"\u5F88\u597D\uFF0C\u4F60\u5DF2\u7ECF\u901A\u8FC7\u4E86\u6211\u7684\u8003\u9A8C\u3002\u6211\u5C06\u9881\u53D1\u7ED9\u4F60\u8FD9\u679A\u300C\u68EE\u6797\u5B88\u62A4\u8005\u300D\u7684\u52CB\u7AE0\u3002\u4ECE\u73B0\u5728\u8D77\uFF0C\u4F60\u5C31\u662F\u68EE\u6797\u5B88\u62A4\u8005\u4E2D\u7684\u2F00\u5458\u4E86\u3002\",
     \"sentenceClip\":\"huanxiong-03\", \"nextID\":[\"huanxiong-04\"]},\r\n{\"localID\":\"huanxiong-04\",
     \"sentence\":\"\u68EE\u6797\u5B88\u62A4\u8005\u4E0D\u4EC5\u4EC5\u662F\u4FDD\u62A4\u68EE\u6797\u7684\u2F63\u7269\uFF0C\u4E5F\u5305\u62EC\u4FDD\u62A4\u6211\u4EEC\u7684\u2F63\u6001\u73AF\u5883\u548C\u5730\u7403\u5BB6\u56ED\u7684\u672A\u6765\uFF0C\u8BA9\u5730\u7403\u4E0A\u7684\u6BCF\u2F00\u4E2A\u2F63\u7269\u90FD\u80FD\u591F\u2F63\u5B58\u548C\u7E41\u884D\u3002\u8FD9\u4E0D\u9700\u8981\u6211\u4EEC\u6709\u591A\u4E48\u5F3A\u2F24\u7684\u2F12\u91CF\u548C\u6280\u80FD\u3002\u53EA\u9700\u8981\u4ECE\u2F9D\u8FB9\u7684\u2F29\u4E8B\u505A\u8D77\uFF0C\u2F50\u5982\u8282\u7EA6\u2F64\u7EB8\u3001\u4E0D\u4E71\u6254\u5783\u573E\u3001\u4E0D\u7834\u574F\u690D\u88AB\u4E0E\u6811\u2F4A\u3001\u7231\u62A4\u2F29\u52A8\u7269\u3001\u4E0D\u65AD\u63A2\u7D22\u4E0E\u5B66\u4E60\u7B49\u7B49\u3002\",
@@ -2171,6 +2172,7 @@ MonoBehaviour:
     \"nextID\":[\"huanxiong-01\"]},\r\n],\"Intro\":\"huanxiong-01\"}"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
+  nameNPC: 
   enumARType: 0
   uuidImageTracking: Dino1
   offset: {x: 4, y: 0, z: 0}
@@ -2179,7 +2181,7 @@ MonoBehaviour:
   goFPSightMode: {fileID: 0}
   proximityDialog: 2
   hasProximityDialog: 0
-  goAnimEmerge: {fileID: 0}
+  animEmerge: {fileID: 0}
   goVisual: {fileID: 6296948336177076612}
 --- !u!1 &7810210813354445946
 GameObject:

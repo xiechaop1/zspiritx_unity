@@ -31,7 +31,7 @@ public class FieldEntityInfo : ItemInfo {
 				case 0:
 					if (animationTimer > 0.5f) {
 						ShowSelf();
-						stageHideAnimation = -1;
+						stageShowAnimation = -1;
 					}
 					break;
 				default:

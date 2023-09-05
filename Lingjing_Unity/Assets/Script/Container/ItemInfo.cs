@@ -13,7 +13,8 @@ public abstract class ItemInfo : MonoBehaviour, IEventMessage {
 	public string strHintbox = "";
 	public GameObject goInteractionMode;
 	public ARUtilityListener arUtiity;
-	
+
+	public string nameNPC = "";
 	public DialogSentence currDialog;
 	public DialogSentence[] lstDialogs;
 	public void SetInteractionMode(bool value) {

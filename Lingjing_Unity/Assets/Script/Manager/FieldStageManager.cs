@@ -149,6 +149,9 @@ public class FieldStageManager : MonoBehaviour, IManager {
 					info.currDialog = lstSentences[0];
 				}
 				info.lstDialogs = lstSentences.ToArray();
+				if (JSONReader.TryPraseString(info.strHintbox,"Name",ref tmp)) {
+					info.nameNPC = tmp;
+				}
 			}
 		}
 		if (prefabAnimEmerge!=null) {
