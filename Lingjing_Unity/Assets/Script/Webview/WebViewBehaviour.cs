@@ -192,11 +192,12 @@ public class WebViewBehaviour : MonoBehaviour {
 		RectOffset ret = new RectOffset();
 		RectTransform rectTransf = gameObject.GetComponent<RectTransform>();
 		if (rectTransf) {
-			ret.left = (int)(rectTransf.position.x + rectTransf.rect.x);
-			ret.top = (int)(Screen.height - (rectTransf.position.y + rectTransf.rect.y + rectTransf.rect.height));
-			ret.right = (int)(Screen.width - (rectTransf.position.x + rectTransf.rect.x + rectTransf.rect.width));
-			ret.bottom = (int)(rectTransf.position.y + rectTransf.rect.y);
+			ret.left = (int)(rectTransf.position.x + rectTransf.rect.x * rectTransf.lossyScale.x);
+			ret.top = (int)(Screen.height - rectTransf.position.y - (rectTransf.rect.y + rectTransf.rect.height) * rectTransf.lossyScale.y);
+			ret.right = (int)(Screen.width - rectTransf.position.x - (rectTransf.rect.x + rectTransf.rect.width) * rectTransf.lossyScale.x);
+			ret.bottom = (int)(rectTransf.position.y + rectTransf.rect.y * rectTransf.lossyScale.y);
 		}
+		//Debug.Log(rectTransf.position + "\n" + rectTransf.rect + "\n" + ret + "\n" + rectTransf.lossyScale);
 		return ret;
 	}
 
@@ -208,7 +209,7 @@ public class WebViewBehaviour : MonoBehaviour {
 	}
 	public void StartWebView(string pageUrl) {
 		RectOffset ret = GetRectOffset();
-		sceneLoadManager.webViewObject.SetMargins(ret.left, ret.top, ret.right, ret.bottom,true);
+		sceneLoadManager.webViewObject.SetMargins(ret.left, ret.top, ret.right, ret.bottom);
 		StartCoroutine(LoadURL(pageUrl));
 		SetVisibility(true);
 
