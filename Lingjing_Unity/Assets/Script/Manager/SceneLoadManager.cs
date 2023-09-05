@@ -35,6 +35,8 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	private EntityActionManager entityActionManager;
 	private ARSightManager arSightManager;
 
+	public GameObject ARSceneScanHint;
+
 	//Scroller
 	public ScrollerElementManager scrollerElementManager;
 
@@ -255,14 +257,16 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		fieldEntityManager.PrepareScene();
 
 		LoadingScreen.SetActive(false);
-		DebugLog("正在扫描构建环境，请使用手机缓慢扫描地面与墙壁");
+		ARSceneScanHint.SetActive(true);
+		//DebugLog("正在扫描构建环境，请使用手机缓慢扫描地面与墙壁");
 		for (int i = 0; i < 20; i++) {
 			if (fieldEntityManager.isSurfacesReady) {
 				break;
 			}
 			yield return new WaitForSeconds(1);
 		}
-		DebugLog("环境扫描 " + (fieldEntityManager.isSurfacesReady ? "成功" : "失败"));
+		//DebugLog("环境扫描 " + (fieldEntityManager.isSurfacesReady ? "成功" : "失败"));
+		ARSceneScanHint.SetActive(false);
 
 		isLoading = false;
 		yield break;

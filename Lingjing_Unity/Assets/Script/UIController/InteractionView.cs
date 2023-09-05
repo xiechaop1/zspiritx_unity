@@ -90,10 +90,12 @@ public class InteractionView : MonoBehaviour {
 	#region New NPC Interaction
 	public GameObject[] btnSelects;
 	public Text[] txtSelects;
+	public Text txtNPCName;
 
 	public void ShowNPCLog(ItemInfo info) {
 		entityInfo = info;
 		goNPCBox.SetActive(true);
+		txtNPCName.text = info.nameNPC;
 		AdvancedLog(entityInfo.currDialog);
 		if (entityInfo is FieldEntityInfo) {
 			if (((FieldEntityInfo)entityInfo).TryGetScenePos(out Vector3 pos)) {
@@ -150,6 +152,7 @@ public class InteractionView : MonoBehaviour {
 			entityInfo.currDialog = sentence;
 			webViewQuiz.StartWebView(sentence.url);
 		} else {
+			//Debug.Log("XXX");
 			entityInfo.currDialog = sentence.nextSentence[0];
 			ExitNPCLog();
 		}

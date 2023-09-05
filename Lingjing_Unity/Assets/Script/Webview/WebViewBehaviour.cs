@@ -208,7 +208,7 @@ public class WebViewBehaviour : MonoBehaviour {
 	}
 	public void StartWebView(string pageUrl) {
 		RectOffset ret = GetRectOffset();
-		sceneLoadManager.webViewObject.SetMargins(ret.left, ret.top, ret.right, ret.bottom);
+		sceneLoadManager.webViewObject.SetMargins(ret.left, ret.top, ret.right, ret.bottom,true);
 		StartCoroutine(LoadURL(pageUrl));
 		SetVisibility(true);
 
