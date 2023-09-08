@@ -16,6 +16,9 @@ namespace Network
 		public static string urlLingjingWebAddress = "https://api.zspiritx.com.cn/";
 		public static string urlLingjingQuiz = "https://h5.zspiritx.com.cn/qah5/qa_one?id=";
 
+		
+		public static string urlLingjingSession = "https://api.zspiritx.com.cn/process/";
+
 		//public static string urlYunForGet = "http://60.205.227.230/";
 		//public static string urlYunWebAddress = "http://60.205.227.230/";
 

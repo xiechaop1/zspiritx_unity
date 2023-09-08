@@ -4,7 +4,8 @@ using UnityEngine;
 
 [RequireComponent(typeof(FieldStageManager))]
 public class FieldEntityManager : MonoBehaviour, IManager {
-	public GameObject goCamera;
+	public GameObject ARSceneScanHint;
+	public GameObject goCamera;//必须要在mainCam下创建一个空go，mainCam的坐标会在update被AR Foundation上锁
 	public GameObject goCamDir;
 	public GameObject prefabARDir;
 	public GameObject goRoot;
@@ -23,6 +24,10 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	private float timeLastCheck = 1f;
 
 	private void Update() {
+		goCamDir.transform.position = goCamera.transform.position + Vector3.down;
+		Vector3 fwd = goCamera.transform.forward + goCamera.transform.up;
+		fwd.y = 0;
+		goCamDir.transform.rotation = Quaternion.LookRotation(fwd.normalized, Vector3.up);
 		if (timeLastCheck < 0) {
 			if (!loadManager.isLoading && loadManager.sceneMode == SceneLoadManager.SceneMode.AR) {
 				if (!isLoadFinish) {
@@ -329,21 +334,15 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		//arSightManager.RemoveEntity(entity);
 	}
 	public void TryPlaceRamdomEntitys(int maxTries) {
-		if (queFieldEntity.Count <= 0) return;
-
-		goCamDir.transform.position = goCamera.transform.position;
-		if (Vector3.Angle(Vector3.up, goCamera.transform.forward) > 0.01f) {
-			Vector3 fwd = new Vector3(goCamera.transform.forward.x, 0, goCamera.transform.forward.z);
-			goCamDir.transform.rotation.SetLookRotation(fwd.normalized, Vector3.up);
-		}
-
 		GameObject goEntity;
 		for (int i = 0; i < maxTries; i++) {
-			if (queFieldEntity.Count <= 0) break;
+			if (queFieldEntity.Count <= 0) {
+				//ARSceneScanHint.SetActive(false);
+				break;
+			}
 
 			goEntity = queFieldEntity.Dequeue();
-			FieldEntityInfo entityInfo;
-			if (goEntity.TryGetComponent(out entityInfo)) {
+			if (goEntity.TryGetComponent(out FieldEntityInfo entityInfo)) {
 				if (!entityInfo.goReference) {
 					entityInfo.goReference = goCamDir;
 				}
@@ -355,11 +354,14 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 				} else {
 					queFieldEntity.Enqueue(goEntity);
 				}
-				//}
 			}
 		}
 
-
+		if (isLoadFinish) {
+			ARSceneScanHint.SetActive(false);
+		} else if (!ARSceneScanHint.activeInHierarchy) {
+			ARSceneScanHint.SetActive(true);
+		}
 	}
 	public bool TryPlaceEntityAround(FieldEntityInfo entityInfo, Vector3 originPos, Quaternion originRot, float marginError) {
 		//Debug.Log("tryPlaceEntity" + entityInfo.strName);

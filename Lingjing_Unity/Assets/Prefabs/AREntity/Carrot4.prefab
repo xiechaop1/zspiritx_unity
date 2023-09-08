@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &881588549999576970
+--- !u!1 &2805901086700164382
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,10 +8,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6601325566531313982}
-  - component: {fileID: 7198802474120404082}
-  - component: {fileID: 431001400775172032}
-  - component: {fileID: 3254450077904891823}
+  - component: {fileID: 5995273171867904690}
+  - component: {fileID: 3914239250423511602}
+  - component: {fileID: 894380237181052673}
+  - component: {fileID: 1262554491854256685}
   m_Layer: 6
   m_Name: Quad
   m_TagString: Untagged
@@ -19,36 +19,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6601325566531313982
+--- !u!4 &5995273171867904690
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 881588549999576970}
+  m_GameObject: {fileID: 2805901086700164382}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 405004959032702263}
+  m_Father: {fileID: 2804039481286169823}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!33 &7198802474120404082
+--- !u!33 &3914239250423511602
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 881588549999576970}
+  m_GameObject: {fileID: 2805901086700164382}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &431001400775172032
+--- !u!23 &894380237181052673
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 881588549999576970}
+  m_GameObject: {fileID: 2805901086700164382}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 1
@@ -84,13 +84,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3254450077904891823
+--- !u!64 &1262554491854256685
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 881588549999576970}
+  m_GameObject: {fileID: 2805901086700164382}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -106,7 +106,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1014750107252171735
+--- !u!1 &5300947864636908243
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -114,133 +114,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 405004959032702263}
-  - component: {fileID: 8217896218799420876}
-  - component: {fileID: 2685938553185839879}
-  m_Layer: 6
-  m_Name: Carrot4
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &405004959032702263
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1014750107252171735}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 6601325566531313982}
-  - {fileID: 1680627790072808470}
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &8217896218799420876
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1014750107252171735}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.1, y: 0.1, z: 0.4}
-  m_Center: {x: 0, y: 0.05, z: 0}
---- !u!114 &2685938553185839879
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1014750107252171735}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6595787e0e9dbed4a923778f8d93d022, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entityManager: {fileID: 0}
-  enumActionType: 12
-  enumItemType: 13
-  icon: {fileID: 0}
-  iconHint: 
-  strName: Carrot4
-  strHintbox: "\u4E00\u6839\u80E1\u841D\u535C"
-  goInteractionMode: {fileID: 0}
-  arUtiity: {fileID: 0}
-  enumARType: 0
-  uuidImageTracking: 
-  offset: {x: 0, y: 0, z: 1}
-  enumSurfaceType: 1
-  goReference: {fileID: 0}
-  goFPSightMode: {fileID: 0}
-  proximityDialog: 0
-  hasProximityDialog: 0
-  goAnimEmerge: {fileID: 0}
-  goVisual: {fileID: 1492010777274633161}
---- !u!1 &1492010777274633161
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1680627790072808470}
-  - component: {fileID: 3785236075460794981}
-  - component: {fileID: 4695988426708152532}
+  - component: {fileID: 3346891270580570607}
+  - component: {fileID: 6190597495576779236}
+  - component: {fileID: 2969560989268179484}
   m_Layer: 0
-  m_Name: P_PROP_food_carrot_02
+  m_Name: P_PROP_food_carrot_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1680627790072808470
+--- !u!4 &3346891270580570607
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1492010777274633161}
+  m_GameObject: {fileID: 5300947864636908243}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 405004959032702263}
-  m_RootOrder: 0
+  m_Father: {fileID: 2804039481286169823}
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &3785236075460794981
+--- !u!33 &6190597495576779236
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1492010777274633161}
-  m_Mesh: {fileID: 1805949498320141493, guid: 6e2f60abb4444fd49abbf8ccbdfcad80, type: 3}
---- !u!23 &4695988426708152532
+  m_GameObject: {fileID: 5300947864636908243}
+  m_Mesh: {fileID: 5937293235413272895, guid: 25cd413e0d6fb6348806d2dcd4bd3b8a, type: 3}
+--- !u!23 &2969560989268179484
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1492010777274633161}
+  m_GameObject: {fileID: 5300947864636908243}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -276,3 +189,92 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7281288494092334353
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2804039481286169823}
+  - component: {fileID: 8893869569832028110}
+  - component: {fileID: 7998168828478030864}
+  m_Layer: 6
+  m_Name: Carrot4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2804039481286169823
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7281288494092334353}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5995273171867904690}
+  - {fileID: 3346891270580570607}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8893869569832028110
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7281288494092334353}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.2, y: 0.2, z: 0.7}
+  m_Center: {x: 0, y: 0.1, z: 0}
+--- !u!114 &7998168828478030864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7281288494092334353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6595787e0e9dbed4a923778f8d93d022, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entityManager: {fileID: 0}
+  enumActionType: 12
+  enumItemType: 13
+  icon: {fileID: 0}
+  iconHint: 
+  strName: Carrot4
+  strHintbox: "\u4E00\u6839\u80E1\u841D\u535C"
+  goInteractionMode: {fileID: 0}
+  arUtiity: {fileID: 0}
+  nameNPC: 
+  enumARType: 0
+  uuidImageTracking: 
+  offset: {x: 0, y: 0, z: 1}
+  isLookAt: 0
+  enumSurfaceType: 1
+  goReference: {fileID: 0}
+  goFPSightMode: {fileID: 0}
+  proximityDialog: 0
+  hasProximityDialog: 0
+  animEmerge: {fileID: 0}
+  goVisual: {fileID: 5300947864636908243}

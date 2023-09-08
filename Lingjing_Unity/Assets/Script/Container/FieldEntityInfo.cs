@@ -12,6 +12,7 @@ public class FieldEntityInfo : ItemInfo {
 	public EntityToggleType enumARType = EntityToggleType.RamdomAround;
 	public string uuidImageTracking = "";
 	public Vector3 offset = Vector3.zero;
+	public bool isLookAt = false;
 	public int enumSurfaceType = -1;
 	public GameObject goReference;
 	//public GameObject[] lstEntityCorner;
@@ -63,7 +64,14 @@ public class FieldEntityInfo : ItemInfo {
 		var posOld = transform.position;
 		var rotOld = transform.rotation;
 		transform.position = posTarget;
-		transform.rotation = rotTarget;
+		if (isLookAt) {
+			Vector3 LookDir = entityManager.goCamDir.transform.position - posTarget;
+			LookDir.y = 0;
+			transform.rotation = Quaternion.LookRotation(LookDir.normalized);
+		} else {
+			transform.rotation = rotTarget;
+		}
+
 		RaycastHit hit;
 		Ray ray = new Ray(posTarget + (transform.up * 0.01f), Vector3.down);
 		//Debug.Log("Try place at " + posTarget);
