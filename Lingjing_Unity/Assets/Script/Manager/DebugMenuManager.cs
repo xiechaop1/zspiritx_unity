@@ -29,6 +29,7 @@ public class DebugMenuManager : MonoBehaviour {
 	public InteractionView interactionController;
 	public InventoryItemManager inventoryItemManager;
 	public WebViewBehaviour SplashWebView;
+	public InputGPSManager gpsManager;
 	//public UnityEngine.XR.ARFoundation.ARTrackedImageManager imageManager;
 	//public UnityEngine.XR.ARSubsystems.XRReferenceImageLibrary altImageLib;
 
@@ -60,16 +61,18 @@ public class DebugMenuManager : MonoBehaviour {
 		sceneLoadManager.ExitScene();
 		//SplashWebView.StartWebView("splash.html");
 	}
-	bool isDebugMode = false;
+	//bool isDebugMode = false;
 	public void DebugBtn() {
+		ShowHint(gpsManager.GetCurrentLatLonWGS84().ToString("F5") + "\n" + gpsManager.GetCurrentLatLonGCJ02().ToString("F5") + "\n" + gpsManager.GetCurrentLatLonBD09().ToString("F5") + "\n");
 		//var locInfo = InputGPSManager.getInstance().GetCurrentLatLon();
 		//ShowHint("lat: " + locInfo.x + "\nlon: " + locInfo.y /*+ "\nalt: " + locInfo.altitude*/);
+		//ShowHint(fieldEntityManager.goCamDir.transform.rotation.eulerAngles.y + "\n" + Input.compass.trueHeading + "\n" + (fieldEntityManager.goCamDir.transform.rotation.eulerAngles.y - Input.compass.trueHeading));
 
 		//StartCoroutine(GPSTest());
 #if UNITY_EDITOR
-		FakeImageFound();
+		//FakeImageFound();
 #else
-		fieldStageManager.LocationUpdate(Config.ConfigInfo.test.testLatLon);
+		//fieldStageManager.LocationUpdate(Config.ConfigInfo.test.testLatLon);
 #endif
 		//sceneLoadManager.Pause();
 

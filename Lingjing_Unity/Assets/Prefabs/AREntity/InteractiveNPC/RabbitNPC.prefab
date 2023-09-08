@@ -955,15 +955,16 @@ MonoBehaviour:
   strHintbox: "{\"Intro\":\"\u4F60\u597D\uFF0C\u6211\u662F\u5C0F\u5154\u3002\"}"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
+  nameNPC: 
   enumARType: 0
   uuidImageTracking: Mc1
-  offset: {x: -4, y: 0, z: 0}
+  offset: {x: 0, y: 0, z: 1}
   enumSurfaceType: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
   proximityDialog: 2
   hasProximityDialog: 0
-  goAnimEmerge: {fileID: 0}
+  animEmerge: {fileID: 0}
   goVisual: {fileID: 6028883485994486790}
 --- !u!1 &2908473849723947925
 GameObject:

@@ -2175,7 +2175,8 @@ MonoBehaviour:
   nameNPC: 
   enumARType: 0
   uuidImageTracking: Dino1
-  offset: {x: 4, y: 0, z: 0}
+  offset: {x: 0, y: 0, z: 1}
+  isLookAt: 1
   enumSurfaceType: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}

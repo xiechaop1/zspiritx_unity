@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Network;
+using Config;
 
 public class SceneLoadManager : MonoBehaviour, IManager {
 	public enum SceneMode {
@@ -15,7 +17,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	public WebViewObject webViewObject;
 	public event Action<string> webViewCallback;
 
-	public GameObject Notch;
+	//public GameObject Notch;
 	public GameObject LoadingScreen;
 	public WebViewBehaviour SplashWebView;
 	public event Action<string> eventDebugInfo;
@@ -25,7 +27,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	//Utility
 	private UIEventManager eventManager;
 	public InventoryItemManager inventoryItemManager;
-	private Network.WWWManager networkManager;
+	private WWWManager networkManager;
 	private InputGPSManager gpsManager;
 
 	//AR
@@ -35,7 +37,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	private EntityActionManager entityActionManager;
 	private ARSightManager arSightManager;
 
-	public GameObject ARSceneScanHint;
+	//public GameObject ARSceneScanHint;
 
 	//Scroller
 	public ScrollerElementManager scrollerElementManager;
@@ -61,10 +63,10 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		eventManager.Init(eventManager);
 		//eventManager.SubscribeBroadcast("WebViewCall", WebviewCallbackSceneControl);
 
-		networkManager = Network.WWWManager.getInstance();
+		networkManager = WWWManager.getInstance();
 
 		gpsManager = InputGPSManager.getInstance();
-		gpsManager.Init(eventManager);
+		gpsManager.Init(eventManager,networkManager);
 
 		inventoryItemManager.Init(eventManager);
 		entityActionManager = inventoryItemManager.GetComponent<EntityActionManager>();
@@ -200,15 +202,15 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 
 	IEnumerator InitStartUp() {
 		yield return null;
-#if UNITY_EDITOR
-		float notch = 20;//Screen.safeArea.x;
-#else
-		float notch = Screen.safeArea.x;
-#endif
-		if (notch > 0.0f) {
-			Notch.GetComponent<RectTransform>().anchorMin = new Vector2(0.0f, 1.0f - notch / Screen.width);
-			//SplashWebView.GetComponent<RectTransform>().anchorMax = new Vector2(1.0f, 1.0f - notch / Screen.width);
-		}
+//#if UNITY_EDITOR
+//		float notch = 20;//Screen.safeArea.x;
+//#else
+//		float notch = Screen.safeArea.x;
+//#endif
+		//if (notch > 0.0f) {
+		//	Notch.GetComponent<RectTransform>().anchorMin = new Vector2(0.0f, 1.0f - notch / Screen.width);
+		//	//SplashWebView.GetComponent<RectTransform>().anchorMax = new Vector2(1.0f, 1.0f - notch / Screen.width);
+		//}
 		yield return null;
 		SplashWebView.OnCallback += WebviewCallbackSceneControl;
 		//SplashWebView.OnWebClose += LoadAR;
@@ -251,37 +253,101 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		isLoading = true;
 		sceneMode = SceneMode.AR;
 		arSession.enabled = true;
+		//yield return AsyncStartSession();
+
 		yield return null;
 		fieldStageManager.PrepareBackstage(startingStage);
 		yield return null;
 		fieldEntityManager.PrepareScene();
 
 		LoadingScreen.SetActive(false);
-		ARSceneScanHint.SetActive(true);
+		//ARSceneScanHint.SetActive(true);
 		//DebugLog("正在扫描构建环境，请使用手机缓慢扫描地面与墙壁");
-		for (int i = 0; i < 20; i++) {
-			if (fieldEntityManager.isSurfacesReady) {
-				break;
-			}
-			yield return new WaitForSeconds(1);
-		}
+		//for (int i = 0; i < 20; i++) {
+		//	if (fieldEntityManager.isSurfacesReady) {
+		//		break;
+		//	}
+		//	yield return new WaitForSeconds(1);
+		//}
 		//DebugLog("环境扫描 " + (fieldEntityManager.isSurfacesReady ? "成功" : "失败"));
-		ARSceneScanHint.SetActive(false);
+		//ARSceneScanHint.SetActive(false);
 
 		isLoading = false;
 		yield break;
+	}
 
-		yield return null;
-		for (int i = 0; i < 10; i++) {
-			if (fieldEntityManager.isLoadFinish) {
-				break;
-			}
-			fieldEntityManager.TryPlaceRamdomEntitys(10);
-			yield return new WaitForSeconds(1);
+	IEnumerator AsyncStartSession() {
+		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingSession,
+			"init",
+			string.Format("is_test=1&user_id={0}&story_id={1}",
+				ConfigInfo.userId,
+				ConfigInfo.storyId
+				)
+			);
+		yield return www;
+		if (www.isError) {
+			Debug.LogWarning(www.error);
+			yield break;
 		}
-		DebugLog("模型放置 " + (fieldEntityManager.isLoadFinish ? "成功" : "失败"));
+		if (string.IsNullOrEmpty(www.text)) {
+			Debug.LogWarning("FAILED to create session due to missing return info");
+			yield break;
+		}
+		Debug.Log(www.text);
+		if (!InitSessionInfo(www.text)) {
+			Debug.LogWarning("FAILED to create session due to missing session id");
+			yield break;
+		}
+		yield return null;
+		www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingSession,
+			"join",
+			string.Format("is_test=1&user_id={0}&story_id={1}&session_id={2}&role_id=1&team_id=0",
+				ConfigInfo.userId,
+				ConfigInfo.storyId,
+				ConfigInfo.sessionId
+				)
+			);
+		yield return www;
+		if (www.isError) {
+			Debug.LogWarning(www.error);
+			yield break;
+		}
+		if (string.IsNullOrEmpty(www.text)) {
+			Debug.LogWarning("FAILED to join session due to missing return info");
+			yield break;
+		}
+		Debug.Log(www.text);
+		yield return null;
+		yield break;
+	}
+	bool InitSessionInfo(string wwwText) {
+		string tmpStr = "";
+		if (JSONReader.TryPraseString(wwwText, "data", ref tmpStr)) {
+			int tmpInt = 0;
+			if (JSONReader.TryPraseInt(tmpStr, "id", ref tmpInt)) {
+				ConfigInfo.sessionId = tmpInt;
+				return true;
+			}
+		}
+		return false;
+	}
 
-		isLoading = false;
+	IEnumerator AsyncEndSession() {
+		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingSession,
+			"finish",
+			string.Format("is_test=1&user_id={0}&story_id={1}&session_id={2}&goal=retry",
+				ConfigInfo.userId,
+				ConfigInfo.storyId,
+				ConfigInfo.sessionId
+				)
+			);
+		yield return www;
+		if (www.isError) {
+			Debug.LogWarning(www.error);
+			yield break;
+		}
+		Debug.Log(www.text);
+		yield return null;
 		yield break;
 	}
 
@@ -337,6 +403,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 				break;
 		}
 		yield return null;
+		//yield return AsyncEndSession();
 		yield return new WaitForSeconds(1f);
 		sceneMode = SceneMode.Ready;
 		isLoading = false;
