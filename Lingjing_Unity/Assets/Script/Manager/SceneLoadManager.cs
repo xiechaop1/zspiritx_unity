@@ -29,6 +29,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	public InventoryItemManager inventoryItemManager;
 	private WWWManager networkManager;
 	private InputGPSManager gpsManager;
+	public ActorDataManager dataManager;
 
 	//AR
 	public UnityEngine.XR.ARFoundation.ARSession arSession;
@@ -66,7 +67,9 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		networkManager = WWWManager.getInstance();
 
 		gpsManager = InputGPSManager.getInstance();
-		gpsManager.Init(eventManager,networkManager);
+		gpsManager.Init(eventManager, networkManager);
+
+		dataManager.Init(eventManager, gpsManager, networkManager);
 
 		inventoryItemManager.Init(eventManager);
 		entityActionManager = inventoryItemManager.GetComponent<EntityActionManager>();
@@ -77,7 +80,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		//AR Init
 
 		fieldStageManager.Init(eventManager, fieldEntityManager);
-		fieldEntityManager.Init(eventManager, entityActionManager, fieldStageManager, this);
+		fieldEntityManager.Init(eventManager, entityActionManager, fieldStageManager, gpsManager,this);
 		arSightManager = fieldEntityManager.GetComponent<ARSightManager>();
 		arSightManager.Init(eventManager);
 
@@ -202,11 +205,11 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 
 	IEnumerator InitStartUp() {
 		yield return null;
-//#if UNITY_EDITOR
-//		float notch = 20;//Screen.safeArea.x;
-//#else
-//		float notch = Screen.safeArea.x;
-//#endif
+		//#if UNITY_EDITOR
+		//		float notch = 20;//Screen.safeArea.x;
+		//#else
+		//		float notch = Screen.safeArea.x;
+		//#endif
 		//if (notch > 0.0f) {
 		//	Notch.GetComponent<RectTransform>().anchorMin = new Vector2(0.0f, 1.0f - notch / Screen.width);
 		//	//SplashWebView.GetComponent<RectTransform>().anchorMax = new Vector2(1.0f, 1.0f - notch / Screen.width);
@@ -271,13 +274,13 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		//}
 		//DebugLog("环境扫描 " + (fieldEntityManager.isSurfacesReady ? "成功" : "失败"));
 		//ARSceneScanHint.SetActive(false);
-
+		dataManager.SetUserInfoSharing(true);
 		isLoading = false;
 		yield break;
 	}
 
 	IEnumerator AsyncStartSession() {
-		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingSession,
+		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingProcess,
 			"init",
 			string.Format("is_test=1&user_id={0}&story_id={1}",
 				ConfigInfo.userId,
@@ -299,7 +302,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 			yield break;
 		}
 		yield return null;
-		www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingSession,
+		www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingProcess,
 			"join",
 			string.Format("is_test=1&user_id={0}&story_id={1}&session_id={2}&role_id=1&team_id=0",
 				ConfigInfo.userId,
@@ -333,7 +336,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	}
 
 	IEnumerator AsyncEndSession() {
-		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingSession,
+		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingProcess,
 			"finish",
 			string.Format("is_test=1&user_id={0}&story_id={1}&session_id={2}&goal=retry",
 				ConfigInfo.userId,
@@ -403,6 +406,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 				break;
 		}
 		yield return null;
+		dataManager.SetUserInfoSharing(false);
 		//yield return AsyncEndSession();
 		yield return new WaitForSeconds(1f);
 		sceneMode = SceneMode.Ready;

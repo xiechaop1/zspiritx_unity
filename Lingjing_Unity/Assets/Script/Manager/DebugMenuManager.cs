@@ -63,9 +63,14 @@ public class DebugMenuManager : MonoBehaviour {
 	}
 	//bool isDebugMode = false;
 	public void DebugBtn() {
-		ShowHint(gpsManager.GetCurrentLatLonWGS84().ToString("F5") + "\n" + gpsManager.GetCurrentLatLonGCJ02().ToString("F5") + "\n" + gpsManager.GetCurrentLatLonBD09().ToString("F5") + "\n");
-		//var locInfo = InputGPSManager.getInstance().GetCurrentLatLon();
-		//ShowHint("lat: " + locInfo.x + "\nlon: " + locInfo.y /*+ "\nalt: " + locInfo.altitude*/);
+		if (gpsManager.UpdateCamPos()) {
+			gpsManager.UpdateGroundLatLonByCameraPos();
+		}
+		ShowHint(gpsManager.camLatitude.ToString("F9") + ", " + gpsManager.camLongitude.ToString("F9") + "\n" +
+			gpsManager.GetCurrentLatLonGCJ02().ToString("F9") + "\n" +
+			gpsManager.GetCurrentLatLonBD09().ToString("F9") + "\n" +
+			gpsManager.groundLatitude.ToString("F9") + ", " + gpsManager.groundLongitude.ToString("F9") + "\n");
+
 		//ShowHint(fieldEntityManager.goCamDir.transform.rotation.eulerAngles.y + "\n" + Input.compass.trueHeading + "\n" + (fieldEntityManager.goCamDir.transform.rotation.eulerAngles.y - Input.compass.trueHeading));
 
 		//StartCoroutine(GPSTest());
@@ -96,7 +101,7 @@ public class DebugMenuManager : MonoBehaviour {
 		sceneLoadManager.DebugWebViewCallback("WebViewOff&TrueAnswer");
 	}
 	public void TryPlaceEntity() {
-		fieldEntityManager.TryPlaceRamdomEntitys(10);
+		fieldEntityManager.TryPlaceRamdomEntities(10);
 		ShowHint("模型放置 " + (fieldEntityManager.isLoadFinish ? "成功" : "失败"));
 	}
 

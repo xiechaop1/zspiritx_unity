@@ -15,6 +15,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 	public GameObject goRoot;
 	public GameObject[] lstFieldEntity = new GameObject[0];
 	public GameObject[] lstTaggedEntity = new GameObject[0];
+	public GameObject[] lstLocEntity = new GameObject[0];
 
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
 		foreach (var manager in managers) {
@@ -77,6 +78,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		currentStage = targetStage;
 		lstFieldEntity = LoadStageEntities(targetStage.lstFieldEntityUUID);
 		lstTaggedEntity = LoadStageEntities(targetStage.lstTaggedEntityUUID);
+		lstLocEntity = LoadStageEntities(targetStage.lstGeolocEntityUUID);
 		if (!string.IsNullOrWhiteSpace(targetStage.uuidBGM)) {
 			LoadMusic(targetStage.uuidBGM);
 		}

@@ -240,6 +240,7 @@ MonoBehaviour:
   lstFieldEntityUUID:
   - BearNPC
   lstTaggedEntityUUID: []
+  lstGeolocEntityUUID: []
   voiceLogs: []
   nextStages:
   - {fileID: 2002493503}
@@ -396,6 +397,7 @@ MonoBehaviour:
   - DebugObj
   lstTaggedEntityUUID:
   - phone
+  lstGeolocEntityUUID: []
   voiceLogs: []
   nextStages:
   - {fileID: 100318663}
@@ -864,6 +866,7 @@ MonoBehaviour:
   lstFieldEntityUUID:
   - Crystal2
   lstTaggedEntityUUID: []
+  lstGeolocEntityUUID: []
   voiceLogs: []
   nextStages:
   - {fileID: 2002493503}
@@ -981,6 +984,7 @@ MonoBehaviour:
   - BearNPC
   lstTaggedEntityUUID:
   - FlowerPot1
+  lstGeolocEntityUUID: []
   voiceLogs: []
   nextStages:
   - {fileID: 445875638}
@@ -1057,6 +1061,7 @@ MonoBehaviour:
   actionManager: {fileID: 0}
   stageManager: {fileID: 0}
   loadManager: {fileID: 0}
+  geolocManager: {fileID: 0}
 --- !u!4 &119510839
 Transform:
   m_ObjectHideFlags: 0
@@ -1072,7 +1077,7 @@ Transform:
   - {fileID: 1466262051}
   - {fileID: 254332186}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &119510840
 MonoBehaviour:
@@ -1107,6 +1112,7 @@ MonoBehaviour:
   goRoot: {fileID: 1656574707}
   lstFieldEntity: []
   lstTaggedEntity: []
+  lstLocEntity: []
 --- !u!1 &131915490
 GameObject:
   m_ObjectHideFlags: 0
@@ -1395,6 +1401,7 @@ MonoBehaviour:
   - Puzzle
   lstTaggedEntityUUID:
   - FlowerPot3
+  lstGeolocEntityUUID: []
   voiceLogs: []
   nextStages:
   - {fileID: 376748063}
@@ -2927,6 +2934,7 @@ MonoBehaviour:
   lstFieldEntityUUID:
   - DebugObj
   lstTaggedEntityUUID: []
+  lstGeolocEntityUUID: []
   voiceLogs: []
   nextStages:
   - {fileID: 2074526668}
@@ -3428,6 +3436,7 @@ MonoBehaviour:
   - RabbitNPC
   lstTaggedEntityUUID:
   - FlowerPot2
+  lstGeolocEntityUUID: []
   voiceLogs: []
   nextStages:
   - {fileID: 143074623}
@@ -3846,6 +3855,7 @@ MonoBehaviour:
   SplashWebView: {fileID: 1920078792}
   startingStage: {fileID: 1279897300}
   inventoryItemManager: {fileID: 390938061}
+  dataManager: {fileID: 999401650}
   arSession: {fileID: 656880747}
   fieldStageManager: {fileID: 119510841}
   scrollerElementManager: {fileID: 1394274636}
@@ -4851,6 +4861,7 @@ MonoBehaviour:
   - Gems2
   lstTaggedEntityUUID:
   - FlowerPot2
+  lstGeolocEntityUUID: []
   voiceLogs: []
   nextStages:
   - {fileID: 2002493503}
@@ -5152,6 +5163,7 @@ MonoBehaviour:
   lstFieldEntityUUID:
   - PantherNPC
   lstTaggedEntityUUID: []
+  lstGeolocEntityUUID: []
   voiceLogs: []
   nextStages:
   - {fileID: 2002493503}
@@ -5460,10 +5472,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 1466262050}
-  m_vec2GroundLatLon: {x: 0, y: 0}
-  m_camLatitude: 0
-  m_camLongitude: 0
-  m_camPos: {x: 0, y: 0, z: 0}
+  camLatitude: 0
+  camLongitude: 0
+  groundLatitude: 0
+  groundLongitude: 0
 --- !u!4 &803468633
 Transform:
   m_ObjectHideFlags: 0
@@ -6498,6 +6510,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 998157119}
   m_CullTransparentMesh: 1
+--- !u!1 &999401649
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 999401651}
+  - component: {fileID: 999401650}
+  m_Layer: 0
+  m_Name: ActorDataManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &999401650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 999401649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5d424f72d954c3418c6c983bb4098db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &999401651
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 999401649}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1003619937
 GameObject:
   m_ObjectHideFlags: 0
@@ -8618,7 +8674,7 @@ Transform:
   - {fileID: 143074624}
   - {fileID: 376748062}
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1229366571
 GameObject:
@@ -8865,7 +8921,7 @@ Transform:
   m_Children:
   - {fileID: 433188190696924933}
   m_Father: {fileID: 0}
-  m_RootOrder: 17
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1239091688
 GameObject:
@@ -9062,7 +9118,7 @@ Transform:
   - {fileID: 789391507}
   - {fileID: 1970561706}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1262037205
 GameObject:
@@ -9258,6 +9314,7 @@ MonoBehaviour:
   - Gems1
   - Crystal1
   lstTaggedEntityUUID: []
+  lstGeolocEntityUUID: []
   voiceLogs: []
   nextStages:
   - {fileID: 2002493503}
@@ -10018,7 +10075,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1430313166
 GameObject:
@@ -12001,13 +12058,14 @@ MonoBehaviour:
   - {fileID: 1860623269140290312, guid: 76b75c4afbf0ea44da3e95379b82fd50, type: 3}
   - {fileID: 1681507181188417571, guid: 36bfc668bd5267f469a017060f54748e, type: 3}
   - {fileID: 4344030163487779139, guid: 29617d6d0d42ca64991ab84144cb28e7, type: 3}
-  - {fileID: 8139650556426440917, guid: 119f7a6c6ba405243a70f31069f8c75c, type: 3}
+  - {fileID: 3963022228567380886, guid: 119f7a6c6ba405243a70f31069f8c75c, type: 3}
   - {fileID: 9138336753067519043, guid: d6acdede46395c348984e7c6704cd00c, type: 3}
-  - {fileID: 1014750107252171735, guid: 277f79be1134a164b9e5710c60819e40, type: 3}
+  - {fileID: 7281288494092334353, guid: 277f79be1134a164b9e5710c60819e40, type: 3}
   - {fileID: 1253479792052358649, guid: 84e8d5df746c8c045b6257b2c6246e10, type: 3}
-  - {fileID: 7310747714240005322, guid: 4ec3d4d3e6d8f574083c99484353ed8d, type: 3}
+  - {fileID: 7114863909175635737, guid: 4ec3d4d3e6d8f574083c99484353ed8d, type: 3}
   - {fileID: 851886530276015914, guid: 5c9aea83afabb7a4786d95eca35a3054, type: 3}
-  - {fileID: 3792094473731821873, guid: 4430bc77a41bb754ea3c2fa946d836f2, type: 3}
+  - {fileID: 529598812669980325, guid: 4430bc77a41bb754ea3c2fa946d836f2, type: 3}
+  - {fileID: 2106844446473325926, guid: 6427dfcda8deb3a41b4f6abcc678512f, type: 3}
   lstMusics:
   - {fileID: 8300000, guid: 475f4837af487ce4a9e68bb227455e4c, type: 3}
   - {fileID: 8300000, guid: 90eae78e8ce85a849b5b0ca11b2de641, type: 3}
@@ -12033,7 +12091,7 @@ Transform:
   - {fileID: 698242094}
   - {fileID: 63169081}
   m_Father: {fileID: 0}
-  m_RootOrder: 18
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1814111098
 GameObject:
@@ -12230,6 +12288,7 @@ MonoBehaviour:
   - RacconNPC
   - Gems1
   lstTaggedEntityUUID: []
+  lstGeolocEntityUUID: []
   voiceLogs: []
   nextStages:
   - {fileID: 2002493503}
@@ -13615,6 +13674,7 @@ MonoBehaviour:
   - Carrot7
   - Carrot8
   lstTaggedEntityUUID: []
+  lstGeolocEntityUUID: []
   voiceLogs:
   - {fileID: 8300000, guid: 1c73bddd761bfb24fbe801a8d0defa37, type: 3}
   - {fileID: 8300000, guid: 24a7c57150394b34c855191ce34273d4, type: 3}
@@ -13955,6 +14015,7 @@ MonoBehaviour:
   - Puzzle
   lstTaggedEntityUUID:
   - phone
+  lstGeolocEntityUUID: []
   voiceLogs: []
   nextStages:
   - {fileID: 50037271}
@@ -14783,7 +14844,7 @@ Transform:
   - {fileID: 2338561778940749897}
   - {fileID: 1466157513533317509}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4072266913435251453
 GameObject:
@@ -15054,7 +15115,7 @@ Transform:
   m_Children:
   - {fileID: 1351763233}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &8144207307145500434
 Transform:
@@ -15128,6 +15189,8 @@ MonoBehaviour:
   nameNPC: 
   enumARType: 0
   uuidImageTracking: 
+  latitude: 0
+  longitude: 0
   offset: {x: 0, y: 0, z: 0}
   isLookAt: 0
   enumSurfaceType: 1

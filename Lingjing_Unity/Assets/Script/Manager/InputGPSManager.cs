@@ -20,24 +20,50 @@ public class InputGPSManager : MonoBehaviour, IManager {
 		return null;
 	}
 	#endregion
+#if UNITY_EDITOR
 	private void Start() {
 		if (ConfigInfo.test.testFlag) {
 			//测试模式阻止GPS刷新
-			m_vec2GroundLatLon = ConfigInfo.test.testLatLon;
-			m_camLatitude = ConfigInfo.test.testLatLon.x;
-			m_camLongitude = ConfigInfo.test.testLatLon.y;
+			//groundLatLon = ConfigInfo.test.testLatLon;
+			camLatitude = ConfigInfo.test.testLatLon.x;
+			camLongitude = ConfigInfo.test.testLatLon.y;
 		}
 	}
+#endif
 
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
+
+
 		locServ = Input.location;
 		compass = Input.compass;
+		NativeGPSPlugin.StartLocation();
 	}
+
+	//	bool locationIsReady = false;
+	//	bool locationGrantedAndroid = false;
+	//	void InitDoubleLoc() {
+	//#if PLATFORM_ANDROID
+	//        if (!Permission.HasUserAuthorizedPermission(Permission.FineLocation))
+	//        {
+	//            Permission.RequestUserPermission(Permission.FineLocation);
+	//        }
+	//        else
+	//        {
+	//            locationGrantedAndroid = true;
+	//            locationIsReady = NativeGPSPlugin.StartLocation();
+	//        }
+
+	//#elif PLATFORM_IOS
+
+	//		locationIsReady = NativeGPSPlugin.StartLocation();
+
+	//#endif
+	//	}
 
 	#region Update Info
 	void Update() {
 		if (compass.enabled) {
-			transform.rotation = GetNorth();
+			UpdateGroundCampass();
 		}
 	}
 
@@ -53,35 +79,69 @@ public class InputGPSManager : MonoBehaviour, IManager {
 		compass.enabled = false;
 	}
 
-	private Vector2 GetCurrentLatLon() {
+	private void GetCurrentLatLon(out double latitude, out double longitude) {
 		LocationInfo locInfo = locServ.lastData;
-		return new Vector2(locInfo.latitude, locInfo.longitude);
+		latitude = locInfo.latitude;
+		longitude = locInfo.longitude;
+	}
+	public void GetCurrentLatLonWGS84(out double latitude, out double longitude) {
+		latitude = NativeGPSPlugin.GetLatitude();
+		longitude = NativeGPSPlugin.GetLongitude();
 	}
 	public Vector2 GetCurrentLatLonWGS84() {
 		if (compass.enabled) {
-			return GetCurrentLatLon();
+			GetCurrentLatLonWGS84(out double dLat, out double dLon);
+			return new Vector2((float)dLat, (float)dLon);//GetCurrentLatLon();
 		}
 		return Vector2.zero;
 
+	}
+	public void GetCurrentLatLonGCJ02(out double latitude, out double longitude) {
+		if (compass.enabled) {
+			GetCurrentLatLonWGS84(out double dLat, out double dLon);
+			WGS84ToGCJ02(dLat, dLon, out double lat, out double lon);
+			latitude = lat;
+			longitude = lon;
+		} else {
+			latitude = 0;
+			longitude = 0;
+		}
 	}
 	public Vector2 GetCurrentLatLonGCJ02() {
-		if (compass.enabled) {
-			Vector2 raw = GetCurrentLatLon();
-			WGS84ToGCJ02(raw.x, raw.y, out double lat, out double lon);
-			return new Vector2((float)lat, (float)lon);
-		}
-		return Vector2.zero;
+		GetCurrentLatLonGCJ02(out double lat, out double lon);
+		return new Vector2((float)lat, (float)lon);
+		//if (compass.enabled) {
+		//	GetCurrentLatLonWGS84(out double dLat, out double dLon);
+		//	WGS84ToGCJ02(dLat, dLon, out double lat, out double lon);
+		//	return new Vector2((float)lat, (float)lon);
+		//}
+		//return Vector2.zero;
 	}
-
+	public void GetCurrentLatLonBD09(out double latitude, out double longitude) {
+		if (compass.enabled) {
+			GetCurrentLatLonWGS84(out double dLat, out double dLon);
+			WGS84ToBD09(dLat, dLon, out double lat, out double lon);
+			latitude = lat;
+			longitude = lon;
+		} else {
+			latitude = 0;
+			longitude = 0;
+		}
+	}
 	public Vector2 GetCurrentLatLonBD09() {
-		if (compass.enabled) {
-			Vector2 raw = GetCurrentLatLon();
-			WGS84ToBD09(raw.x, raw.y, out double lat, out double lon);
-			return new Vector2((float)lat, (float)lon);
-		}
-		return Vector2.zero;
+		GetCurrentLatLonBD09(out double lat, out double lon);
+		return new Vector2((float)lat, (float)lon);
+		//if (compass.enabled) {
+		//	GetCurrentLatLonWGS84(out double dLat, out double dLon);
+		//	WGS84ToBD09(dLat, dLon, out double lat, out double lon);
+		//	return new Vector2((float)lat, (float)lon);
+		//}
+		//return Vector2.zero;
 	}
 
+	public void UpdateGroundCampass() {
+		transform.rotation = GetNorth();
+	}
 	Quaternion GetNorth() {
 		return Quaternion.Euler(0, mainCamera.transform.rotation.eulerAngles.y - compass.trueHeading, 0);
 	}
@@ -89,13 +149,40 @@ public class InputGPSManager : MonoBehaviour, IManager {
 
 	//相对位置的经纬度
 	public GameObject mainCamera;
-	public Vector2 m_vec2GroundLatLon = Vector2.zero;
-	public double m_camLatitude = 0f;
-	public double m_camLongitude = 0f;
-	public Vector3 m_camPos = Vector3.zero;
-	//public bool isCardShow = true;
+	//public Vector2 groundLatLon = Vector2.zero;
+	//public Vector2 camLatLon = Vector2.zero;
+	public double camLatitude = 0f;
+	public double camLongitude = 0f;
+	public double groundLatitude = 0f;
+	public double groundLongitude = 0f;
+	//public Vector3 camPos = Vector3.zero;
+	public void UpdateGroundLatLonByCameraPos() {
+		GetEndLatLng(camLatitude, camLongitude, -GPSCamPos(), out double lat, out double lon);
+		groundLatitude = lat;
+		groundLongitude = lon;
+	}
+	public bool UpdateCamPos() {
+		GetCurrentLatLonWGS84(out double lat, out double lon);
+		if (camLatitude == lat && camLongitude == lon) {
+			return false;
+		}
+		camLatitude = lat;
+		camLongitude = lon;
+		return true;
+	}
+	public Vector3 GPSCamPos() {
+		return transform.InverseTransformPoint(mainCamera.transform.position);
+	}
 
-
+	public GameObject GetPosObject(double lat, double lon) {
+		UpdateGroundCampass();
+		UpdateGroundLatLonByCameraPos();
+		Vector3 objPos = FastGetDeltaDistance(groundLatitude, groundLongitude, lat, lon);
+		GameObject ret = new GameObject("go_at_geoloc:" + lat + "," + lon);
+		ret.transform.position = transform.TransformPoint(objPos);
+		ret.transform.rotation = transform.rotation;
+		return ret;
+	}
 
 	/// <summary>
 	/// 接受Android 定位sdk数据
@@ -134,7 +221,7 @@ public class InputGPSManager : MonoBehaviour, IManager {
 
 	#region coordination conversion
 	//地球半径，单位米
-	//private const double EARTH_RADIUS = 6378137;
+	private const double EARTH_RADIUS = 6378137;
 	/// <summary>
 	/// 圆周率 较 Math.PI 精度更大
 	/// </summary>
@@ -294,48 +381,72 @@ public class InputGPSManager : MonoBehaviour, IManager {
 
 	#region Lat-Lon to XYZ
 	//latitude纬度, longitude经度 to distance
-	private const double EARTH_RADIUS = 6378.137 * 1000;//地球半径
 	private static double rad(double d) {
 		return d * PI / 180.0;
+	}
+	private static double deg(double r) {
+		return r * 180 / PI;
 	}
 	public static double GetDistance(double lat1, double lng1, double lat2, double lng2) {
 		double radLat1 = rad(lat1);
 		double radLat2 = rad(lat2);
 		double a = radLat1 - radLat2;
-		double b = rad(lng1) - rad(lng2);
+		double b = rad(lng1 - lng2);
 		double s = 2 * Mathf.Asin(Mathf.Sqrt(Mathf.Pow(Mathf.Sin((float)a / 2), 2) +
 			Mathf.Cos((float)radLat1) * Mathf.Cos((float)radLat2) * Mathf.Pow(Mathf.Sin((float)b / 2), 2)));
 		s = s * EARTH_RADIUS;
 		s = Mathf.Round((float)s * 10000) / 10000;
 		return s;
 	}
+	static double FastGetDeltaN(double lat1, double lat2, double lng) {
+		double s = rad(lat2 - lat1);
+		s *= EARTH_RADIUS;
+		s = Mathf.Round((float)s * 10000) / 10000;
+		return s;
+	}
+
+	static double FastGetDeltaE(double lat, double lng1, double lng2) {
+		double radLat = rad(lat);
+		double b = rad(lng2 - lng1);
+		double s = 2 * Mathf.Asin(Mathf.Cos((float)radLat) * Mathf.Sin((float)b / 2));
+		s *= EARTH_RADIUS;
+		s = Mathf.Round((float)s * 10000) / 10000;
+		return s;
+	}
+	public static Vector3 FastGetDeltaDistance(double startLat, double startLng, double endLat, double endLng) {
+		return new Vector3((float)FastGetDeltaE(startLat, startLng, endLng), 0, (float)FastGetDeltaN(startLat, endLat, endLng));
+	}
+	public static Vector3 FastGetDeltaDistance(Vector2 startLatLng, Vector2 endLatLng) {
+		return new Vector3((float)FastGetDeltaE(startLatLng.x, startLatLng.y, endLatLng.y), 0, (float)FastGetDeltaN(startLatLng.x, endLatLng.x, endLatLng.y));
+	}
 
 	//备注：z轴为北
-	public static double GetDeltaDistanceN(double lat1, double lng1, double lat2, double lng2) {
-		double dRet = 0.0f;
-		dRet = GetDistance(lat1, lng1, lat2, lng1);
-		if (lat2 < lat1) {
-			dRet *= -1;
-		}
-		return dRet;
-	}
+	//public static double GetDeltaDistanceN(double lat1, double lng1, double lat2, double lng2) {
+	//	double dRet = 0.0f;
+	//	dRet = GetDistance(lat1, lng1, lat2, lng1);
+	//	if (lat2 < lat1) {
+	//		dRet *= -1;
+	//	}
+	//	return dRet;
+	//}
 
 	//备注：x轴为东
-	public static double GetDeltaDistanceE(double lat1, double lng1, double lat2, double lng2) {
-		double dRet = 0.0f;
-		dRet = GetDistance(lat1, lng1, lat1, lng2);
-		if (lng2 < lng1) {
-			dRet *= -1;
-		}
-		return dRet;
-	}
+	//public static double GetDeltaDistanceE(double lat1, double lng1, double lat2, double lng2) {
+	//	double dRet = 0.0f;
+	//	dRet = GetDistance(lat1, lng1, lat1, lng2);
+	//	if (lng2 < lng1) {
+	//		dRet *= -1;
+	//	}
+	//	return dRet;
+	//}
 
 	//将经纬度转换为偏移量坐标
-	public static Vector3 GetDeltaDistance(Vector2 startLatLng, Vector2 endLatLng) {
-		return new Vector3((float)(GetDeltaDistanceE(startLatLng.x, startLatLng.y, endLatLng.x, endLatLng.y))
-			, 0
-			, (float)GetDeltaDistanceN(startLatLng.x, startLatLng.y, endLatLng.x, endLatLng.y));
-	}
+	//public static Vector3 GetDeltaDistance(Vector2 startLatLng, Vector2 endLatLng) {
+	//	//return new Vector3((float)FastGetDeltaE(startLatLng.x, startLatLng.y, endLatLng.y), 0, (float)FastGetDeltaN(startLatLng.x, endLatLng.x, endLatLng.y));
+	//	return new Vector3((float)(GetDeltaDistanceE(startLatLng.x, startLatLng.y, endLatLng.x, endLatLng.y))
+	//		, 0
+	//		, (float)GetDeltaDistanceN(startLatLng.x, startLatLng.y, endLatLng.x, endLatLng.y));
+	//}
 
 	//根据当前的经纬度计算出一个相对偏移量
 	//public Vector3 GetGroundDistance(Vector2 endLatLng) {
@@ -344,5 +455,27 @@ public class InputGPSManager : MonoBehaviour, IManager {
 	//public Vector3 GetCamDistance(Vector2 endLatLng) {
 	//	return GetDeltaDistance(new Vector2((float)m_camLatitude, (float)m_camLongitude), endLatLng);
 	//}
+	#endregion
+
+	#region  XYZ to Lat-Lon
+	static double FastGetNewLat(double lat, double lng, double zDistance) {
+		double s = zDistance / EARTH_RADIUS;
+		s += rad(lat);
+		return deg(s);
+	}
+	static double FastGetNewLng(double lat, double lng, double xDistance) {
+		double s = xDistance / EARTH_RADIUS;
+		s = 2 * Mathf.Asin(Mathf.Sin((float)(s / 2)) / Mathf.Cos((float)rad(lat)));
+		s += rad(lng);
+		return deg(s);
+	}
+
+	public static void GetEndLatLng(double startLat, double startLng, Vector3 localPosition, out double endLat, out double endLng) {
+		endLat = FastGetNewLat(startLat, startLng, localPosition.z);
+		endLng = FastGetNewLng(startLat, startLng, localPosition.x);
+	}
+	public static Vector2 GetEndLatLng(double startLat, double startLng, Vector3 localPosition) {
+		return new Vector2((float)FastGetNewLat(startLat, startLng, localPosition.z), (float)FastGetNewLng(startLat, startLng, localPosition.x));
+	}
 	#endregion
 }

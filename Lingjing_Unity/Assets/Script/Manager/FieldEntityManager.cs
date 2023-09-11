@@ -12,6 +12,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	private ARPlaneInfo arPlane;
 	Queue<GameObject> queFieldEntity = new Queue<GameObject>();
 	List<GameObject> queTaggedEntity = new List<GameObject>();
+	Queue<GameObject> queLatLonEntity = new Queue<GameObject>();
 	List<GameObject> lstPlacedEntity = new List<GameObject>();
 	public GameObject[] arrPlacedEntity => lstPlacedEntity.ToArray();
 	public bool isSurfacesReady => areaFloor + areaWall > 4;
@@ -19,25 +20,33 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	public EntityActionManager actionManager;
 	public FieldStageManager stageManager;
 	public SceneLoadManager loadManager;
+	public InputGPSManager geolocManager;
 
 	private bool isPlaneVisible = false;
 	private float timeLastCheck = 1f;
 
 	private void Update() {
-		goCamDir.transform.position = goCamera.transform.position + Vector3.down;
+		goCamDir.transform.position = goCamera.transform.position;// + Vector3.down;
 		Vector3 fwd = goCamera.transform.forward + goCamera.transform.up;
 		fwd.y = 0;
 		goCamDir.transform.rotation = Quaternion.LookRotation(fwd.normalized, Vector3.up);
 		if (timeLastCheck < 0) {
 			if (!loadManager.isLoading && loadManager.sceneMode == SceneLoadManager.SceneMode.AR) {
 				if (!isLoadFinish) {
-					TryPlaceRamdomEntitys(10);
-					if (isLoadFinish) {
-						loadManager.DebugLog("模型放置 " + (isLoadFinish ? "成功" : "失败"));
-					}
+					TryPlaceRamdomEntities(10);
+					//if (isLoadFinish) {
+					//	loadManager.DebugLog("模型放置 " + (isLoadFinish ? "成功" : "失败"));
+					//}
 				}
 			}
-			timeLastCheck = 1f;
+			timeLastCheck = 2f;
+		} else if (timeLastCheck > 1f && timeLastCheck < 1.5f) {
+			if (!loadManager.isLoading && loadManager.sceneMode == SceneLoadManager.SceneMode.AR) {
+				if (queLatLonEntity.Count > 0) {
+					PlaceGeoLocEntities(10);
+				}
+			}
+			timeLastCheck = 0.5f;
 		} else {
 			timeLastCheck -= Time.deltaTime;
 		}
@@ -60,6 +69,8 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			stageManager = manager as FieldStageManager;
 		} else if (manager is SceneLoadManager) {
 			loadManager = manager as SceneLoadManager;
+		} else if (manager is InputGPSManager) {
+			geolocManager = manager as InputGPSManager;
 		}
 	}
 	public void PrepareScene() {
@@ -76,15 +87,20 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			}
 		}
 	}
-	public void PrepareStage() {
+	public void PrepareStage(GameObject stageRoot = null) {
 		foreach (GameObject entity in stageManager.lstFieldEntity) {
-			if (PrepareEntity(entity/*, out obj*/)) {
+			if (PrepareEntity(entity)) {
 				queFieldEntity.Enqueue(entity);
 			}
 		}
 		foreach (GameObject entity in stageManager.lstTaggedEntity) {
-			if (PrepareEntity(entity/*, out obj*/)) {
+			if (PrepareEntity(entity)) {
 				queTaggedEntity.Add(entity);
+			}
+		}
+		foreach (GameObject entity in stageManager.lstLocEntity) {
+			if (PrepareEntity(entity)) {
+				queLatLonEntity.Enqueue(entity);
 			}
 		}
 	}
@@ -132,6 +148,12 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 
 			}
 		}
+		while (queLatLonEntity.Count > 0) {
+			go = queLatLonEntity.Dequeue();
+			if (go != null) {
+				StopEntity(go);
+			}
+		}
 		FieldEntityInfo info;
 		for (int i = lstPlacedEntity.Count - 1; i >= 0; i--) {
 			go = lstPlacedEntity[i];
@@ -160,6 +182,35 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			}
 		}
 		//Destroy(entity);
+	}
+
+	//List<GameObject> geolocDir = new List<GameObject>();
+	public void PlaceGeoLocEntities(int maxTries) {
+		GameObject obj;
+		GameObject goEntity;
+		for (int i = 0; i < maxTries; i++) {
+			if (queLatLonEntity.Count <= 0) {
+				break;
+			}
+
+			goEntity = queLatLonEntity.Dequeue();
+			if (goEntity.TryGetComponent(out FieldEntityInfo entityInfo)) {
+
+				if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocPosition) {
+					obj = geolocManager.GetPosObject(entityInfo.latitude, entityInfo.longitude);
+					entityInfo.goReference = obj;
+					ForcePlacing(entityInfo);
+				} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocAround) {
+					obj = geolocManager.GetPosObject(entityInfo.latitude, entityInfo.longitude);
+					entityInfo.goReference = obj;
+					queFieldEntity.Enqueue(goEntity);
+				} else {
+					queLatLonEntity.Enqueue(goEntity);
+				}
+			}
+		}
+	}
+	public void PlaceGeoLocEntity() {
 	}
 
 	Dictionary<string, GameObject> imageDirs = new Dictionary<string, GameObject>();
@@ -197,6 +248,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			entityInfo = entity.GetComponent<FieldEntityInfo>();
 			//Debug.Log(entityInfo.uuidImageTracking +" "+ i);
 			if (entityInfo.uuidImageTracking == imgName) {
+
 				if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagTracking) {
 					//Debug.Log("queued item" + imgName);
 					entity.transform.parent = imageTrackers[imgName].transform;
@@ -209,11 +261,22 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 					}
 				} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagAround) {
 					entityInfo.goReference = imageDirs[imgName];
-					Debug.Log("queued item" + imgName);
 					queTaggedEntity.RemoveAt(i);
 					queFieldEntity.Enqueue(entity);
+				} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagPosition) {
+					entityInfo.goReference = imageDirs[imgName];
+					ForcePlacing(entityInfo);
 				}
 			}
+		}
+	}
+
+	private void ForcePlacing(FieldEntityInfo entityInfo) {
+		Vector3 targetPos = entityInfo.goReference.transform.position + entityInfo.goReference.transform.rotation * entityInfo.offset;
+		entityInfo.ForcePlacing(targetPos, entityInfo.goReference.transform.rotation, goRoot.transform);
+		lstPlacedEntity.Add(entityInfo.gameObject);
+		if (OnEntityPlaced != null) {
+			OnEntityPlaced.Invoke(entityInfo);
 		}
 	}
 
@@ -333,7 +396,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		}
 		//arSightManager.RemoveEntity(entity);
 	}
-	public void TryPlaceRamdomEntitys(int maxTries) {
+	public void TryPlaceRamdomEntities(int maxTries) {
 		GameObject goEntity;
 		for (int i = 0; i < maxTries; i++) {
 			if (queFieldEntity.Count <= 0) {
