@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class FieldEntityInfo : ItemInfo {
 	public enum EntityToggleType {
-		RamdomAround,
+		RamdomAroundCam,
 		ARTagTracking,
 		ARTagAround,
-		Location,
+		ARTagPosition,
+		GeoLocAround,
+		GeoLocPosition,
+		StageAround,
+		StagePosition
 	}
-	public EntityToggleType enumARType = EntityToggleType.RamdomAround;
+	public EntityToggleType enumARType = EntityToggleType.RamdomAroundCam;
 	public string uuidImageTracking = "";
+	public double latitude = 0d;
+	public double longitude = 0d;
 	public Vector3 offset = Vector3.zero;
 	public bool isLookAt = false;
 	public int enumSurfaceType = -1;
@@ -79,17 +85,38 @@ public class FieldEntityInfo : ItemInfo {
 			//if (hit.collider.gameObject == targetSurface) 
 			//Debug.Log("place at " + posTarget);
 			gameObject.transform.parent = rootWorld;
-			if (animEmerge) {
-				ShowAnim();
-			} else {
-				ShowSelf();
+			if (!gameObject.activeInHierarchy) {
+				if (animEmerge) {
+					ShowAnim();
+				} else {
+					ShowSelf();
+				}
 			}
+
 			return true;
 			//}
 		}
 		transform.position = posOld;
 		transform.rotation = rotOld;
 		return false;
+	}
+	public void ForcePlacing(Vector3 posTarget, Quaternion rotTarget, Transform rootWorld) {
+		transform.position = posTarget;
+		if (isLookAt) {
+			Vector3 LookDir = entityManager.goCamDir.transform.position - posTarget;
+			LookDir.y = 0;
+			transform.rotation = Quaternion.LookRotation(LookDir.normalized);
+		} else {
+			transform.rotation = rotTarget;
+		}
+		gameObject.transform.parent = rootWorld;
+		if (!gameObject.activeInHierarchy) {
+			if (animEmerge) {
+				ShowAnim();
+			} else {
+				ShowSelf();
+			}
+		}
 	}
 
 	public void RemoveFromField() {
