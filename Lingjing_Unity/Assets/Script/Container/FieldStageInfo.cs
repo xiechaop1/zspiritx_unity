@@ -10,9 +10,11 @@ public class FieldStageInfo : MonoBehaviour {
 	public StageToggleType stageToggleType;
 	public string uuidARTag = "";
 	public string uuidBGM = "";
-	public float lat = 0f;
-	public float lng = 0f;
+	public double lat = 0f;
+	public double lng = 0f;
+	public float proximity=10f;
 
+	public string[] lstStageEntitiesUUID;
 	public string[] lstFieldEntityUUID;
 	public string[] lstTaggedEntityUUID;
 	public string[] lstGeolocEntityUUID;

@@ -63,13 +63,14 @@ public class DebugMenuManager : MonoBehaviour {
 	}
 	//bool isDebugMode = false;
 	public void DebugBtn() {
-		if (gpsManager.UpdateCamPos()) {
-			gpsManager.UpdateGroundLatLonByCameraPos();
-		}
+		//Config.ConfigInfo.test.testLatLon = new Vector2(39.9347868240849f, 116.28647419295855f);
+		//if (gpsManager.UpdateCamPos()) {
+		//	gpsManager.UpdateGroundLatLonByCameraPos();
+		//}
 		ShowHint(gpsManager.camLatitude.ToString("F9") + ", " + gpsManager.camLongitude.ToString("F9") + "\n" +
-			gpsManager.GetCurrentLatLonGCJ02().ToString("F9") + "\n" +
-			gpsManager.GetCurrentLatLonBD09().ToString("F9") + "\n" +
-			gpsManager.groundLatitude.ToString("F9") + ", " + gpsManager.groundLongitude.ToString("F9") + "\n");
+				gpsManager.GetCurrentLatLonGCJ02().ToString("F9") + "\n" +
+				gpsManager.GetCurrentLatLonBD09().ToString("F9") + "\n" +
+				gpsManager.groundLatitude.ToString("F9") + ", " + gpsManager.groundLongitude.ToString("F9") + "\n");
 
 		//ShowHint(fieldEntityManager.goCamDir.transform.rotation.eulerAngles.y + "\n" + Input.compass.trueHeading + "\n" + (fieldEntityManager.goCamDir.transform.rotation.eulerAngles.y - Input.compass.trueHeading));
 

@@ -245,8 +245,8 @@ MonoBehaviour:
   nameNPC: 
   enumARType: 5
   uuidImageTracking: 
-  latitude: 39.9925
-  longitude: 116.3912
+  latitude: 39.93441135651089
+  longitude: 116.28650221399923
   offset: {x: 0, y: -1, z: 0}
   isLookAt: 0
   enumSurfaceType: -1

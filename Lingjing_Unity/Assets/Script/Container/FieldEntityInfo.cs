@@ -21,6 +21,7 @@ public class FieldEntityInfo : ItemInfo {
 	public bool isLookAt = false;
 	public int enumSurfaceType = -1;
 	public GameObject goReference;
+	public Vector3 IdealPos => goReference.transform.position + goReference.transform.rotation * offset;
 	//public GameObject[] lstEntityCorner;
 	public GameObject goFPSightMode;
 	public float proximityDialog = 0f;
@@ -70,12 +71,13 @@ public class FieldEntityInfo : ItemInfo {
 		var posOld = transform.position;
 		var rotOld = transform.rotation;
 		transform.position = posTarget;
+		transform.rotation = rotTarget;
 		if (isLookAt) {
 			Vector3 LookDir = entityManager.goCamDir.transform.position - posTarget;
 			LookDir.y = 0;
-			transform.rotation = Quaternion.LookRotation(LookDir.normalized);
-		} else {
-			transform.rotation = rotTarget;
+			if (LookDir.sqrMagnitude > 0.01f) {
+				transform.rotation = Quaternion.LookRotation(LookDir.normalized);
+			}
 		}
 
 		RaycastHit hit;
@@ -85,7 +87,7 @@ public class FieldEntityInfo : ItemInfo {
 			//if (hit.collider.gameObject == targetSurface) 
 			//Debug.Log("place at " + posTarget);
 			gameObject.transform.parent = rootWorld;
-			if (!gameObject.activeInHierarchy) {
+			if (!goVisual.activeInHierarchy) {
 				if (animEmerge) {
 					ShowAnim();
 				} else {
@@ -100,17 +102,18 @@ public class FieldEntityInfo : ItemInfo {
 		transform.rotation = rotOld;
 		return false;
 	}
-	public void ForcePlacing(Vector3 posTarget, Quaternion rotTarget, Transform rootWorld) {
-		transform.position = posTarget;
+	public void ForcePlacing(/*Vector3 posTarget, Quaternion rotTarget, */Transform rootWorld) {
+		transform.position = goReference.transform.position + goReference.transform.rotation * offset;
+		transform.rotation = goReference.transform.rotation;
 		if (isLookAt) {
-			Vector3 LookDir = entityManager.goCamDir.transform.position - posTarget;
+			Vector3 LookDir = entityManager.goCamDir.transform.position - transform.position;
 			LookDir.y = 0;
-			transform.rotation = Quaternion.LookRotation(LookDir.normalized);
-		} else {
-			transform.rotation = rotTarget;
+			if (LookDir.sqrMagnitude > 0.01f) {
+				transform.rotation = Quaternion.LookRotation(LookDir.normalized);
+			}
 		}
 		gameObject.transform.parent = rootWorld;
-		if (!gameObject.activeInHierarchy) {
+		if (!goVisual.activeInHierarchy) {
 			if (animEmerge) {
 				ShowAnim();
 			} else {
@@ -168,7 +171,7 @@ public class FieldEntityInfo : ItemInfo {
 		goVisual.SetActive(false);
 	}
 	void StoreSelf() {
-		transform.parent = entityManager.stageManager.goRoot.transform;
+		transform.parent = entityManager.goStorage.transform;//.stageManager.goRoot.transform;
 		transform.localPosition = Vector3.zero;
 	}
 

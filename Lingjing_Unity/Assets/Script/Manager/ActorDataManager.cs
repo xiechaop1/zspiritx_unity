@@ -7,6 +7,7 @@ using Config;
 public class ActorDataManager : MonoBehaviour, IManager {
 	InputGPSManager gpsManager;
 	WWWManager networkManager;
+	FieldStageManager stageManager;
 	bool isSharing = false;
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
 		foreach (var manager in managers) {
@@ -18,28 +19,41 @@ public class ActorDataManager : MonoBehaviour, IManager {
 			gpsManager = manager as InputGPSManager;
 		} else if (manager is WWWManager) {
 			networkManager = manager as WWWManager;
+		} else if (manager is FieldStageManager) {
+			stageManager = manager as FieldStageManager;
 		}
 	}
 
-	public void SetUserInfoSharing(bool isShare){
+	public void SetUserInfoSharing(bool isShare) {
 		isSharing = isShare;
 	}
 	float timer = 1f;
-	 void Update() {
+	void Update() {
 		if (isSharing) {
-			if (timer<0) {
-				//StartCoroutine(AsyncUpdatePlayerPos());
+			if (timer < 0) {
+				if (GeoLocUpdate()) {
+					StartCoroutine(AsyncUpdatePlayerPos());
+				}
+
 				timer = 1f;
 			} else {
 				timer -= Time.deltaTime;
 			}
-		}	
+		}
+	}
+	bool GeoLocUpdate() {
+		//gpsManager.UpdateGroundCampass();
+		if (gpsManager.UpdateCamPos()) {
+			stageManager.LocationUpdate(gpsManager.GetCurrentLatLonWGS84());
+			return true;
+		}
+		return false;
 	}
 	IEnumerator AsyncUpdatePlayerPos() {
 		var latlon = gpsManager.GetCurrentLatLonGCJ02();
 		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingUser,
 			"update_user_loc",
-			string.Format("user_id={0}&lng={1}&lat={2}",
+			string.Format("user_id={0}&lat={1}&lng={2}",
 				ConfigInfo.userId,
 				latlon.x,
 				latlon.y

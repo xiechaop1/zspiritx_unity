@@ -36,7 +36,6 @@ public class InputGPSManager : MonoBehaviour, IManager {
 
 		locServ = Input.location;
 		compass = Input.compass;
-		NativeGPSPlugin.StartLocation();
 	}
 
 	//	bool locationIsReady = false;
@@ -61,15 +60,16 @@ public class InputGPSManager : MonoBehaviour, IManager {
 	//	}
 
 	#region Update Info
-	void Update() {
-		if (compass.enabled) {
-			UpdateGroundCampass();
-		}
-	}
+	//void Update() {
+	//	if (compass.enabled) {
+	//		UpdateGroundCampass();
+	//	}
+	//}
 
 	Compass compass;
 	LocationService locServ;
 	public void BackStagePrepare() {
+		NativeGPSPlugin.StartLocation();
 		locServ.Start();
 		compass.enabled = true;
 	}
@@ -79,33 +79,39 @@ public class InputGPSManager : MonoBehaviour, IManager {
 		compass.enabled = false;
 	}
 
-	private void GetCurrentLatLon(out double latitude, out double longitude) {
-		LocationInfo locInfo = locServ.lastData;
-		latitude = locInfo.latitude;
-		longitude = locInfo.longitude;
-	}
+	//private void GetCurrentLatLon(out double latitude, out double longitude) {
+	//	LocationInfo locInfo = locServ.lastData;
+	//	latitude = locInfo.latitude;
+	//	longitude = locInfo.longitude;
+	//}
 	public void GetCurrentLatLonWGS84(out double latitude, out double longitude) {
+#if UNITY_EDITOR
+		latitude = ConfigInfo.test.testLatLon.x;
+		longitude = ConfigInfo.test.testLatLon.y;
+#else
 		latitude = NativeGPSPlugin.GetLatitude();
 		longitude = NativeGPSPlugin.GetLongitude();
+#endif
+		Debug.Log(latitude.ToString("F9") + "," + longitude.ToString("F9"));
 	}
 	public Vector2 GetCurrentLatLonWGS84() {
-		if (compass.enabled) {
+		//if (compass.enabled) {
 			GetCurrentLatLonWGS84(out double dLat, out double dLon);
 			return new Vector2((float)dLat, (float)dLon);//GetCurrentLatLon();
-		}
-		return Vector2.zero;
+	//	}
+	//	return Vector2.zero;
 
 	}
 	public void GetCurrentLatLonGCJ02(out double latitude, out double longitude) {
-		if (compass.enabled) {
+		//if (compass.enabled) {
 			GetCurrentLatLonWGS84(out double dLat, out double dLon);
 			WGS84ToGCJ02(dLat, dLon, out double lat, out double lon);
 			latitude = lat;
 			longitude = lon;
-		} else {
-			latitude = 0;
-			longitude = 0;
-		}
+		//} else {
+		//	latitude = 0;
+		//	longitude = 0;
+		//}
 	}
 	public Vector2 GetCurrentLatLonGCJ02() {
 		GetCurrentLatLonGCJ02(out double lat, out double lon);
@@ -118,15 +124,15 @@ public class InputGPSManager : MonoBehaviour, IManager {
 		//return Vector2.zero;
 	}
 	public void GetCurrentLatLonBD09(out double latitude, out double longitude) {
-		if (compass.enabled) {
+	//	if (compass.enabled) {
 			GetCurrentLatLonWGS84(out double dLat, out double dLon);
 			WGS84ToBD09(dLat, dLon, out double lat, out double lon);
 			latitude = lat;
 			longitude = lon;
-		} else {
-			latitude = 0;
-			longitude = 0;
-		}
+		//} else {
+		//	latitude = 0;
+		//	longitude = 0;
+		//}
 	}
 	public Vector2 GetCurrentLatLonBD09() {
 		GetCurrentLatLonBD09(out double lat, out double lon);
@@ -139,12 +145,7 @@ public class InputGPSManager : MonoBehaviour, IManager {
 		//return Vector2.zero;
 	}
 
-	public void UpdateGroundCampass() {
-		transform.rotation = GetNorth();
-	}
-	Quaternion GetNorth() {
-		return Quaternion.Euler(0, mainCamera.transform.rotation.eulerAngles.y - compass.trueHeading, 0);
-	}
+
 	//logic process
 
 	//相对位置的经纬度
@@ -156,10 +157,11 @@ public class InputGPSManager : MonoBehaviour, IManager {
 	public double groundLatitude = 0f;
 	public double groundLongitude = 0f;
 	//public Vector3 camPos = Vector3.zero;
-	public void UpdateGroundLatLonByCameraPos() {
-		GetEndLatLng(camLatitude, camLongitude, -GPSCamPos(), out double lat, out double lon);
-		groundLatitude = lat;
-		groundLongitude = lon;
+	public void UpdateGroundCampass() {
+		transform.rotation = GetNorth();
+	}
+	Quaternion GetNorth() {
+		return Quaternion.Euler(0, mainCamera.transform.rotation.eulerAngles.y - compass.trueHeading, 0);
 	}
 	public bool UpdateCamPos() {
 		GetCurrentLatLonWGS84(out double lat, out double lon);
@@ -170,6 +172,12 @@ public class InputGPSManager : MonoBehaviour, IManager {
 		camLongitude = lon;
 		return true;
 	}
+	public void UpdateGroundLatLonByCameraPos() {
+		GetEndLatLng(camLatitude, camLongitude, -GPSCamPos(), out double lat, out double lon);
+		groundLatitude = lat;
+		groundLongitude = lon;
+	}
+
 	public Vector3 GPSCamPos() {
 		return transform.InverseTransformPoint(mainCamera.transform.position);
 	}
@@ -178,6 +186,9 @@ public class InputGPSManager : MonoBehaviour, IManager {
 		UpdateGroundCampass();
 		UpdateGroundLatLonByCameraPos();
 		Vector3 objPos = FastGetDeltaDistance(groundLatitude, groundLongitude, lat, lon);
+		if (objPos.sqrMagnitude > 40000f) {
+			return null;
+		}
 		GameObject ret = new GameObject("go_at_geoloc:" + lat + "," + lon);
 		ret.transform.position = transform.TransformPoint(objPos);
 		ret.transform.rotation = transform.rotation;

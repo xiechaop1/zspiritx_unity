@@ -235,10 +235,12 @@ MonoBehaviour:
   stageToggleType: 0
   uuidARTag: DR4
   uuidBGM: BGM_03
-  lat: 39.9928
-  lng: 116.3912
-  lstFieldEntityUUID:
+  lat: 39.992801666259766
+  lng: 116.39119720458984
+  proximity: 10
+  lstStageEntitiesUUID:
   - BearNPC
+  lstFieldEntityUUID: []
   lstTaggedEntityUUID: []
   lstGeolocEntityUUID: []
   voiceLogs: []
@@ -388,8 +390,10 @@ MonoBehaviour:
   stageToggleType: 1
   uuidARTag: one
   uuidBGM: 
-  lat: 39.9928
-  lng: 116.3912
+  lat: 39.992801666259766
+  lng: 116.39119720458984
+  proximity: 10
+  lstStageEntitiesUUID: []
   lstFieldEntityUUID:
   - FlowerPot1
   - FlowerPot2
@@ -861,10 +865,12 @@ MonoBehaviour:
   stageToggleType: 0
   uuidARTag: Dino1
   uuidBGM: BGM_04
-  lat: 39.9928
-  lng: 116.3912
-  lstFieldEntityUUID:
+  lat: 39.992801666259766
+  lng: 116.39119720458984
+  proximity: 10
+  lstStageEntitiesUUID:
   - Crystal2
+  lstFieldEntityUUID: []
   lstTaggedEntityUUID: []
   lstGeolocEntityUUID: []
   voiceLogs: []
@@ -977,8 +983,10 @@ MonoBehaviour:
   stageToggleType: 1
   uuidARTag: two
   uuidBGM: 
-  lat: 39.9928
-  lng: 116.3912
+  lat: 39.992801666259766
+  lng: 116.39119720458984
+  proximity: 10
+  lstStageEntitiesUUID: []
   lstFieldEntityUUID:
   - Puzzle
   - BearNPC
@@ -1059,9 +1067,6 @@ MonoBehaviour:
     type: 3}
   goRoot: {fileID: 254332185}
   actionManager: {fileID: 0}
-  stageManager: {fileID: 0}
-  loadManager: {fileID: 0}
-  geolocManager: {fileID: 0}
 --- !u!4 &119510839
 Transform:
   m_ObjectHideFlags: 0
@@ -1395,8 +1400,10 @@ MonoBehaviour:
   stageToggleType: 1
   uuidARTag: one
   uuidBGM: 
-  lat: 39.9928
-  lng: 116.3912
+  lat: 39.992801666259766
+  lng: 116.39119720458984
+  proximity: 10
+  lstStageEntitiesUUID: []
   lstFieldEntityUUID:
   - Puzzle
   lstTaggedEntityUUID:
@@ -1594,7 +1601,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &178351139
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2929,8 +2936,10 @@ MonoBehaviour:
   stageToggleType: 1
   uuidARTag: two
   uuidBGM: 
-  lat: 39.9928
-  lng: 116.3912
+  lat: 39.992801666259766
+  lng: 116.39119720458984
+  proximity: 10
+  lstStageEntitiesUUID: []
   lstFieldEntityUUID:
   - DebugObj
   lstTaggedEntityUUID: []
@@ -3429,8 +3438,10 @@ MonoBehaviour:
   stageToggleType: 1
   uuidARTag: UnityLogo
   uuidBGM: 
-  lat: 39.9928
-  lng: 116.3912
+  lat: 39.992801666259766
+  lng: 116.39119720458984
+  proximity: 10
+  lstStageEntitiesUUID: []
   lstFieldEntityUUID:
   - DebugObj
   - RabbitNPC
@@ -4429,7 +4440,7 @@ Transform:
   m_GameObject: {fileID: 609179852}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -1.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1259804207}
@@ -4854,13 +4865,13 @@ MonoBehaviour:
   stageToggleType: 0
   uuidARTag: toy4
   uuidBGM: BGM_03
-  lat: 39.9928
-  lng: 116.3912
-  lstFieldEntityUUID:
-  - Crystal4
+  lat: 39.992801666259766
+  lng: 116.39119720458984
+  proximity: 10
+  lstStageEntitiesUUID:
   - Gems2
-  lstTaggedEntityUUID:
-  - FlowerPot2
+  lstFieldEntityUUID: []
+  lstTaggedEntityUUID: []
   lstGeolocEntityUUID: []
   voiceLogs: []
   nextStages:
@@ -5158,10 +5169,12 @@ MonoBehaviour:
   stageToggleType: 0
   uuidARTag: DinoSk4
   uuidBGM: BGM_04
-  lat: 39.9928
-  lng: 116.3912
-  lstFieldEntityUUID:
+  lat: 39.992801666259766
+  lng: 116.39119720458984
+  proximity: 10
+  lstStageEntitiesUUID:
   - PantherNPC
+  lstFieldEntityUUID: []
   lstTaggedEntityUUID: []
   lstGeolocEntityUUID: []
   voiceLogs: []
@@ -7701,6 +7714,72 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!1 &1105531675
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1105531676}
+  - component: {fileID: 1105531677}
+  m_Layer: 0
+  m_Name: Scene-Test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1105531676
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105531675}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1809045142}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1105531677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105531675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84cd72cab3ddcc945b918f4f509ecbab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stageToggleType: 1
+  uuidARTag: UnityLogo
+  uuidBGM: BGM_02
+  lat: 39.9347868240849
+  lng: 116.28647419295855
+  proximity: 10
+  lstStageEntitiesUUID:
+  - Gems2
+  - Puzzle
+  - DebugObj
+  - Crystal2
+  lstFieldEntityUUID: []
+  lstTaggedEntityUUID: []
+  lstGeolocEntityUUID: []
+  voiceLogs: []
+  nextStages:
+  - {fileID: 2002493503}
+  - {fileID: 38379926}
+  - {fileID: 742374853}
+  - {fileID: 1826124142}
+  - {fileID: 698242095}
+  - {fileID: 63169080}
 --- !u!1 &1107289388
 GameObject:
   m_ObjectHideFlags: 0
@@ -8134,6 +8213,72 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1120159510}
   m_CullTransparentMesh: 1
+--- !u!1 &1124997344
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1124997345}
+  - component: {fileID: 1124997346}
+  m_Layer: 0
+  m_Name: Scene-Carpark
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1124997345
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1124997344}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1809045142}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1124997346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1124997344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84cd72cab3ddcc945b918f4f509ecbab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stageToggleType: 1
+  uuidARTag: UnityLogo
+  uuidBGM: BGM_02
+  lat: 39.85289987058802
+  lng: 116.36157978764194
+  proximity: 10
+  lstStageEntitiesUUID:
+  - Gems2
+  - Crystal4
+  - Crystal3
+  - Crystal2
+  lstFieldEntityUUID: []
+  lstTaggedEntityUUID: []
+  lstGeolocEntityUUID: []
+  voiceLogs: []
+  nextStages:
+  - {fileID: 2002493503}
+  - {fileID: 38379926}
+  - {fileID: 742374853}
+  - {fileID: 1826124142}
+  - {fileID: 698242095}
+  - {fileID: 63169080}
 --- !u!1 &1132438503
 GameObject:
   m_ObjectHideFlags: 0
@@ -9308,11 +9453,13 @@ MonoBehaviour:
   stageToggleType: 1
   uuidARTag: UnityLogo
   uuidBGM: BGM_01
-  lat: 39.9928
-  lng: 116.3912
-  lstFieldEntityUUID:
+  lat: 39.992801666259766
+  lng: 116.39119720458984
+  proximity: 10
+  lstStageEntitiesUUID:
   - Gems1
   - Crystal1
+  lstFieldEntityUUID: []
   lstTaggedEntityUUID: []
   lstGeolocEntityUUID: []
   voiceLogs: []
@@ -9323,6 +9470,8 @@ MonoBehaviour:
   - {fileID: 1826124142}
   - {fileID: 698242095}
   - {fileID: 63169080}
+  - {fileID: 1124997346}
+  - {fileID: 1105531677}
 --- !u!4 &1279897301
 Transform:
   m_ObjectHideFlags: 0
@@ -12066,6 +12215,7 @@ MonoBehaviour:
   - {fileID: 851886530276015914, guid: 5c9aea83afabb7a4786d95eca35a3054, type: 3}
   - {fileID: 529598812669980325, guid: 4430bc77a41bb754ea3c2fa946d836f2, type: 3}
   - {fileID: 2106844446473325926, guid: 6427dfcda8deb3a41b4f6abcc678512f, type: 3}
+  - {fileID: 945974398287456623, guid: 902c4ab44840c75479137f06b3583671, type: 3}
   lstMusics:
   - {fileID: 8300000, guid: 475f4837af487ce4a9e68bb227455e4c, type: 3}
   - {fileID: 8300000, guid: 90eae78e8ce85a849b5b0ca11b2de641, type: 3}
@@ -12090,6 +12240,8 @@ Transform:
   - {fileID: 1826124143}
   - {fileID: 698242094}
   - {fileID: 63169081}
+  - {fileID: 1124997345}
+  - {fileID: 1105531676}
   m_Father: {fileID: 0}
   m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12282,11 +12434,12 @@ MonoBehaviour:
   stageToggleType: 0
   uuidARTag: cafe1
   uuidBGM: BGM_02
-  lat: 39.9928
-  lng: 116.3912
-  lstFieldEntityUUID:
+  lat: 39.992801666259766
+  lng: 116.39119720458984
+  proximity: 10
+  lstStageEntitiesUUID:
   - RacconNPC
-  - Gems1
+  lstFieldEntityUUID: []
   lstTaggedEntityUUID: []
   lstGeolocEntityUUID: []
   voiceLogs: []
@@ -13661,9 +13814,10 @@ MonoBehaviour:
   stageToggleType: 0
   uuidARTag: Mc1
   uuidBGM: BGM_02
-  lat: 39.9928
-  lng: 116.3912
-  lstFieldEntityUUID:
+  lat: 39.992801666259766
+  lng: 116.39119720458984
+  proximity: 10
+  lstStageEntitiesUUID:
   - BrownRabbitNPC
   - Carrot1
   - Carrot2
@@ -13673,6 +13827,7 @@ MonoBehaviour:
   - Carrot6
   - Carrot7
   - Carrot8
+  lstFieldEntityUUID: []
   lstTaggedEntityUUID: []
   lstGeolocEntityUUID: []
   voiceLogs:
@@ -14009,8 +14164,10 @@ MonoBehaviour:
   stageToggleType: 1
   uuidARTag: UnityLogo
   uuidBGM: 
-  lat: 39.9928
-  lng: 116.3912
+  lat: 39.992801666259766
+  lng: 116.39119720458984
+  proximity: 10
+  lstStageEntitiesUUID: []
   lstFieldEntityUUID:
   - Puzzle
   lstTaggedEntityUUID:
