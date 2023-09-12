@@ -69,7 +69,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		gpsManager = InputGPSManager.getInstance();
 		gpsManager.Init(eventManager, networkManager);
 
-		dataManager.Init(eventManager, gpsManager, networkManager);
+		dataManager.Init(eventManager, gpsManager, networkManager,fieldStageManager);
 
 		inventoryItemManager.Init(eventManager);
 		entityActionManager = inventoryItemManager.GetComponent<EntityActionManager>();

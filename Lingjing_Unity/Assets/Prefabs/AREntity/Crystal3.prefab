@@ -5087,9 +5087,9 @@ MonoBehaviour:
   nameNPC: 
   enumARType: 5
   uuidImageTracking: 
-  latitude: 39.9928
-  longitude: 116.391
-  offset: {x: 0, y: 0, z: 0}
+  latitude: 39.85298741175406
+  longitude: 116.36152529802322
+  offset: {x: 0, y: -1, z: 0}
   isLookAt: 0
   enumSurfaceType: 1
   goReference: {fileID: 0}

@@ -77,15 +77,19 @@ MonoBehaviour:
   strHintbox: "\u4E00\u5957\u513F\u7AE5\u79EF\u6728"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
-  enumARType: 2
+  nameNPC: 
+  enumARType: 4
   uuidImageTracking: toy2
-  offset: {x: 0, y: -1, z: 0}
+  latitude: 39.93468469083179
+  longitude: 116.28647125446336
+  offset: {x: 0, y: 0, z: 0}
+  isLookAt: 0
   enumSurfaceType: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
   proximityDialog: 0
   hasProximityDialog: 0
-  goAnimEmerge: {fileID: 0}
+  animEmerge: {fileID: 0}
   goVisual: {fileID: 2210617234339165028}
 --- !u!1 &2210617234339165028
 GameObject:

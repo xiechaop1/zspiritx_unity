@@ -42,7 +42,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 			if (stageInfo.stageToggleType == FieldStageInfo.StageToggleType.Location) {
 				//Debug.Log(InputGPSManager.GetDistance(stageInfo.lat, stageInfo.lng, newLatLng.x, newLatLng.y));
 				if ((stageInfo.lat == 0 && stageInfo.lng == 0) ||
-					InputGPSManager.GetDistance(stageInfo.lat, stageInfo.lng, newLatLng.x, newLatLng.y) < 10.0f) {
+					InputGPSManager.GetDistance(stageInfo.lat, stageInfo.lng, newLatLng.x, newLatLng.y) < stageInfo.proximity) {
 					StageAdvanced(stageInfo);
 					break;
 				}
@@ -76,9 +76,10 @@ public class FieldStageManager : MonoBehaviour, IManager {
 
 	public void PrepareBackstage(FieldStageInfo targetStage) {
 		currentStage = targetStage;
-		lstFieldEntity = LoadStageEntities(targetStage.lstFieldEntityUUID);
-		lstTaggedEntity = LoadStageEntities(targetStage.lstTaggedEntityUUID);
-		lstLocEntity = LoadStageEntities(targetStage.lstGeolocEntityUUID);
+		(lstFieldEntity, lstTaggedEntity, lstLocEntity) = LoadStageEntities(targetStage.lstStageEntitiesUUID);
+		//lstFieldEntity = LoadStageEntities(targetStage.lstFieldEntityUUID);
+		//lstTaggedEntity = LoadStageEntities(targetStage.lstTaggedEntityUUID);
+		//lstLocEntity = LoadStageEntities(targetStage.lstGeolocEntityUUID);
 		if (!string.IsNullOrWhiteSpace(targetStage.uuidBGM)) {
 			LoadMusic(targetStage.uuidBGM);
 		}
@@ -101,30 +102,58 @@ public class FieldStageManager : MonoBehaviour, IManager {
 
 	}
 
-	GameObject[] LoadStageEntities(string[] entityPrefabs) {
-		List<GameObject> lstOutput = new List<GameObject>();
+	(GameObject[], GameObject[], GameObject[]) LoadStageEntities(string[] entityPrefabs) {
+		List<GameObject> lstField = new List<GameObject>();
+		List<GameObject> lstTagged = new List<GameObject>();
+		List<GameObject> lstGeoLoc = new List<GameObject>();
+
 		GameObject obj;
 		FieldEntityInfo info;
 		for (int i = 0; i < entityPrefabs.Length; i++) {
 			if (!string.IsNullOrWhiteSpace(entityPrefabs[i])) {
-				obj = goManaged.Find(x => x.GetComponent<FieldEntityInfo>().strName == entityPrefabs[i]);
-				if (obj != null) {
-					lstOutput.Add(obj);
-				} else {
+				obj = null;
+				info = null;
+				foreach (var go in goManaged) {
+					if (go.TryGetComponent(out info) &&
+							info.strName == entityPrefabs[i]) {
+						obj = go;
+					}
+				}
+				if (obj == null) {
 					foreach (var prefab in resourcesManager.lstPrefabs) {
-						if (prefab != null && prefab.TryGetComponent(out info)) {
-							if (info.strName == entityPrefabs[i]) {
-								obj = PrepareEntity(prefab);
-								lstOutput.Add(obj);
-								break;
-							}
+						if (prefab != null &&
+								prefab.TryGetComponent(out info) &&
+								info.strName == entityPrefabs[i]) {
+							obj = PrepareEntity(prefab);
+							//lstField.Add(obj);
+							break;
+
 						}
+					}
+				}
+				if (info != null) {
+					switch (info.enumARType) {
+						case FieldEntityInfo.EntityToggleType.ARTagTracking:
+						case FieldEntityInfo.EntityToggleType.ARTagAround:
+						case FieldEntityInfo.EntityToggleType.ARTagPosition:
+							lstTagged.Add(obj);
+							break;
+						case FieldEntityInfo.EntityToggleType.GeoLocAround:
+						case FieldEntityInfo.EntityToggleType.GeoLocPosition:
+							lstGeoLoc.Add(obj);
+							break;
+						case FieldEntityInfo.EntityToggleType.StageAround:
+						case FieldEntityInfo.EntityToggleType.StagePosition:
+						case FieldEntityInfo.EntityToggleType.RamdomAroundCam:
+						default:
+							lstField.Add(obj);
+							break;
 					}
 				}
 			}
 		}
 
-		return lstOutput.ToArray();
+		return (lstField.ToArray(), lstTagged.ToArray(), lstGeoLoc.ToArray());
 	}
 	GameObject PrepareEntity(GameObject prefab) {
 		GameObject obj = Instantiate(prefab, goRoot.transform);
@@ -151,12 +180,12 @@ public class FieldStageManager : MonoBehaviour, IManager {
 					info.currDialog = lstSentences[0];
 				}
 				info.lstDialogs = lstSentences.ToArray();
-				if (JSONReader.TryPraseString(info.strHintbox,"Name",ref tmp)) {
+				if (JSONReader.TryPraseString(info.strHintbox, "Name", ref tmp)) {
 					info.nameNPC = tmp;
 				}
 			}
 		}
-		if (prefabAnimEmerge!=null) {
+		if (prefabAnimEmerge != null) {
 			GameObject goAnim = Instantiate(prefabAnimEmerge, obj.transform);
 			info.animEmerge = goAnim.GetComponentInChildren<ParticleSystem>();
 			info.goVisual.SetActive(false);
