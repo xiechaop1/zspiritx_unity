@@ -13,6 +13,7 @@ public class FieldEntityInfo : ItemInfo {
 		StageAround,
 		StagePosition
 	}
+	public string entityId = "0";
 	public EntityToggleType enumARType = EntityToggleType.RamdomAroundCam;
 	public string uuidImageTracking = "";
 	public double latitude = 0d;
@@ -131,12 +132,12 @@ public class FieldEntityInfo : ItemInfo {
 		}
 	}
 
-	public bool TryGetScenePos(out Vector3 pos) {
+	public bool TryGetStagePos(out Vector3 pos) {
 		if (goReference != entityManager.goCamDir) {
 			pos = goReference.transform.InverseTransformPoint(transform.position);
 			return true;
 		}
-		GameObject go = entityManager.GetStageImgDir();
+		GameObject go = entityManager.GetStageDir();
 		if (go != null) {
 			pos = go.transform.InverseTransformPoint(transform.position);
 			return true;

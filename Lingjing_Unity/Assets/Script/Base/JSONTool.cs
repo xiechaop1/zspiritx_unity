@@ -24,6 +24,9 @@ public class JSONReader {
 	public bool TryPraseFloat(string key, ref float value) {
 		return TryPraseFloat(json, key, ref value);
 	}
+	public bool TryPraseDouble(string key, ref double value) {
+		return TryPraseDouble(json, key, ref value);
+	}
 	public bool TryPraseObject<T>(string key, ref T value) {
 		return TryPraseObject(json, key, ref value);
 	}
@@ -55,7 +58,6 @@ public class JSONReader {
 		} catch (Exception) {
 			return false;
 		}
-
 	}
 	public static bool TryPraseInt(string jsonString, string key, ref int value) {
 		try {
@@ -64,7 +66,6 @@ public class JSONReader {
 		} catch (Exception) {
 			return false;
 		}
-
 	}
 	public static bool TryPraseFloat(string jsonString, string key, ref float value) {
 		try {
@@ -73,9 +74,15 @@ public class JSONReader {
 		} catch (Exception) {
 			return false;
 		}
-
 	}
-
+	public static bool TryPraseDouble(string jsonString, string key, ref double value) {
+		try {
+			JObject json = JObject.Parse(jsonString);
+			return TryPraseDouble(json, key, ref value);
+		} catch (Exception) {
+			return false;
+		}
+	}
 	public static bool TryPraseObject<T>(string jsonString, string key, ref T value) {
 		try {
 			JObject json = JObject.Parse(jsonString);
@@ -83,7 +90,6 @@ public class JSONReader {
 		} catch (Exception) {
 			return false;
 		}
-
 	}
 	public static bool TryPraseArray(string jsonString, string key, out List<string> value) {
 		try {
@@ -102,7 +108,6 @@ public class JSONReader {
 		} catch (Exception) {
 			return false;
 		}
-
 	}
 
 	public static object GetValue(string jsonString, string key) {
@@ -137,6 +142,12 @@ public class JSONReader {
 	protected static bool TryPraseFloat(JToken json, string key, ref float value) {
 		if (ContainsKey(json, key)) {
 			return float.TryParse(json[key].ToString(), out value);
+		}
+		return false;
+	}
+	protected static bool TryPraseDouble(JToken json, string key, ref double value) {
+		if (ContainsKey(json, key)) {
+			return double.TryParse(json[key].ToString(), out value);
 		}
 		return false;
 	}

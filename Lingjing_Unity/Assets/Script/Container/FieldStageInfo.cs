@@ -15,9 +15,7 @@ public class FieldStageInfo : MonoBehaviour {
 	public float proximity=10f;
 
 	public string[] lstStageEntitiesUUID;
-	public string[] lstFieldEntityUUID;
-	public string[] lstTaggedEntityUUID;
-	public string[] lstGeolocEntityUUID;
+	public string[] lstStageEntityInfos;
 	public AudioClip[] voiceLogs;
 
 	public FieldStageInfo[] nextStages= new FieldStageInfo[0];

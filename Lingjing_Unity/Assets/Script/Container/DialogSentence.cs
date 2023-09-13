@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class DialogSentence {
 	string localID;
+	public string name = "";
 	public string sentence = "";
 	public string url = "";
 	public string quizID = "";
@@ -28,6 +29,9 @@ public class DialogSentence {
 			localID = tmpStr;
 		} else {
 			Debug.LogError("NONE-ID-SENTENCE: " + json);
+		}
+		if (obj.TryPraseString("name", ref tmpStr)) {
+			name = tmpStr;
 		}
 		if (obj.TryPraseString("sentence", ref tmpStr)) {
 			sentence = tmpStr;

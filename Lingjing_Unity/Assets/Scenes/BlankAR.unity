@@ -240,9 +240,9 @@ MonoBehaviour:
   proximity: 10
   lstStageEntitiesUUID:
   - BearNPC
-  lstFieldEntityUUID: []
-  lstTaggedEntityUUID: []
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos:
+  - '{"model_Id":"BearNPC", "enumPlacing":1, "offset":{"x":0, "y":0, "z":1}, "enumLookDir":1,
+    "proximity":3}'
   voiceLogs: []
   nextStages:
   - {fileID: 2002493503}
@@ -394,14 +394,7 @@ MonoBehaviour:
   lng: 116.39119720458984
   proximity: 10
   lstStageEntitiesUUID: []
-  lstFieldEntityUUID:
-  - FlowerPot1
-  - FlowerPot2
-  - FPSightGlasses
-  - DebugObj
-  lstTaggedEntityUUID:
-  - phone
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos: []
   voiceLogs: []
   nextStages:
   - {fileID: 100318663}
@@ -870,9 +863,8 @@ MonoBehaviour:
   proximity: 10
   lstStageEntitiesUUID:
   - Crystal2
-  lstFieldEntityUUID: []
-  lstTaggedEntityUUID: []
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos:
+  - '{"model_Id":"Crystal2", "enumPlacing":1, "offset":{"x":0, "y":0, "z":0}, "enumLookDir":0}'
   voiceLogs: []
   nextStages:
   - {fileID: 2002493503}
@@ -987,12 +979,7 @@ MonoBehaviour:
   lng: 116.39119720458984
   proximity: 10
   lstStageEntitiesUUID: []
-  lstFieldEntityUUID:
-  - Puzzle
-  - BearNPC
-  lstTaggedEntityUUID:
-  - FlowerPot1
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos: []
   voiceLogs: []
   nextStages:
   - {fileID: 445875638}
@@ -1404,11 +1391,7 @@ MonoBehaviour:
   lng: 116.39119720458984
   proximity: 10
   lstStageEntitiesUUID: []
-  lstFieldEntityUUID:
-  - Puzzle
-  lstTaggedEntityUUID:
-  - FlowerPot3
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos: []
   voiceLogs: []
   nextStages:
   - {fileID: 376748063}
@@ -2940,10 +2923,7 @@ MonoBehaviour:
   lng: 116.39119720458984
   proximity: 10
   lstStageEntitiesUUID: []
-  lstFieldEntityUUID:
-  - DebugObj
-  lstTaggedEntityUUID: []
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos: []
   voiceLogs: []
   nextStages:
   - {fileID: 2074526668}
@@ -3086,7 +3066,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 925463dd94764c64f9c7edd025b926bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityManager: {fileID: 0}
   interactionView: {fileID: 1444424130}
 --- !u!1 &412754808
 GameObject:
@@ -3442,12 +3421,7 @@ MonoBehaviour:
   lng: 116.39119720458984
   proximity: 10
   lstStageEntitiesUUID: []
-  lstFieldEntityUUID:
-  - DebugObj
-  - RabbitNPC
-  lstTaggedEntityUUID:
-  - FlowerPot2
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos: []
   voiceLogs: []
   nextStages:
   - {fileID: 143074623}
@@ -4870,9 +4844,8 @@ MonoBehaviour:
   proximity: 10
   lstStageEntitiesUUID:
   - Gems2
-  lstFieldEntityUUID: []
-  lstTaggedEntityUUID: []
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos:
+  - '{"model_Id":"Gems2", "enumPlacing":1, "offset":{"x":0, "y":0, "z":0}, "enumLookDir":0}'
   voiceLogs: []
   nextStages:
   - {fileID: 2002493503}
@@ -5174,9 +5147,9 @@ MonoBehaviour:
   proximity: 10
   lstStageEntitiesUUID:
   - PantherNPC
-  lstFieldEntityUUID: []
-  lstTaggedEntityUUID: []
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos:
+  - '{"model_Id":"PantherNPC", "enumPlacing":1, "offset":{"x":0, "y":0, "z":1}, "enumLookDir":1,
+    "proximity":3}'
   voiceLogs: []
   nextStages:
   - {fileID: 2002493503}
@@ -7769,9 +7742,13 @@ MonoBehaviour:
   - Puzzle
   - DebugObj
   - Crystal2
-  lstFieldEntityUUID: []
-  lstTaggedEntityUUID: []
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos:
+  - '{"model_Id":"Gems2", "enumPlacing":1, "offset":{"x":0, "y":0, "z":0}, "enumLookDir":0}'
+  - '{"model_Id":"Crystal2", "enumPlacing":1, "offset":{"x":0, "y":0, "z":0}, "enumLookDir":0}'
+  - '{"model_Id":"Puzzle", "enumPlacing":21, "lat":39.934684690831787, "lon":116.28647125446336,
+    "offset":{"x":0, "y":0, "z":0}, "enumLookDir":0}'
+  - '{"model_Id":"DebugObj", "enumPlacing":22, "lat":39.852987411754057, "lon":116.36152529802322,
+    "offset":{"x":0, "y":-1, "z":0}, "enumLookDir":0}'
   voiceLogs: []
   nextStages:
   - {fileID: 2002493503}
@@ -8268,9 +8245,13 @@ MonoBehaviour:
   - Crystal4
   - Crystal3
   - Crystal2
-  lstFieldEntityUUID: []
-  lstTaggedEntityUUID: []
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos:
+  - '{"model_Id":"Gems2", "enumPlacing":1, "offset":{"x":0, "y":0, "z":0}, "enumLookDir":0}'
+  - '{"model_Id":"Crystal2", "enumPlacing":1, "offset":{"x":0, "y":0, "z":0}, "enumLookDir":0}'
+  - '{"model_Id":"Crystal3", "enumPlacing":22, "lat":39.852987411754057, "lon":116.36152529802322,
+    "offset":{"x":0, "y":-1, "z":0}, "enumLookDir":0}'
+  - '{"model_Id":"Crystal4", "enumPlacing":21, "lat":39.85293844401739, "lon":116.36154505787923,
+    "offset":{"x":0, "y":0, "z":0}, "enumLookDir":0}'
   voiceLogs: []
   nextStages:
   - {fileID: 2002493503}
@@ -9459,9 +9440,9 @@ MonoBehaviour:
   lstStageEntitiesUUID:
   - Gems1
   - Crystal1
-  lstFieldEntityUUID: []
-  lstTaggedEntityUUID: []
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos:
+  - '{"model_Id":"Gems1", "enumPlacing":1, "offset":{"x":0, "y":0, "z":0}, "enumLookDir":0}'
+  - '{"model_Id":"Crystal1", "enumPlacing":1, "offset":{"x":0, "y":0, "z":0}, "enumLookD'
   voiceLogs: []
   nextStages:
   - {fileID: 2002493503}
@@ -12439,9 +12420,9 @@ MonoBehaviour:
   proximity: 10
   lstStageEntitiesUUID:
   - RacconNPC
-  lstFieldEntityUUID: []
-  lstTaggedEntityUUID: []
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos:
+  - '{"model_Id":"RacconNPC", "enumPlacing":1, "offset":{"x":0, "y":0, "z":1}, "enumLookDir":1,
+    "proximity":2}'
   voiceLogs: []
   nextStages:
   - {fileID: 2002493503}
@@ -13827,9 +13808,17 @@ MonoBehaviour:
   - Carrot6
   - Carrot7
   - Carrot8
-  lstFieldEntityUUID: []
-  lstTaggedEntityUUID: []
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos:
+  - '{"model_Id":"BrownRabbitNPC", "enumPlacing":1, "image_Id":"Mc2", "offset":{"x":0,
+    "y":-1, "z":1}, "enumLookDir":1, "proximity":2}'
+  - '{"model_Id":"Carrot1", "enumPlacing":1, "offset":{"x":0, "y":0, "z":0}, "enumLookDir":0}'
+  - '{"model_Id":"Carrot2", "enumPlacing":1, "offset":{"x":0, "y":0, "z":0}, "enumLookDir":0}'
+  - '{"model_Id":"Carrot3", "enumPlacing":1, "offset":{"x":1, "y":0, "z":0}, "enumLookDir":0}'
+  - '{"model_Id":"Carrot4", "enumPlacing":1, "offset":{"x":-1, "y":0, "z":0}, "enumLookDir":0}'
+  - '{"model_Id":"Carrot5", "enumPlacing":1, "offset":{"x":0, "y":0, "z":1}, "enumLookDir":0}'
+  - '{"model_Id":"Carrot6", "enumPlacing":1, "offset":{"x":0, "y":0, "z":-1}, "enumLookDir":0}'
+  - '{"model_Id":"Carrot7", "enumPlacing":1, "offset":{"x":0, "y":0, "z":0}, "enumLookDir":0}'
+  - '{"model_Id":"Carrot8", "enumPlacing":1, "offset":{"x":0, "y":0, "z":0}, "enumLookDir":0}'
   voiceLogs:
   - {fileID: 8300000, guid: 1c73bddd761bfb24fbe801a8d0defa37, type: 3}
   - {fileID: 8300000, guid: 24a7c57150394b34c855191ce34273d4, type: 3}
@@ -14168,11 +14157,7 @@ MonoBehaviour:
   lng: 116.39119720458984
   proximity: 10
   lstStageEntitiesUUID: []
-  lstFieldEntityUUID:
-  - Puzzle
-  lstTaggedEntityUUID:
-  - phone
-  lstGeolocEntityUUID: []
+  lstStageEntityInfos: []
   voiceLogs: []
   nextStages:
   - {fileID: 50037271}
@@ -15343,7 +15328,6 @@ MonoBehaviour:
   strHintbox: 
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
-  nameNPC: 
   enumARType: 0
   uuidImageTracking: 
   latitude: 0
