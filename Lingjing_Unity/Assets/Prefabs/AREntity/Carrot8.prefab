@@ -77,9 +77,10 @@ MonoBehaviour:
   strHintbox: "\u4E00\u6839\u80E1\u841D\u535C"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
-  nameNPC: 
   enumARType: 0
   uuidImageTracking: 
+  latitude: 0
+  longitude: 0
   offset: {x: 0, y: 0, z: 0}
   isLookAt: 0
   enumSurfaceType: 1
@@ -106,7 +107,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1544279612987991428
 Transform:
   m_ObjectHideFlags: 0

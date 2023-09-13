@@ -34,8 +34,11 @@ public class InteractionView : MonoBehaviour {
 		txtHint.text = info.strHintbox;
 		if (info is FieldEntityInfo) {
 			Vector3 pos;
-			if (((FieldEntityInfo)info).TryGetScenePos(out pos)) {
-				txtHint.text += "\n 相对坐标:" + pos.ToString();
+			if (((FieldEntityInfo)info).TryGetStagePos(out pos)) {
+				txtHint.text += "\n 相对场景坐标:" + pos.ToString();
+			}
+			if (((FieldEntityInfo)info).TryGetUserPos(out pos)) {
+				txtHint.text += "\n 相对用户坐标:" + pos.ToString();
 			}
 		}
 		entityInfo = info;
@@ -46,8 +49,11 @@ public class InteractionView : MonoBehaviour {
 		txtHint.text = info.strHintbox;
 		if (info is FieldEntityInfo) {
 			Vector3 pos;
-			if (((FieldEntityInfo)info).TryGetScenePos(out pos)) {
-				txtHint.text += "\n 相对坐标:" + pos.ToString();
+			if (((FieldEntityInfo)info).TryGetStagePos(out pos)) {
+				txtHint.text += "\n 相对场景坐标:" + pos.ToString();
+			}
+			if (((FieldEntityInfo)info).TryGetUserPos(out pos)) {
+				txtHint.text += "\n 相对用户坐标:" + pos.ToString();
 			}
 		}
 		entityInfo = info;
@@ -59,8 +65,11 @@ public class InteractionView : MonoBehaviour {
 		txtHint.text = info.strHintbox;
 		if (info is FieldEntityInfo) {
 			Vector3 pos;
-			if (((FieldEntityInfo)info).TryGetScenePos(out pos)) {
-				txtHint.text += "\n 相对坐标:" + pos.ToString();
+			if (((FieldEntityInfo)info).TryGetStagePos(out pos)) {
+				txtHint.text += "\n 相对场景坐标:" + pos.ToString();
+			}
+			if (((FieldEntityInfo)info).TryGetUserPos(out pos)) {
+				txtHint.text += "\n 相对用户坐标:" + pos.ToString();
 			}
 		}
 		entityInfo = info;
@@ -95,11 +104,14 @@ public class InteractionView : MonoBehaviour {
 	public void ShowNPCLog(ItemInfo info) {
 		entityInfo = info;
 		goNPCBox.SetActive(true);
-		txtNPCName.text = info.nameNPC;
 		AdvancedLog(entityInfo.currDialog);
 		if (entityInfo is FieldEntityInfo) {
-			if (((FieldEntityInfo)entityInfo).TryGetScenePos(out Vector3 pos)) {
-				txtNPC.text += "\n 相对坐标:" + pos.ToString();
+			Vector3 pos;
+			if (((FieldEntityInfo)info).TryGetStagePos(out pos)) {
+				txtHint.text += "\n 相对场景坐标:" + pos.ToString();
+			}
+			if (((FieldEntityInfo)info).TryGetUserPos(out pos)) {
+				txtHint.text += "\n 相对用户坐标:" + pos.ToString();
 			}
 		}
 	}
@@ -132,6 +144,9 @@ public class InteractionView : MonoBehaviour {
 		if (!string.IsNullOrWhiteSpace(sentence.sentence)) {
 			entityInfo.currDialog = sentence;
 			txtNPC.text = sentence.sentence;
+			//if (!string.IsNullOrWhiteSpace(sentence.name)) 
+				txtNPCName.text = sentence.name;
+			
 			for (int i = 0; i < btnSelects.Length; i++) {
 				if (i < sentence.userSelections.Length) {
 					btnSelects[i].SetActive(true);

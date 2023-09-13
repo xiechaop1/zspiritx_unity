@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(InventoryItemManager))]
 public class EntityActionManager : MonoBehaviour, IManager {
-	public FieldEntityManager entityManager;
+	private FieldEntityManager entityManager;
 	public event Action<ItemInfo> eventEntityFound;
 	public InteractionView interactionView;
 	private ActionMode actionMode = ActionMode.Idle;

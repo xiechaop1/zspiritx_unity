@@ -268,13 +268,16 @@ MonoBehaviour:
   arUtiity: {fileID: 0}
   enumARType: 0
   uuidImageTracking: 
+  latitude: 0
+  longitude: 0
   offset: {x: 0, y: 0, z: 0}
+  isLookAt: 0
   enumSurfaceType: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
   proximityDialog: 0
   hasProximityDialog: 0
-  goAnimEmerge: {fileID: 0}
+  animEmerge: {fileID: 0}
   goVisual: {fileID: 5205223112781480211}
 --- !u!1 &1346581984585404547
 GameObject:
@@ -5500,7 +5503,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6850454709126402383
 Transform:
   m_ObjectHideFlags: 0

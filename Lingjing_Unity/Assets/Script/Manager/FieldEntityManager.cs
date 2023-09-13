@@ -337,7 +337,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		}
 	}
 
-	public GameObject GetStageImgDir() {
+	public GameObject GetStageDir() {
 		if (stageManager.currentStage.stageToggleType == FieldStageInfo.StageToggleType.ARTag) {
 			return imageDirs[stageManager.currentStage.uuidARTag];
 		}
@@ -347,8 +347,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 
 	#region Place-At
 	private void ForcePlacing(FieldEntityInfo entityInfo) {
-		//Vector3 targetPos = entityInfo.goReference.transform.position + entityInfo.goReference.transform.rotation * entityInfo.offset;
-		entityInfo.ForcePlacing(/*targetPos, entityInfo.goReference.transform.rotation, */goRoot.transform);
+		entityInfo.ForcePlacing(goRoot.transform);
 		lstPlacedEntity.Add(entityInfo.gameObject);
 		if (OnEntityPlaced != null) {
 			OnEntityPlaced.Invoke(entityInfo);
@@ -359,7 +358,6 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	#region Place-Around
 	private List<FieldEntityInfo> entityHorizontal = new List<FieldEntityInfo>();
 	private List<FieldEntityInfo> entityVertical = new List<FieldEntityInfo>();
-	//private Dictionary<ARPlaneInfo, List<FieldEntityInfo>> bookEntitiesOnPlane = new Dictionary<ARPlaneInfo, List<FieldEntityInfo>>();
 
 	public void ShiftOnNormal(FieldEntityInfo entity) {
 		Ray ray = new Ray(entity.transform.position + entity.transform.up * 0.5f, -entity.transform.up);
@@ -394,13 +392,11 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		if (OnEntityRemoved != null) {
 			OnEntityRemoved.Invoke(entity);
 		}
-		//arSightManager.RemoveEntity(entity);
 	}
 	public void TryPlaceRamdomEntities(int maxTries) {
 		GameObject goEntity;
 		for (int i = 0; i < maxTries; i++) {
 			if (queFieldEntity.Count <= 0) {
-				//ARSceneScanHint.SetActive(false);
 				break;
 			}
 
@@ -409,7 +405,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 				if (!entityInfo.goReference) {
 					entityInfo.goReference = goCamDir;
 				}
-				if (TryPlaceEntityAround(entityInfo,/* entityInfo.goReference.transform.position, entityInfo.goReference.transform.rotation,*/ 1f)) {
+				if (TryPlaceEntityAround(entityInfo, 1f)) {
 					if (OnEntityPlaced != null) {
 						OnEntityPlaced.Invoke(entityInfo);
 					}
@@ -426,9 +422,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			ARSceneScanHint.SetActive(true);
 		}
 	}
-	public bool TryPlaceEntityAround(FieldEntityInfo entityInfo/*, Vector3 originPos, Quaternion originRot*/, float marginError) {
-		//Debug.Log("tryPlaceEntity" + entityInfo.strName);
-		//Vector3 targetPos = originPos + originRot * entityInfo.offset;
+	public bool TryPlaceEntityAround(FieldEntityInfo entityInfo, float marginError) {
 		(bool hasPos, RaycastHit hit, int enumSurfaceType) = TryGetPos(entityInfo.IdealPos, entityInfo.enumSurfaceType, marginError);
 		if (hasPos) {
 			if (enumSurfaceType == 1) {
