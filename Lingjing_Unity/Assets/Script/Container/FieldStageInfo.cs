@@ -16,6 +16,8 @@ public class FieldStageInfo : MonoBehaviour {
 
 	public string[] lstStageEntitiesUUID;
 	public string[] lstStageEntityInfos;
+	//[TextArea]
+	//public string stageEntityInfos;
 	public AudioClip[] voiceLogs;
 
 	public FieldStageInfo[] nextStages= new FieldStageInfo[0];
