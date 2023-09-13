@@ -40,7 +40,6 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		FieldStageInfo[] nextStages = currentStage.nextStages;
 		foreach (var stageInfo in nextStages) {
 			if (stageInfo.stageToggleType == FieldStageInfo.StageToggleType.Location) {
-				//Debug.Log(InputGPSManager.GetDistance(stageInfo.lat, stageInfo.lng, newLatLng.x, newLatLng.y));
 				if ((stageInfo.lat == 0 && stageInfo.lng == 0) ||
 					InputGPSManager.FastGetDistance(stageInfo.lat, stageInfo.lng, newLatLng.x, newLatLng.y) < stageInfo.proximity) {
 					StageAdvanced(stageInfo);
@@ -76,6 +75,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 
 	public void PrepareBackstage(FieldStageInfo targetStage) {
 		currentStage = targetStage;
+		PrepareEntities(targetStage.lstStageEntityInfos);
 		(lstFieldEntity, lstTaggedEntity, lstLocEntity) = LoadStageEntities(targetStage.lstStageEntitiesUUID);
 		if (!string.IsNullOrWhiteSpace(targetStage.uuidBGM)) {
 			LoadMusic(targetStage.uuidBGM);
@@ -98,27 +98,24 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		}
 
 	}
-	int entityCounter=0;
 
-	(GameObject[], GameObject[], GameObject[]) LoadStageEntities(string[] entityPrefabs) {
+	(GameObject[], GameObject[], GameObject[]) LoadStageEntities(string[] entityId) {
 		List<GameObject> lstField = new List<GameObject>();
 		List<GameObject> lstTagged = new List<GameObject>();
 		List<GameObject> lstGeoLoc = new List<GameObject>();
 
 		GameObject obj;
 		FieldEntityInfo info;
-		for (int i = 0; i < entityPrefabs.Length; i++) {
-			if (string.IsNullOrWhiteSpace(entityPrefabs[i])) continue;
+		for (int i = 0; i < entityId.Length; i++) {
+			if (string.IsNullOrWhiteSpace(entityId[i])) continue;
 			obj = null;
 			info = null;
 			foreach (var go in goManaged) {
 				if (go.TryGetComponent(out info) &&
-						info.strName == entityPrefabs[i]) {
+						info.entityId == entityId[i]) {
 					obj = go;
+					break;
 				}
-			}
-			if (obj == null) {
-				(obj, info) = PrepareEntity(entityPrefabs[i]);
 			}
 			if (info == null) { continue; }
 			switch (info.enumARType) {
@@ -144,7 +141,21 @@ public class FieldStageManager : MonoBehaviour, IManager {
 
 		return (lstField.ToArray(), lstTagged.ToArray(), lstGeoLoc.ToArray());
 	}
-	(GameObject, FieldEntityInfo) PrepareEntity(string prefabName) {
+
+	void PrepareEntities(string[] entityInfos) {
+		foreach (var entityInfo in entityInfos) {
+			PrepareEntity(entityInfo);
+		}
+	}
+	(GameObject, FieldEntityInfo) PrepareEntity(string rawInfo) {
+		string prefabName;
+		string tmp = "";
+		if (JSONReader.TryPraseString(rawInfo, "model_Id", ref tmp)) {
+			prefabName = tmp;
+		} else {
+			return (null, null);
+		}
+
 		GameObject prefab = null;
 		FieldEntityInfo info;
 		foreach (var entity in resourcesManager.lstPrefabs) {
@@ -161,84 +172,85 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		GameObject obj = Instantiate(prefab, goRoot.transform);
 		info = obj.GetComponent<FieldEntityInfo>();
 
-		string tmp = "";
+		if (JSONReader.TryPraseString(rawInfo, "field_id", ref tmp)) {
+			info.entityId = tmp;
+			obj.name = tmp;
+		}
 		int tmpInt = 0;
 		double tmpD = 0.0;
-		foreach (string rawInfo in currentStage.lstStageEntityInfos) {
-			//Debug.Log(rawInfo);
-			if (!JSONReader.TryPraseString(rawInfo, "model_Id", ref tmp)) { continue; }
-			//Debug.Log(tmp + "==" + prefabName + "is " + (tmp == prefabName));
-			if (tmp == prefabName) {
-				JSONReader infoJson = new JSONReader(rawInfo);
-				if (infoJson.TryPraseInt("enumPlacing", ref tmpInt)) {
-					switch (tmpInt) {
-						case 1:
-							info.enumARType = FieldEntityInfo.EntityToggleType.RamdomAroundCam;
-							break;
-						case 11:
-							info.enumARType = FieldEntityInfo.EntityToggleType.ARTagAround;
-							break;
-						case 12:
-							info.enumARType = FieldEntityInfo.EntityToggleType.ARTagPosition;
-							break;
-						case 21:
-							info.enumARType = FieldEntityInfo.EntityToggleType.GeoLocAround;
-							break;
-						case 22:
-							info.enumARType = FieldEntityInfo.EntityToggleType.GeoLocPosition;
-							break;
-						default:
-							break;
-					}
-				}
-				if (infoJson.TryPraseString("image_Id", ref tmp)) {
-					info.uuidImageTracking = tmp;
-				}
-				if (infoJson.TryPraseDouble("lat", ref tmpD)) {
-					info.latitude = tmpD;
-				}
-				if (infoJson.TryPraseDouble("lon", ref tmpD)) {
-					info.longitude = tmpD;
-				}
-				if (infoJson.TryPraseString("offset", ref tmp)) {
-					Vector3 offset = new Vector3(0, 0, 0);
-					if (JSONReader.TryPraseDouble(tmp, "x", ref tmpD)) {
-						offset.x = (float)tmpD;
-					}
-					if (JSONReader.TryPraseDouble(tmp, "y", ref tmpD)) {
-						offset.y = (float)tmpD;
-					}
-					if (JSONReader.TryPraseDouble(tmp, "z", ref tmpD)) {
-						offset.z = (float)tmpD;
-					}
-					info.offset = offset;
-				}
-				if (infoJson.TryPraseInt("enumLookDir", ref tmpInt)) {
-					switch (tmpInt) {
-						case 1:
-							info.isLookAt = true;
-							break;
-						default:
-							info.isLookAt = false;
-							break;
-					}
-				}
-				if (infoJson.TryPraseDouble("proximity", ref tmpD)) {
-					info.proximityDialog = (float)tmpD;
-				}
-				break;
+		JSONReader infoJson = new JSONReader(rawInfo);
+		if (infoJson.TryPraseInt("enumPlacing", ref tmpInt)) {
+			switch (tmpInt) {
+				case 1:
+					info.enumARType = FieldEntityInfo.EntityToggleType.RamdomAroundCam;
+					break;
+				case 11:
+					info.enumARType = FieldEntityInfo.EntityToggleType.ARTagAround;
+					break;
+				case 12:
+					info.enumARType = FieldEntityInfo.EntityToggleType.ARTagPosition;
+					break;
+				case 21:
+					info.enumARType = FieldEntityInfo.EntityToggleType.GeoLocAround;
+					break;
+				case 22:
+					info.enumARType = FieldEntityInfo.EntityToggleType.GeoLocPosition;
+					break;
+				default:
+					info.enumARType = FieldEntityInfo.EntityToggleType.RamdomAroundCam;
+					break;
 			}
+		} else {
+			info.enumARType = FieldEntityInfo.EntityToggleType.RamdomAroundCam;
 		}
-
+		if (infoJson.TryPraseString("image_Id", ref tmp)) {
+			info.uuidImageTracking = tmp;
+		}
+		if (infoJson.TryPraseDouble("lat", ref tmpD)) {
+			info.latitude = tmpD;
+		}
+		if (infoJson.TryPraseDouble("lon", ref tmpD)) {
+			info.longitude = tmpD;
+		}
+		if (infoJson.TryPraseString("offset", ref tmp)) {
+			Vector3 offset = new Vector3(0, 0, 0);
+			if (JSONReader.TryPraseDouble(tmp, "x", ref tmpD)) {
+				offset.x = (float)tmpD;
+			}
+			if (JSONReader.TryPraseDouble(tmp, "y", ref tmpD)) {
+				offset.y = (float)tmpD;
+			}
+			if (JSONReader.TryPraseDouble(tmp, "z", ref tmpD)) {
+				offset.z = (float)tmpD;
+			}
+			info.offset = offset;
+		} else {
+			info.offset = Vector3.zero;
+		}
+		if (infoJson.TryPraseInt("enumLookDir", ref tmpInt)) {
+			switch (tmpInt) {
+				case 1:
+					info.isLookAt = true;
+					break;
+				default:
+					info.isLookAt = false;
+					break;
+			}
+		} else {
+			info.isLookAt = false;
+		}
+		if (infoJson.TryPraseDouble("proximity", ref tmpD)) {
+			info.proximityDialog = (float)tmpD;
+		} else {
+			info.proximityDialog = 0f;
+		}
 
 		if (info.enumActionType == EntityActionType.DialogActor) {
 			List<string> lstRawDialogs;
 			DialogSentence sentence;
-			//Debug.Log(info.strHintbox);
 			if (JSONReader.TryPraseArray(info.strHintbox, "Dialog", out lstRawDialogs)) {
 				List<DialogSentence> lstSentences = new List<DialogSentence>();
 				foreach (string rawDialog in lstRawDialogs) {
-					//Debug.Log(rawDialog);
 					sentence = new DialogSentence(rawDialog);
 					lstSentences.Add(sentence);
 				}
@@ -253,9 +265,6 @@ public class FieldStageManager : MonoBehaviour, IManager {
 					info.currDialog = lstSentences[0];
 				}
 				info.lstDialogs = lstSentences.ToArray();
-				//if (JSONReader.TryPraseString(info.strHintbox, "Name", ref tmp)) {
-				//	info.nameNPC = tmp;
-				//}
 			}
 		}
 		if (prefabAnimEmerge != null) {

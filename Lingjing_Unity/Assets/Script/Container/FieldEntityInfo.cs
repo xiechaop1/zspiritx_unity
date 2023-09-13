@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class FieldEntityInfo : ItemInfo {
 	public enum EntityToggleType {
-		RamdomAroundCam,
-		ARTagTracking,
-		ARTagAround,
-		ARTagPosition,
-		GeoLocAround,
-		GeoLocPosition,
-		StageAround,
-		StagePosition
+		Ignore = 0,
+		RamdomAroundCam = 1,
+		ARTagAround = 11,
+		ARTagPosition = 12,
+		ARTagTracking = 13,
+		GeoLocAround = 21,
+		GeoLocPosition = 22,
+		StageAround = 31,
+		StagePosition = 32
 	}
 	public string entityId = "0";
 	public EntityToggleType enumARType = EntityToggleType.RamdomAroundCam;
