@@ -35,6 +35,8 @@ public class DebugMenuManager : MonoBehaviour {
 
 	public GameObject fakeImage;
 	public string fakeImageName;
+	public double lat = 39.852899870588018;//carpark 39.852899870588018; test 39.9347868240849;
+	public double lon = 116.36157978764194;//carpark 116.36157978764194; test 116.28647419295855;
 
 	private void Awake() {
 		//WorldInit();
@@ -63,6 +65,7 @@ public class DebugMenuManager : MonoBehaviour {
 	}
 	//bool isDebugMode = false;
 	public void DebugBtn() {
+		//Config.ConfigInfo.test.testLatLon = new Vector2((float)lat,(float)lon);
 		Config.ConfigInfo.test.testLatLon = new Vector2(39.852899870588018f, 116.36157978764194f);//carpark
 		//Config.ConfigInfo.test.testLatLon = new Vector2(39.9347868240849f, 116.28647419295855f);//test
 		//if (gpsManager.UpdateCamPos()) {

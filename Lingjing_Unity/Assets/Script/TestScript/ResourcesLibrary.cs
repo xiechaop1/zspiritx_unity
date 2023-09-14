@@ -5,4 +5,5 @@ using UnityEngine;
 public class ResourcesLibrary : MonoBehaviour {
 	public GameObject[] lstPrefabs;
 	public AudioClip[] lstMusics;
+	public AudioClip[] voiceLogs;
 }
