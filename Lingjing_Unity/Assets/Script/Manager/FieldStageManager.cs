@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Network;
+using Config;
 
 public class FieldStageManager : MonoBehaviour, IManager {
 	public ResourcesLibrary resourcesManager;
@@ -8,7 +11,8 @@ public class FieldStageManager : MonoBehaviour, IManager {
 
 	public FieldStageInfo currentStage;
 	private FieldEntityManager entityManager;
-	private List<GameObject> goManaged = new List<GameObject>();
+	private WWWManager networkManager;
+	private List<FieldEntityInfo> entitiesManaged = new List<FieldEntityInfo>();
 
 	public GameObject prefabAnimEmerge;
 
@@ -25,6 +29,8 @@ public class FieldStageManager : MonoBehaviour, IManager {
 	public void RegisterManager(IManager manager) {
 		if (manager is FieldEntityManager) {
 			entityManager = manager as FieldEntityManager;
+		} else if (manager is WWWManager) {
+			networkManager = manager as WWWManager;
 		}
 	}
 	public void ImageFound(string uuid) {
@@ -75,8 +81,8 @@ public class FieldStageManager : MonoBehaviour, IManager {
 
 	public void PrepareBackstage(FieldStageInfo targetStage) {
 		currentStage = targetStage;
-		PrepareEntities(targetStage.lstStageEntityInfos);
-		(lstFieldEntity, lstTaggedEntity, lstLocEntity) = LoadStageEntities(targetStage.lstStageEntitiesUUID);
+		//targetStage.lstStageEntities = PrepareEntities(targetStage.lstStageEntityInfos);
+		(lstFieldEntity, lstTaggedEntity, lstLocEntity) = LoadStageEntities(targetStage.lstStageEntities);
 		if (!string.IsNullOrWhiteSpace(targetStage.uuidBGM)) {
 			LoadMusic(targetStage.uuidBGM);
 		}
@@ -99,40 +105,44 @@ public class FieldStageManager : MonoBehaviour, IManager {
 
 	}
 
-	(GameObject[], GameObject[], GameObject[]) LoadStageEntities(string[] entityId) {
+	(GameObject[], GameObject[], GameObject[]) LoadStageEntities(FieldEntityInfo[] entities) {
 		List<GameObject> lstField = new List<GameObject>();
 		List<GameObject> lstTagged = new List<GameObject>();
 		List<GameObject> lstGeoLoc = new List<GameObject>();
 
-		GameObject obj;
+		//GameObject obj;
 		FieldEntityInfo info;
-		for (int i = 0; i < entityId.Length; i++) {
-			if (string.IsNullOrWhiteSpace(entityId[i])) continue;
-			obj = null;
-			info = null;
-			foreach (var go in goManaged) {
-				if (go.TryGetComponent(out info) &&
-						info.entityId == entityId[i]) {
-					obj = go;
-					break;
-				}
+		for (int i = 0; i < entities.Length; i++) {
+			if (entities[i] != null && entitiesManaged.Contains(entities[i])) {
+				info = entities[i];
+			} else {
+				continue;
 			}
-			if (info == null) { continue; }
+			//if (string.IsNullOrWhiteSpace(entityId[i])) continue;
+			////obj = null;
+			//info = null;
+			//foreach (var entity in entitiesManaged) {
+			//	if (entity.entityId == entityId[i]) {
+			//		info = entity;
+			//		break;
+			//	}
+			//}
+			//if (info == null) { continue; }
 			switch (info.enumARType) {
 				case FieldEntityInfo.EntityToggleType.ARTagTracking:
 				case FieldEntityInfo.EntityToggleType.ARTagAround:
 				case FieldEntityInfo.EntityToggleType.ARTagPosition:
-					lstTagged.Add(obj);
+					lstTagged.Add(info.gameObject);
 					break;
 				case FieldEntityInfo.EntityToggleType.GeoLocAround:
 				case FieldEntityInfo.EntityToggleType.GeoLocPosition:
-					lstGeoLoc.Add(obj);
+					lstGeoLoc.Add(info.gameObject);
 					break;
 				case FieldEntityInfo.EntityToggleType.StageAround:
 				case FieldEntityInfo.EntityToggleType.StagePosition:
 				case FieldEntityInfo.EntityToggleType.RamdomAroundCam:
 				default:
-					lstField.Add(obj);
+					lstField.Add(info.gameObject);
 					break;
 			}
 
@@ -142,18 +152,157 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		return (lstField.ToArray(), lstTagged.ToArray(), lstGeoLoc.ToArray());
 	}
 
-	void PrepareEntities(string[] entityInfos) {
-		foreach (var entityInfo in entityInfos) {
-			PrepareEntity(entityInfo);
+	public IEnumerator AsyncPrepareStage() {
+		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingProcess,
+		   "get_session_stages",
+		   string.Format("is_test=1&user_id={0}&story_id={1}&session_id={2}",
+			   ConfigInfo.userId,
+			   ConfigInfo.storyId,
+			   ConfigInfo.sessionId
+			   )
+		   );
+		yield return www;
+		if (www.isError) {
+			Debug.LogWarning(www.error);
+			yield break;
 		}
-	}
-	(GameObject, FieldEntityInfo) PrepareEntity(string rawInfo) {
-		string prefabName;
-		string tmp = "";
-		if (JSONReader.TryPraseString(rawInfo, "model_Id", ref tmp)) {
-			prefabName = tmp;
+		if (string.IsNullOrEmpty(www.text)) {
+			Debug.LogWarning("FAILED to create stages due to missing return info");
+			yield break;
+		}
+		//Debug.Log(www.text);
+		string[] lstStages = null;
+		List<string> lstTmp;
+		if (JSONReader.TryPraseArray(www.text, "data", out lstTmp) && lstTmp.Count > 0) {
+			lstStages = lstTmp.ToArray();
 		} else {
-			return (null, null);
+			Debug.LogWarning("FAILED to create stage due to missing return info");
+		}
+
+		string tmp = "";
+		List<FieldStageInfo> tmpStages = new List<FieldStageInfo>();
+
+		for (int i = 0; i < lstStages.Length; i++) {
+			if (!JSONReader.TryPraseString(lstStages[i], "id", ref tmp)) {
+				Debug.LogWarning("FAILED to create stage due to missing stage id");
+				goto LoopEnd;
+			}
+
+			www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingProcess,
+				"get_session_models_by_stage",
+				string.Format("is_test=1&user_id={0}&story_id={1}&session_id={2}&session_stage_id={3}",
+					ConfigInfo.userId,
+					ConfigInfo.storyId,
+					ConfigInfo.sessionId,
+					tmp
+					)
+				);
+			yield return www;
+			if (www.isError) {
+				Debug.LogWarning(www.error);
+				goto LoopEnd;
+			}
+			if (string.IsNullOrEmpty(www.text)) {
+				Debug.LogWarning("FAILED to create stage due to missing return info");
+				goto LoopEnd;
+			}
+			//Debug.Log(www.text);
+			if (JSONReader.TryPraseArray(www.text, "data", out lstTmp) && lstTmp.Count > 0 && !string.IsNullOrWhiteSpace(lstTmp[0])) {
+				tmpStages.Add(PrepareStage(lstTmp[0]));
+			} else {
+				Debug.LogWarning("FAILED to create stage due to missing return info");
+			}
+LoopEnd:
+			yield return null;
+
+		}
+		foreach (var stage in tmpStages) {
+			stage.nextStages = tmpStages.Where(x => x != stage).ToArray();
+		}
+		yield return null;
+		PrepareBackstage(tmpStages[0]);
+		yield break;
+	}
+
+
+	public FieldStageInfo PrepareStage(string rawInfo) {
+		//GameObject go = new GameObject();
+		FieldStageInfo stage = new FieldStageInfo(); //go.AddComponent<FieldStageInfo>();
+		string tmpStr = "";
+		int tmpInt = 0;
+		double tmpD = 0.0;
+		//Debug.Log(rawInfo);
+		JSONReader jsonInfo = new JSONReader(rawInfo);
+		if (jsonInfo.TryPraseString("stage", ref tmpStr)) {
+			JSONReader jsonStage = new JSONReader(tmpStr);
+			//Debug.Log(tmpStr);
+			if (jsonStage.TryPraseString("stage_u_id", ref tmpStr)) {
+				stage.uuid = tmpStr;
+				//go.name = tmpStr;
+			}
+			if (jsonStage.TryPraseInt("scan_type", ref tmpInt)) {
+				switch (tmpInt) {
+					case 1:
+						stage.stageToggleType = FieldStageInfo.StageToggleType.ARTag;
+						break;
+					case 2:
+						stage.stageToggleType = FieldStageInfo.StageToggleType.Location;
+						break;
+					default:
+						stage.stageToggleType = FieldStageInfo.StageToggleType.None;
+						break;
+				}
+			} else {
+				stage.stageToggleType = FieldStageInfo.StageToggleType.None;
+			}
+			if (jsonStage.TryPraseString("scan_image_id", ref tmpStr)) {
+				stage.uuidARTag = tmpStr;
+			}
+			if (jsonStage.TryPraseDouble("lat", ref tmpD)) {
+				stage.lat = tmpD;
+			}
+			if (jsonStage.TryPraseDouble("lng", ref tmpD)) {
+				stage.lng = tmpD;
+			}
+			if (jsonStage.TryPraseDouble("misrange", ref tmpD)) {
+				stage.proximity = (float)tmpD;
+			}
+			if (jsonInfo.TryPraseArray("session_models", out List<string> lstModels)) {
+				stage.lstStageEntities = PrepareEntities(lstModels.ToArray());
+			}
+		}
+		return stage;
+	}
+
+	public FieldEntityInfo[] PrepareEntities(string[] entityInfos) {
+		List<FieldEntityInfo> entities = new List<FieldEntityInfo>();
+		FieldEntityInfo info;
+		foreach (var entityInfo in entityInfos) {
+			info = PrepareEntity(entityInfo);
+			if (info != null) {
+				entities.Add(info);
+			}
+		}
+		return entities.ToArray();
+	}
+	FieldEntityInfo PrepareEntity(string rawInfo) {
+		//Debug.Log(rawInfo);
+		string prefabName = "";
+		string tmp = "";
+		if (JSONReader.TryPraseString(rawInfo, "model", ref tmp)) {
+			if (JSONReader.TryPraseString(tmp, "model_u_id", ref prefabName)) {
+
+			}
+		}
+
+		if (string.IsNullOrWhiteSpace(prefabName)) {
+			return null;
+		}
+		JSONReader infoJson;
+		if (JSONReader.TryPraseString(rawInfo, "story_model", ref tmp)) {
+			infoJson = new JSONReader(tmp);
+		} else {
+			return null;
 		}
 
 		GameObject prefab = null;
@@ -167,19 +316,19 @@ public class FieldStageManager : MonoBehaviour, IManager {
 			}
 		}
 		if (prefab == null) {
-			return (null, null);
+			return null;
 		}
 		GameObject obj = Instantiate(prefab, goRoot.transform);
 		info = obj.GetComponent<FieldEntityInfo>();
 
-		if (JSONReader.TryPraseString(rawInfo, "field_id", ref tmp)) {
+		if (infoJson.TryPraseString("model_inst_u_id", ref tmp)) {
 			info.entityId = tmp;
 			obj.name = tmp;
 		}
 		int tmpInt = 0;
 		double tmpD = 0.0;
-		JSONReader infoJson = new JSONReader(rawInfo);
-		if (infoJson.TryPraseInt("enumPlacing", ref tmpInt)) {
+
+		if (infoJson.TryPraseInt("scan_type", ref tmpInt)) {
 			switch (tmpInt) {
 				case 1:
 					info.enumARType = FieldEntityInfo.EntityToggleType.RamdomAroundCam;
@@ -203,30 +352,26 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		} else {
 			info.enumARType = FieldEntityInfo.EntityToggleType.RamdomAroundCam;
 		}
-		if (infoJson.TryPraseString("image_Id", ref tmp)) {
+		if (infoJson.TryPraseString("scan_image_id", ref tmp)) {
 			info.uuidImageTracking = tmp;
 		}
 		if (infoJson.TryPraseDouble("lat", ref tmpD)) {
 			info.latitude = tmpD;
 		}
-		if (infoJson.TryPraseDouble("lon", ref tmpD)) {
+		if (infoJson.TryPraseDouble("lng", ref tmpD)) {
 			info.longitude = tmpD;
 		}
-		if (infoJson.TryPraseString("offset", ref tmp)) {
-			Vector3 offset = new Vector3(0, 0, 0);
-			if (JSONReader.TryPraseDouble(tmp, "x", ref tmpD)) {
-				offset.x = (float)tmpD;
-			}
-			if (JSONReader.TryPraseDouble(tmp, "y", ref tmpD)) {
-				offset.y = (float)tmpD;
-			}
-			if (JSONReader.TryPraseDouble(tmp, "z", ref tmpD)) {
-				offset.z = (float)tmpD;
-			}
-			info.offset = offset;
-		} else {
-			info.offset = Vector3.zero;
+		Vector3 offset = new Vector3(0, 0, 0);
+		if (infoJson.TryPraseDouble("show_x", ref tmpD)) {
+			offset.x = (float)tmpD;
 		}
+		if (infoJson.TryPraseDouble("show_y", ref tmpD)) {
+			offset.y = (float)tmpD;
+		}
+		if (infoJson.TryPraseDouble("show_z", ref tmpD)) {
+			offset.z = (float)tmpD;
+		}
+		info.offset = offset;
 		if (infoJson.TryPraseInt("enumLookDir", ref tmpInt)) {
 			switch (tmpInt) {
 				case 1:
@@ -256,7 +401,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 				}
 				foreach (var item in lstSentences) {
 					item.LinkSentences(lstSentences);
-					item.LinkClips(currentStage.voiceLogs);
+					item.LinkClips(resourcesManager.voiceLogs);
 				}
 
 				if (JSONReader.TryPraseString(info.strHintbox, "Intro", ref tmp)) {
@@ -273,11 +418,11 @@ public class FieldStageManager : MonoBehaviour, IManager {
 			info.goVisual.SetActive(false);
 		}
 
-		goManaged.Add(obj);
-		return (obj, info);
+		entitiesManaged.Add(info);
+		return info;
 	}
 
-	public void OnRemoveFieldEntity(GameObject obj) {
-		goManaged.Remove(obj);
+	public void OnRemoveFieldEntity(FieldEntityInfo info) {
+		entitiesManaged.Remove(info);
 	}
 }

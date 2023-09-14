@@ -69,7 +69,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		gpsManager = InputGPSManager.getInstance();
 		gpsManager.Init(eventManager, networkManager);
 
-		dataManager.Init(eventManager, gpsManager, networkManager,fieldStageManager);
+		dataManager.Init(eventManager, gpsManager, networkManager, fieldStageManager);
 
 		inventoryItemManager.Init(eventManager);
 		entityActionManager = inventoryItemManager.GetComponent<EntityActionManager>();
@@ -79,8 +79,8 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 
 		//AR Init
 
-		fieldStageManager.Init(eventManager, fieldEntityManager);
-		fieldEntityManager.Init(eventManager, entityActionManager, fieldStageManager, gpsManager,this);
+		fieldStageManager.Init(eventManager, fieldEntityManager, networkManager);
+		fieldEntityManager.Init(eventManager, entityActionManager, fieldStageManager, gpsManager, this);
 		arSightManager = fieldEntityManager.GetComponent<ARSightManager>();
 		arSightManager.Init(eventManager);
 
@@ -244,6 +244,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	void LoadAR() {
 		StartCoroutine(ARLoader());
 	}
+
 	IEnumerator ARLoader() {
 		LoadingScreen.SetActive(true);
 		yield return null;
@@ -258,8 +259,10 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		arSession.enabled = true;
 		//yield return AsyncStartSession();
 
+		yield return fieldStageManager.AsyncPrepareStage();
+
 		yield return null;
-		fieldStageManager.PrepareBackstage(startingStage);
+		//fieldStageManager.PrepareBackstage(startingStage);
 		yield return null;
 		fieldEntityManager.PrepareScene();
 

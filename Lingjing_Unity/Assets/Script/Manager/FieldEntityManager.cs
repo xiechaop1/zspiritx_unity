@@ -388,7 +388,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		if (lstPlacedEntity.Contains(entity.gameObject)) {
 			lstPlacedEntity.Remove(entity.gameObject);
 		}
-		stageManager.OnRemoveFieldEntity(entity.gameObject);
+		stageManager.OnRemoveFieldEntity(entity);
 		if (OnEntityRemoved != null) {
 			OnEntityRemoved.Invoke(entity);
 		}
