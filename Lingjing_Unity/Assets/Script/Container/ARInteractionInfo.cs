@@ -11,5 +11,6 @@ public class ARInteractionInfo : MonoBehaviour {
 }
 
 public abstract class ARInteractListener:MonoBehaviour {
+	public abstract void SetActionManager(EntityActionManager manager);
 	public abstract void HasARInteract(string info);
 }

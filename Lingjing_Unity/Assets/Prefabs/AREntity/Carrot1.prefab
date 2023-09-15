@@ -183,6 +183,8 @@ MonoBehaviour:
   strHintbox: "\u4E00\u6839\u80E1\u841D\u535C"
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
+  entityItemId: 0
+  entityName: 0
   enumARType: 0
   uuidImageTracking: 
   latitude: 0
@@ -213,7 +215,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4799484914662050633
 Transform:
   m_ObjectHideFlags: 0

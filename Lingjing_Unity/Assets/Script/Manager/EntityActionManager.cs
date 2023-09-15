@@ -42,11 +42,9 @@ public class EntityActionManager : MonoBehaviour, IManager {
 
 		}
 		if (actionMode == ActionMode.World && timer < 0) {
-			var lstPlacedEntity = entityManager.arrPlacedEntity;
-			FieldEntityInfo entityInfo;
+			FieldEntityInfo[] lstPlacedEntity = entityManager.arrPlacedEntity;
 			Vector3 pos;
-			foreach (GameObject entity in lstPlacedEntity) {
-				entityInfo = entity.GetComponent<FieldEntityInfo>();
+			foreach (FieldEntityInfo entityInfo in lstPlacedEntity) {
 				if (!entityInfo || !entityInfo.hasProximityDialog) {
 					continue;
 				}
@@ -72,13 +70,20 @@ public class EntityActionManager : MonoBehaviour, IManager {
 		foreach (var manager in managers) {
 			RegisterManager(manager);
 		}
-		actionMode = ActionMode.World;
 	}
 	public void RegisterManager(IManager manager) {
 		if (manager is FieldEntityManager) {
 			entityManager = manager as FieldEntityManager;
 		}
 	}
+
+	public void Set2ARMode(){
+		actionMode = ActionMode.World;
+	}
+	public void Set2IdleMode(){
+		actionMode = ActionMode.Idle;
+	}
+
 	public void InteractWithEntity(ItemInfo entityInfo) {
 		interactionView.ExitHint();
 		switch (entityInfo.enumActionType) {
@@ -166,7 +171,7 @@ public class EntityActionManager : MonoBehaviour, IManager {
 
 
 	public void OnInteractionFinished(ItemInfo entityInfo) {
-		Debug.Log("Finished Interaction");
+		//LogManager.Debug("Finished Interaction");
 		if (entityInfo != null) {
 			switch (entityInfo.enumActionType) {
 				case EntityActionType.CollectableInfo:

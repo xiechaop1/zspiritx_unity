@@ -9,15 +9,15 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	public GameObject goCamDir;
 	public GameObject prefabARDir;
 	public GameObject goRoot;
-	public GameObject goStorage => stageManager.goRoot;
+	public GameObject goStorage;
 	private ARPlaneInfo arPlane;
-	Queue<GameObject> queFieldEntity = new Queue<GameObject>();
-	List<GameObject> queTaggedEntity = new List<GameObject>();
-	Queue<GameObject> queLatLonEntity = new Queue<GameObject>();
-	List<GameObject> lstPlacedEntity = new List<GameObject>();
-	public GameObject[] arrPlacedEntity => lstPlacedEntity.ToArray();
+	Queue<FieldEntityInfo> queFieldEntity = new Queue<FieldEntityInfo>();
+	List<FieldEntityInfo> queTaggedEntity = new List<FieldEntityInfo>();
+	Queue<FieldEntityInfo> queLatLonEntity = new Queue<FieldEntityInfo>();
+	List<FieldEntityInfo> lstPlacedEntity = new List<FieldEntityInfo>();
+	public FieldEntityInfo[] arrPlacedEntity => lstPlacedEntity.ToArray();
 	public bool isLoadFinish => queFieldEntity.Count == 0;
-	public EntityActionManager actionManager;
+	private EntityActionManager actionManager;
 	private FieldStageManager stageManager;
 	private SceneLoadManager loadManager;
 	private InputGPSManager geolocManager;
@@ -34,9 +34,6 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			if (!loadManager.isLoading && loadManager.sceneMode == SceneLoadManager.SceneMode.AR) {
 				if (queFieldEntity.Count > 0) {
 					TryPlaceRamdomEntities(10);
-					//if (isLoadFinish) {
-					//	loadManager.DebugLog("模型放置 " + (isLoadFinish ? "成功" : "失败"));
-					//}
 				}
 			}
 			timeLastCheck = 2f;
@@ -88,37 +85,37 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		}
 	}
 	public void PrepareStage(GameObject stageRoot = null) {
-		foreach (GameObject entity in stageManager.lstFieldEntity) {
-			if (PrepareEntity(entity)) {
-				queFieldEntity.Enqueue(entity);
+		foreach (FieldEntityInfo entityInfo in stageManager.lstFieldEntity) {
+			if (PrepareEntity(entityInfo)) {
+				queFieldEntity.Enqueue(entityInfo);
 			}
 		}
-		foreach (GameObject entity in stageManager.lstTaggedEntity) {
-			if (PrepareEntity(entity)) {
-				queTaggedEntity.Add(entity);
+		foreach (FieldEntityInfo entityInfo in stageManager.lstTaggedEntity) {
+			if (PrepareEntity(entityInfo)) {
+				queTaggedEntity.Add(entityInfo);
 			}
 		}
-		foreach (GameObject entity in stageManager.lstLocEntity) {
-			if (PrepareEntity(entity)) {
-				queLatLonEntity.Enqueue(entity);
+		foreach (FieldEntityInfo entityInfo in stageManager.lstLocEntity) {
+			if (PrepareEntity(entityInfo)) {
+				queLatLonEntity.Enqueue(entityInfo);
 			}
 		}
 	}
 
-	private bool PrepareEntity(GameObject entity) {
-		if (entity == null) {
+	private bool PrepareEntity(FieldEntityInfo info) {
+		if (info == null) {
 			return false;
 		}
-		FieldEntityInfo info;
-		if (entity.TryGetComponent(out info)) {
-			info.entityManager = this;
-			return true;
+		info.entityManager = this;
+		if (info.TryGetComponent(out ARInteractListener listener)) {
+			listener.SetActionManager(actionManager);
 		}
-		return false;
+		return true;
 	}
 
 	public void StopScene() {
 		StopStage();
+
 		isPlaneVisible = false;
 
 		foreach (ARPlaneInfo plane in planeHorizontal) {
@@ -131,56 +128,45 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 				plane.SetPlaneVisibility(isPlaneVisible);
 			}
 		}
+		ARSceneScanHint.SetActive(false);
+		stageManager.CleanBackstage();
 	}
 	public void StopStage() {
-		GameObject go;
+		FieldEntityInfo entityInfo;
 		while (queFieldEntity.Count > 0) {
-			go = queFieldEntity.Dequeue();
-			if (go != null) {
-				StopEntity(go);
+			entityInfo = queFieldEntity.Dequeue();
+			if (entityInfo != null) {
+				StopEntity(entityInfo);
 			}
 		}
 		for (int i = queTaggedEntity.Count - 1; i >= 0; i--) {
-			go = queTaggedEntity[i];
+			entityInfo = queTaggedEntity[i];
 			queTaggedEntity.RemoveAt(i);
-			if (go != null) {
-				StopEntity(go);
+			if (entityInfo != null) {
+				StopEntity(entityInfo);
 			}
 		}
 		while (queLatLonEntity.Count > 0) {
-			go = queLatLonEntity.Dequeue();
-			if (go != null) {
-				StopEntity(go);
+			entityInfo = queLatLonEntity.Dequeue();
+			if (entityInfo != null) {
+				StopEntity(entityInfo);
 			}
 		}
-		FieldEntityInfo info;
 		for (int i = lstPlacedEntity.Count - 1; i >= 0; i--) {
-			go = lstPlacedEntity[i];
+			entityInfo = lstPlacedEntity[i];
 			lstPlacedEntity.RemoveAt(i);
-			if (go != null) {
-				if (go.TryGetComponent(out info)) {
-					info.RemoveFromField();
-				} else {
-					go.transform.parent = stageManager.goRoot.transform;
-					go.transform.localPosition = Vector3.zero;
-				}
-
-				StopEntity(go);
+			if (entityInfo != null) {
+				entityInfo.RemoveFromField();
+				StopEntity(entityInfo);
 			}
 		}
 	}
 
-	private void StopEntity(GameObject entity) {
-		if (entity == null) {
+	private void StopEntity(FieldEntityInfo entityInfo) {
+		if (entityInfo == null) {
 			return;
 		}
-		FieldEntityInfo info;
-		if (entity.TryGetComponent(out info)) {
-			if (OnEntityRemoved != null) {
-				OnEntityRemoved.Invoke(info);
-			}
-		}
-		//Destroy(entity);
+		OnEntityRemoved.Invoke(entityInfo);
 	}
 	#endregion
 
@@ -256,25 +242,24 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	//List<GameObject> geolocDir = new List<GameObject>();
 	public void PlaceGeoLocEntities(int maxTries) {
 		GameObject obj;
-		GameObject goEntity;
+		FieldEntityInfo entityInfo;
 		for (int i = 0; i < maxTries; i++) {
 			if (queLatLonEntity.Count <= 0) {
 				break;
 			}
 
-			goEntity = queLatLonEntity.Dequeue();
-			if (goEntity.TryGetComponent(out FieldEntityInfo entityInfo)) {
-				obj = geolocManager.GetPosObject(entityInfo.latitude, entityInfo.longitude);
-				if (obj == null) {
-					queLatLonEntity.Enqueue(goEntity);
-				} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocPosition) {
-					entityInfo.goReference = obj;
-					ForcePlacing(entityInfo);
-				} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocAround) {
-					entityInfo.goReference = obj;
-					queFieldEntity.Enqueue(goEntity);
-				}
+			entityInfo = queLatLonEntity.Dequeue();
+			obj = geolocManager.GetPosObject(entityInfo.latitude, entityInfo.longitude);
+			if (obj == null) {
+				queLatLonEntity.Enqueue(entityInfo);
+			} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocPosition) {
+				entityInfo.goReference = obj;
+				ForcePlacing(entityInfo);
+			} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocAround) {
+				entityInfo.goReference = obj;
+				queFieldEntity.Enqueue(entityInfo);
 			}
+
 		}
 	}
 	public void PlaceGeoLocEntity() {
@@ -306,28 +291,25 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	}
 
 	public void UpdateImageTracking(string imgName) {
-		FieldEntityInfo entityInfo;
 		if (queTaggedEntity.Count == 0) {
 			return;
 		}
 		for (int i = queTaggedEntity.Count - 1; i >= 0; i--) {
-
-			GameObject entity = queTaggedEntity[i];
-			entityInfo = entity.GetComponent<FieldEntityInfo>();
+			FieldEntityInfo entityInfo = queTaggedEntity[i];
 			if (entityInfo.uuidImageTracking == imgName) {
 				if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagTracking) {
-					entity.transform.parent = imageTrackers[imgName].transform;
-					entity.transform.localPosition = Vector3.zero;
-					entity.transform.localRotation = Quaternion.identity;
+					entityInfo.transform.parent = imageTrackers[imgName].transform;
+					entityInfo.transform.localPosition = Vector3.zero;
+					entityInfo.transform.localRotation = Quaternion.identity;
 					queTaggedEntity.RemoveAt(i);
-					lstPlacedEntity.Add(entity);
+					lstPlacedEntity.Add(entityInfo);
 					if (OnEntityPlaced != null) {
 						OnEntityPlaced.Invoke(entityInfo);
 					}
 				} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagAround) {
 					entityInfo.goReference = imageDirs[imgName];
 					queTaggedEntity.RemoveAt(i);
-					queFieldEntity.Enqueue(entity);
+					queFieldEntity.Enqueue(entityInfo);
 				} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagPosition) {
 					entityInfo.goReference = imageDirs[imgName];
 					queTaggedEntity.RemoveAt(i);
@@ -348,7 +330,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	#region Place-At
 	private void ForcePlacing(FieldEntityInfo entityInfo) {
 		entityInfo.ForcePlacing(goRoot.transform);
-		lstPlacedEntity.Add(entityInfo.gameObject);
+		lstPlacedEntity.Add(entityInfo);
 		if (OnEntityPlaced != null) {
 			OnEntityPlaced.Invoke(entityInfo);
 		}
@@ -376,43 +358,41 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	public Action<FieldEntityInfo> OnEntityRemoved;
 
 	public void RemoveFieldEntitys(IEventMessage arInfo) {
-		FieldEntityInfo entity = arInfo as FieldEntityInfo;
-		if (entity == null) {
+		FieldEntityInfo entityInfo = arInfo as FieldEntityInfo;
+		if (entityInfo == null) {
 			return;
 		}
-		if (entityHorizontal.Contains(entity)) {
-			entityHorizontal.Remove(entity);
-		} else if (entityVertical.Contains(entity)) {
-			entityVertical.Remove(entity);
+		if (entityHorizontal.Contains(entityInfo)) {
+			entityHorizontal.Remove(entityInfo);
+		} else if (entityVertical.Contains(entityInfo)) {
+			entityVertical.Remove(entityInfo);
 		}
-		if (lstPlacedEntity.Contains(entity.gameObject)) {
-			lstPlacedEntity.Remove(entity.gameObject);
+		if (lstPlacedEntity.Contains(entityInfo)) {
+			lstPlacedEntity.Remove(entityInfo);
 		}
-		stageManager.OnRemoveFieldEntity(entity);
+		stageManager.OnRemoveFieldEntity(entityInfo);
 		if (OnEntityRemoved != null) {
-			OnEntityRemoved.Invoke(entity);
+			OnEntityRemoved.Invoke(entityInfo);
 		}
 	}
 	public void TryPlaceRamdomEntities(int maxTries) {
-		GameObject goEntity;
+		FieldEntityInfo entityInfo;
 		for (int i = 0; i < maxTries; i++) {
 			if (queFieldEntity.Count <= 0) {
 				break;
 			}
 
-			goEntity = queFieldEntity.Dequeue();
-			if (goEntity.TryGetComponent(out FieldEntityInfo entityInfo)) {
-				if (!entityInfo.goReference) {
-					entityInfo.goReference = goCamDir;
+			entityInfo = queFieldEntity.Dequeue();
+			if (!entityInfo.goReference) {
+				entityInfo.goReference = goCamDir;
+			}
+			if (TryPlaceEntityAround(entityInfo, 1f)) {
+				if (OnEntityPlaced != null) {
+					OnEntityPlaced.Invoke(entityInfo);
 				}
-				if (TryPlaceEntityAround(entityInfo, 1f)) {
-					if (OnEntityPlaced != null) {
-						OnEntityPlaced.Invoke(entityInfo);
-					}
-					lstPlacedEntity.Add(goEntity);
-				} else {
-					queFieldEntity.Enqueue(goEntity);
-				}
+				lstPlacedEntity.Add(entityInfo);
+			} else {
+				queFieldEntity.Enqueue(entityInfo);
 			}
 		}
 

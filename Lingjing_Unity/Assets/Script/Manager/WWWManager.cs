@@ -12,7 +12,7 @@
 			get { return !string.IsNullOrEmpty(_error); }
 		}
 		public bool isDone {
-			get { return downloadHandler != null; }
+			get { return downloadHandler != null || texture != null || audioClip != null; }
 		}
 		public byte[] data {
 			get {
@@ -33,13 +33,12 @@
 			}
 		}
 		public Texture2D texture {
-			get {
-				if (isDone) {
-					return ((DownloadHandlerTexture)downloadHandler).texture;
-				} else {
-					return new Texture2D(0, 0);
-				}
-			}
+			get;
+			internal set;
+		}
+		public AudioClip audioClip {
+			get;
+			internal set;
 		}
 		public string error {
 			get { return _error; }
@@ -50,11 +49,13 @@
 
 		public WWWData() {
 			downloadHandler = null;
+			audioClip = null;
+			texture = null;
 		}
 	}
 
 
-	public class WWWManager : MonoBehaviour,IManager {
+	public class WWWManager : MonoBehaviour, IManager {
 		private static WWWManager instance = null;
 		public static WWWManager getInstance() {
 			if (instance != null) {
@@ -133,17 +134,6 @@ End:
 				default:
 					break;
 			}
-			//if (www.isNetworkError) {
-			//	//SLogManager.LogError(www.error);
-			//	ret._error = www.error;
-			//} else {
-			//	string result = www.downloadHandler.text;
-			//	SLogManager.LogInfo(string.Format("NetworkRescieve: {0} char(s) string for observer: {1} callback:{2}", result.Length, observer.name, callback));
-			//	if (observer != null && !string.IsNullOrEmpty(callback)) {
-			//		observer.SendMessage(callback, result, SendMessageOptions.DontRequireReceiver);
-			//	}
-			//	ret.downloadHandler = www.downloadHandler;
-			//}
 		}
 		#endregion
 
@@ -168,7 +158,7 @@ End:
 				case UnityWebRequest.Result.InProgress:
 					break;
 				case UnityWebRequest.Result.Success:
-					ret.downloadHandler = www.downloadHandler;
+					ret.texture = DownloadHandlerTexture.GetContent(www);
 					break;
 				case UnityWebRequest.Result.ConnectionError:
 				case UnityWebRequest.Result.ProtocolError:
@@ -178,15 +168,41 @@ End:
 				default:
 					break;
 			}
-			//if (www.isNetworkError) {
-			//	ret._error = www.error;
-			//} else {
-			//	//SLogManager.LogInfo(string.Format("NetworkRescieve: {0}byte(s) texture", www.downloadHandler.data.Length));
-			//	ret.downloadHandler = www.downloadHandler;
-			//}
 		}
 		#endregion
+		#region GET-AudioClip
+		public WWWData GetAudioClip(string url, AudioType audioType) {
+			WWWData ret = new WWWData();
+			if (string.IsNullOrEmpty(url)) {
+				ret._error = "Error: url is null or empty!";
+				goto End;
+			}
+			//SLogManager.LogInfo(string.Format("NetworkAudioClipGet: url:{0}", url));
+			UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, audioType);
+			StartCoroutine(GetAudioClip(www, ret));
 
+End:
+			return ret;
+		}
+
+		IEnumerator GetAudioClip(UnityWebRequest www, WWWData ret) {
+			yield return www.SendWebRequest();
+			switch (www.result) {
+				case UnityWebRequest.Result.InProgress:
+					break;
+				case UnityWebRequest.Result.Success:
+					ret.audioClip = DownloadHandlerAudioClip.GetContent(www);
+					break;
+				case UnityWebRequest.Result.ConnectionError:
+				case UnityWebRequest.Result.ProtocolError:
+				case UnityWebRequest.Result.DataProcessingError:
+					ret._error = www.error;
+					break;
+				default:
+					break;
+			}
+		}
+		#endregion
 		#region POST-Info
 		public WWWData PostHttpMsg(string url, string postMethod, string postParameter) {
 			WWWData ret = new WWWData();

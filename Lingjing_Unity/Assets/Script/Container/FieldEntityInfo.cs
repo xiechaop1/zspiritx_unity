@@ -14,7 +14,9 @@ public class FieldEntityInfo : ItemInfo {
 		StageAround = 31,
 		StagePosition = 32
 	}
-	public string entityId = "0";
+	public int entitySessionId = 0;
+	public int entityItemId = 0;
+	public string entityName = "0";
 	public EntityToggleType enumARType = EntityToggleType.RamdomAroundCam;
 	public string uuidImageTracking = "";
 	public double latitude = 0d;
@@ -104,7 +106,7 @@ public class FieldEntityInfo : ItemInfo {
 		transform.rotation = rotOld;
 		return false;
 	}
-	public void ForcePlacing(/*Vector3 posTarget, Quaternion rotTarget, */Transform rootWorld) {
+	public void ForcePlacing(Transform rootWorld) {
 		transform.position = goReference.transform.position + goReference.transform.rotation * offset;
 		transform.rotation = goReference.transform.rotation;
 		if (isLookAt) {

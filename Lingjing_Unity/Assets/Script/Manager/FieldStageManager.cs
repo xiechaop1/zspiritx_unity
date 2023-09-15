@@ -16,10 +16,9 @@ public class FieldStageManager : MonoBehaviour, IManager {
 
 	public GameObject prefabAnimEmerge;
 
-	public GameObject goRoot;
-	public GameObject[] lstFieldEntity = new GameObject[0];
-	public GameObject[] lstTaggedEntity = new GameObject[0];
-	public GameObject[] lstLocEntity = new GameObject[0];
+	public FieldEntityInfo[] lstFieldEntity = new FieldEntityInfo[0];
+	public FieldEntityInfo[] lstTaggedEntity = new FieldEntityInfo[0];
+	public FieldEntityInfo[] lstLocEntity = new FieldEntityInfo[0];
 
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
 		foreach (var manager in managers) {
@@ -79,18 +78,57 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		yield break;
 	}
 
+	#region Backstage
 	public void PrepareBackstage(FieldStageInfo targetStage) {
 		currentStage = targetStage;
-		//targetStage.lstStageEntities = PrepareEntities(targetStage.lstStageEntityInfos);
-		(lstFieldEntity, lstTaggedEntity, lstLocEntity) = LoadStageEntities(targetStage.lstStageEntities);
+		LoadStageEntities(targetStage.lstStageEntities);
 		if (!string.IsNullOrWhiteSpace(targetStage.uuidBGM)) {
 			LoadMusic(targetStage.uuidBGM);
 		}
 	}
+	public void CleanBackstage() {
+		currentStage = null;
+		lstFieldEntity = lstTaggedEntity = lstLocEntity = null;
+		backgroundMusicPlayer.Pause();
+	}
 
+	void LoadStageEntities(FieldEntityInfo[] entities) {
+		List<FieldEntityInfo> lstField = new List<FieldEntityInfo>();
+		List<FieldEntityInfo> lstTagged = new List<FieldEntityInfo>();
+		List<FieldEntityInfo> lstGeoLoc = new List<FieldEntityInfo>();
+
+		FieldEntityInfo info;
+		for (int i = 0; i < entities.Length; i++) {
+			if (entities[i] != null && entitiesManaged.Contains(entities[i])) {
+				info = entities[i];
+			} else {
+				continue;
+			}
+			switch (info.enumARType) {
+				case FieldEntityInfo.EntityToggleType.ARTagTracking:
+				case FieldEntityInfo.EntityToggleType.ARTagAround:
+				case FieldEntityInfo.EntityToggleType.ARTagPosition:
+					lstTagged.Add(info);
+					break;
+				case FieldEntityInfo.EntityToggleType.GeoLocAround:
+				case FieldEntityInfo.EntityToggleType.GeoLocPosition:
+					lstGeoLoc.Add(info);
+					break;
+				case FieldEntityInfo.EntityToggleType.StageAround:
+				case FieldEntityInfo.EntityToggleType.StagePosition:
+				case FieldEntityInfo.EntityToggleType.RamdomAroundCam:
+				default:
+					lstField.Add(info);
+					break;
+			}
+		}
+		lstFieldEntity = lstField.ToArray();
+		lstTaggedEntity = lstTagged.ToArray();
+		lstLocEntity = lstGeoLoc.ToArray();
+	}
 	void LoadMusic(string uuid) {
 		AudioClip clip = null;
-		foreach (var music in resourcesManager.lstMusics) {
+		foreach (var music in resourcesManager.audios) {
 			if (music.name == uuid) {
 				clip = music;
 				break;
@@ -102,56 +140,9 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		} else {
 			backgroundMusicPlayer.Pause();
 		}
-
 	}
-
-	(GameObject[], GameObject[], GameObject[]) LoadStageEntities(FieldEntityInfo[] entities) {
-		List<GameObject> lstField = new List<GameObject>();
-		List<GameObject> lstTagged = new List<GameObject>();
-		List<GameObject> lstGeoLoc = new List<GameObject>();
-
-		//GameObject obj;
-		FieldEntityInfo info;
-		for (int i = 0; i < entities.Length; i++) {
-			if (entities[i] != null && entitiesManaged.Contains(entities[i])) {
-				info = entities[i];
-			} else {
-				continue;
-			}
-			//if (string.IsNullOrWhiteSpace(entityId[i])) continue;
-			////obj = null;
-			//info = null;
-			//foreach (var entity in entitiesManaged) {
-			//	if (entity.entityId == entityId[i]) {
-			//		info = entity;
-			//		break;
-			//	}
-			//}
-			//if (info == null) { continue; }
-			switch (info.enumARType) {
-				case FieldEntityInfo.EntityToggleType.ARTagTracking:
-				case FieldEntityInfo.EntityToggleType.ARTagAround:
-				case FieldEntityInfo.EntityToggleType.ARTagPosition:
-					lstTagged.Add(info.gameObject);
-					break;
-				case FieldEntityInfo.EntityToggleType.GeoLocAround:
-				case FieldEntityInfo.EntityToggleType.GeoLocPosition:
-					lstGeoLoc.Add(info.gameObject);
-					break;
-				case FieldEntityInfo.EntityToggleType.StageAround:
-				case FieldEntityInfo.EntityToggleType.StagePosition:
-				case FieldEntityInfo.EntityToggleType.RamdomAroundCam:
-				default:
-					lstField.Add(info.gameObject);
-					break;
-			}
-
-
-		}
-
-		return (lstField.ToArray(), lstTagged.ToArray(), lstGeoLoc.ToArray());
-	}
-
+	#endregion
+	#region Load Prepare
 	public IEnumerator AsyncPrepareStage() {
 		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingProcess,
 		   "get_session_stages",
@@ -163,20 +154,19 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		   );
 		yield return www;
 		if (www.isError) {
-			Debug.LogWarning(www.error);
+			LogManager.Warning(www.error);
 			yield break;
 		}
 		if (string.IsNullOrEmpty(www.text)) {
-			Debug.LogWarning("FAILED to create stages due to missing return info");
+			LogManager.Warning("FAILED to create stages due to missing return info");
 			yield break;
 		}
-		//Debug.Log(www.text);
 		string[] lstStages = null;
 		List<string> lstTmp;
 		if (JSONReader.TryPraseArray(www.text, "data", out lstTmp) && lstTmp.Count > 0) {
 			lstStages = lstTmp.ToArray();
 		} else {
-			Debug.LogWarning("FAILED to create stage due to missing return info");
+			LogManager.Warning("FAILED to create stage due to missing return info");
 		}
 
 		string tmp = "";
@@ -184,7 +174,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 
 		for (int i = 0; i < lstStages.Length; i++) {
 			if (!JSONReader.TryPraseString(lstStages[i], "id", ref tmp)) {
-				Debug.LogWarning("FAILED to create stage due to missing stage id");
+				LogManager.Warning("FAILED to create stage due to missing stage id");
 				goto LoopEnd;
 			}
 
@@ -199,18 +189,17 @@ public class FieldStageManager : MonoBehaviour, IManager {
 				);
 			yield return www;
 			if (www.isError) {
-				Debug.LogWarning(www.error);
+				LogManager.Warning(www.error);
 				goto LoopEnd;
 			}
 			if (string.IsNullOrEmpty(www.text)) {
-				Debug.LogWarning("FAILED to create stage due to missing return info");
+				LogManager.Warning("FAILED to create stage due to missing return info");
 				goto LoopEnd;
 			}
-			//Debug.Log(www.text);
 			if (JSONReader.TryPraseArray(www.text, "data", out lstTmp) && lstTmp.Count > 0 && !string.IsNullOrWhiteSpace(lstTmp[0])) {
 				tmpStages.Add(PrepareStage(lstTmp[0]));
 			} else {
-				Debug.LogWarning("FAILED to create stage due to missing return info");
+				LogManager.Warning("FAILED to create stage due to missing return info");
 			}
 LoopEnd:
 			yield return null;
@@ -226,19 +215,17 @@ LoopEnd:
 
 
 	public FieldStageInfo PrepareStage(string rawInfo) {
-		//GameObject go = new GameObject();
-		FieldStageInfo stage = new FieldStageInfo(); //go.AddComponent<FieldStageInfo>();
+		FieldStageInfo stage = new FieldStageInfo();
 		string tmpStr = "";
 		int tmpInt = 0;
 		double tmpD = 0.0;
-		//Debug.Log(rawInfo);
 		JSONReader jsonInfo = new JSONReader(rawInfo);
 		if (jsonInfo.TryPraseString("stage", ref tmpStr)) {
 			JSONReader jsonStage = new JSONReader(tmpStr);
-			//Debug.Log(tmpStr);
 			if (jsonStage.TryPraseString("stage_u_id", ref tmpStr)) {
 				stage.uuid = tmpStr;
-				//go.name = tmpStr;
+			} else {
+				stage.uuid = "";
 			}
 			if (jsonStage.TryPraseInt("scan_type", ref tmpInt)) {
 				switch (tmpInt) {
@@ -255,38 +242,56 @@ LoopEnd:
 			} else {
 				stage.stageToggleType = FieldStageInfo.StageToggleType.None;
 			}
+
 			if (jsonStage.TryPraseString("scan_image_id", ref tmpStr)) {
 				stage.uuidARTag = tmpStr;
+			} else {
+				stage.uuidARTag = "";
 			}
 			if (jsonStage.TryPraseDouble("lat", ref tmpD)) {
 				stage.lat = tmpD;
+			} else {
+				stage.lat = 0;
 			}
 			if (jsonStage.TryPraseDouble("lng", ref tmpD)) {
 				stage.lng = tmpD;
+			} else {
+				stage.lng = 0;
 			}
+			if (jsonStage.TryPraseString("bgm", ref tmpStr) && !string.IsNullOrWhiteSpace(tmpStr)) {
+				resourcesManager.AddAudioClip(tmpStr);
+				stage.uuidBGM = tmpStr.Split('/').Last();
+			} else {
+				stage.uuidBGM = "BGM_01";
+			}
+
 			if (jsonStage.TryPraseDouble("misrange", ref tmpD)) {
 				stage.proximity = (float)tmpD;
+			} else {
+				stage.proximity = 0;
 			}
 			if (jsonInfo.TryPraseArray("session_models", out List<string> lstModels)) {
 				stage.lstStageEntities = PrepareEntities(lstModels.ToArray());
+			} else {
+				stage.lstStageEntities = new FieldEntityInfo[0];
 			}
 		}
 		return stage;
 	}
-
+	#endregion
+	#region Stage Entities
 	public FieldEntityInfo[] PrepareEntities(string[] entityInfos) {
 		List<FieldEntityInfo> entities = new List<FieldEntityInfo>();
-		FieldEntityInfo info;
-		foreach (var entityInfo in entityInfos) {
-			info = PrepareEntity(entityInfo);
-			if (info != null) {
-				entities.Add(info);
+		FieldEntityInfo entityInfo;
+		foreach (var rawInfo in entityInfos) {
+			entityInfo = PrepareEntity(rawInfo);
+			if (entityInfo != null) {
+				entities.Add(entityInfo);
 			}
 		}
 		return entities.ToArray();
 	}
 	FieldEntityInfo PrepareEntity(string rawInfo) {
-		//Debug.Log(rawInfo);
 		string prefabName = "";
 		string tmp = "";
 		if (JSONReader.TryPraseString(rawInfo, "model", ref tmp)) {
@@ -304,7 +309,22 @@ LoopEnd:
 		} else {
 			return null;
 		}
+		int tmpInt = 0;
+		if (JSONReader.TryPraseString(rawInfo, "session_model", ref tmp) &&
+				JSONReader.TryPraseInt(tmp, "session_id", ref tmpInt) &&
+				tmpInt == ConfigInfo.sessionId) {
+			goto BuildEntity;
+		}
+		return null;
 
+BuildEntity:
+		if (JSONReader.TryPraseInt(tmp, "id", ref tmpInt)) {
+			foreach (var entityManaged in entitiesManaged) {
+				if (entityManaged.entitySessionId == tmpInt) {
+					return entityManaged;
+				}
+			}
+		}
 		GameObject prefab = null;
 		FieldEntityInfo info;
 		foreach (var entity in resourcesManager.lstPrefabs) {
@@ -318,16 +338,21 @@ LoopEnd:
 		if (prefab == null) {
 			return null;
 		}
-		GameObject obj = Instantiate(prefab, goRoot.transform);
+		GameObject obj = Instantiate(prefab, entityManager.goStorage.transform);
 		info = obj.GetComponent<FieldEntityInfo>();
 
+		info.entitySessionId = tmpInt;
+
+		if (JSONReader.TryPraseInt(tmp, "story_model_id", ref tmpInt)) {
+			info.entityItemId = tmpInt;
+		}
+
 		if (infoJson.TryPraseString("model_inst_u_id", ref tmp)) {
-			info.entityId = tmp;
+			info.entityName = tmp;
 			obj.name = tmp;
 		}
-		int tmpInt = 0;
-		double tmpD = 0.0;
 
+		double tmpD = 0.0;
 		if (infoJson.TryPraseInt("scan_type", ref tmpInt)) {
 			switch (tmpInt) {
 				case 1:
@@ -372,9 +397,9 @@ LoopEnd:
 			offset.z = (float)tmpD;
 		}
 		info.offset = offset;
-		if (infoJson.TryPraseInt("enumLookDir", ref tmpInt)) {
+		if (infoJson.TryPraseInt("direction", ref tmpInt)) {
 			switch (tmpInt) {
-				case 1:
+				case 2:
 					info.isLookAt = true;
 					break;
 				default:
@@ -384,7 +409,7 @@ LoopEnd:
 		} else {
 			info.isLookAt = false;
 		}
-		if (infoJson.TryPraseDouble("proximity", ref tmpD)) {
+		if (infoJson.TryPraseDouble("act_misrange", ref tmpD)) {
 			info.proximityDialog = (float)tmpD;
 		} else {
 			info.proximityDialog = 0f;
@@ -425,4 +450,5 @@ LoopEnd:
 	public void OnRemoveFieldEntity(FieldEntityInfo info) {
 		entitiesManaged.Remove(info);
 	}
+	#endregion
 }
