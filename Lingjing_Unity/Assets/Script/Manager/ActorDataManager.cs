@@ -29,25 +29,35 @@ public class ActorDataManager : MonoBehaviour, IManager {
 	}
 	float timer = 1f;
 	void Update() {
+		//GeoLocUpdate();
 		if (isSharing) {
 			if (timer < 0) {
 				if (GeoLocUpdate()) {
 					StartCoroutine(AsyncUpdatePlayerPos());
 				}
-
-				timer = 1f;
+				timer = 0.2f;
 			} else {
 				timer -= Time.deltaTime;
 			}
 		}
 	}
 	bool GeoLocUpdate() {
-		//gpsManager.UpdateGroundCampass();
 		if (gpsManager.UpdateCamPos()) {
 			stageManager.LocationUpdate(gpsManager.GetCurrentLatLonWGS84());
 			return true;
 		}
 		return false;
+	}
+	double lastLat = 0.0;
+	double lastLon = 0.0;
+	bool isLocUpdated() {
+		if (lastLat == gpsManager.camLatitude && lastLon == gpsManager.camLongitude) {
+			return false;
+		} else {
+			lastLat = gpsManager.camLatitude;
+			lastLon = gpsManager.camLongitude;
+			return true;
+		}
 	}
 	IEnumerator AsyncUpdatePlayerPos() {
 		var latlon = gpsManager.GetCurrentLatLonGCJ02();
@@ -61,10 +71,10 @@ public class ActorDataManager : MonoBehaviour, IManager {
 			);
 		yield return www;
 		if (www.isError) {
-			Debug.LogWarning(www.error);
+			LogManager.Warning(www.error);
 			yield break;
 		}
-		Debug.Log(www.text);
+		LogManager.Debug(www.text);
 		yield return null;
 		yield break;
 	}

@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class FieldStageInfo{// : MonoBehaviour {
-	public FieldStageInfo(){ 
-	}
+
+public class FieldStageInfo {
 	public enum StageToggleType {
 		None = 0,
 		ARTag = 1,
@@ -14,16 +12,11 @@ public class FieldStageInfo{// : MonoBehaviour {
 	public StageToggleType stageToggleType = StageToggleType.None;
 	public string uuidARTag = "";
 	public string uuidBGM = "";
-	public double lat = 0f;
-	public double lng = 0f;
+	public double lat = 0.0;
+	public double lng = 0.0;
 	public float proximity = 10f;
 
-	public FieldEntityInfo[] lstStageEntities;
-	//public string[] lstStageEntitiesUUID;
-	//public string[] lstStageEntityInfos;
-	//[TextArea]
-	//public string stageEntityInfos;
-	//public AudioClip[] voiceLogs;
+	public FieldEntityInfo[] lstStageEntities = new FieldEntityInfo[0];
 
 	public FieldStageInfo[] nextStages = new FieldStageInfo[0];
 }

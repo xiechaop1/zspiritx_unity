@@ -139,7 +139,7 @@ public class WebViewBehaviour : MonoBehaviour {
 	//	StartWebView(HomepageUrl);
 	//}
 	IEnumerator LoadURL(string PageURL) {
-		Debug.Log("TryLoadPage: " + PageURL);
+		LogManager.Debug("TryLoadPage: " + PageURL);
 #if !UNITY_WEBPLAYER && !UNITY_WEBGL
 		if (PageURL.StartsWith("http")) {
 			sceneLoadManager.webViewObject.LoadURL(PageURL.Replace(" ", "%20"));

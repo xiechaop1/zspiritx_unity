@@ -22,7 +22,6 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	public WebViewBehaviour SplashWebView;
 	public event Action<string> eventDebugInfo;
 
-	public FieldStageInfo startingStage;
 
 	//Utility
 	private UIEventManager eventManager;
@@ -94,30 +93,30 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		webViewObject = (new GameObject("WebViewObject")).AddComponent<WebViewObject>();
 		webViewObject.Init(
 			cb: (msg) => {
-				Debug.Log(string.Format("CallFromJS[{0}]", msg));
+				LogManager.Debug(string.Format("CallFromJS[{0}]", msg));
 				webViewCallback(msg);
 				//UnityWebViewListener(msg);
 				//status.text = msg;
 			},
 			err: (msg) => {
-				Debug.Log(string.Format("CallOnError[{0}]", msg));
+				LogManager.Debug(string.Format("CallOnError[{0}]", msg));
 				//status.text = msg;
 			},
 			httpErr: (msg) => {
-				Debug.Log(string.Format("CallOnHttpError[{0}]", msg));
+				LogManager.Debug(string.Format("CallOnHttpError[{0}]", msg));
 				//status.text = msg;
 			},
 			started: (msg) => {
-				Debug.Log(string.Format("CallOnStarted[{0}]", msg));
+				LogManager.Debug(string.Format("CallOnStarted[{0}]", msg));
 			},
 			hooked: (msg) => {
-				Debug.Log(string.Format("CallOnHooked[{0}]", msg));
+				LogManager.Debug(string.Format("CallOnHooked[{0}]", msg));
 			},
 			cookies: (msg) => {
-				Debug.Log(string.Format("CallOnCookies[{0}]", msg));
+				LogManager.Debug(string.Format("CallOnCookies[{0}]", msg));
 			},
 			ld: (msg) => {
-				Debug.Log(string.Format("CallOnLoaded[{0}]", msg));
+				LogManager.Debug(string.Format("CallOnLoaded[{0}]", msg));
 #if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IOS
 				// NOTE: the following js definition is required only for UIWebView; if
 				// enabledWKWebView is true and runtime has WKWebView, Unity.call is defined
@@ -205,19 +204,11 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 
 	IEnumerator InitStartUp() {
 		yield return null;
-		//#if UNITY_EDITOR
-		//		float notch = 20;//Screen.safeArea.x;
-		//#else
-		//		float notch = Screen.safeArea.x;
-		//#endif
-		//if (notch > 0.0f) {
-		//	Notch.GetComponent<RectTransform>().anchorMin = new Vector2(0.0f, 1.0f - notch / Screen.width);
-		//	//SplashWebView.GetComponent<RectTransform>().anchorMax = new Vector2(1.0f, 1.0f - notch / Screen.width);
-		//}
-		yield return null;
+
 		SplashWebView.OnCallback += WebviewCallbackSceneControl;
 		//SplashWebView.OnWebClose += LoadAR;
-		SplashWebView.StartWebView("splash.html");
+		SplashWebView.StartWebView("https://h5.zspiritx.com.cn/home");
+		//SplashWebView.StartWebView("splash.html");
 
 		yield return null;
 		gpsManager.BackStagePrepare();
@@ -257,7 +248,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		isLoading = true;
 		sceneMode = SceneMode.AR;
 		arSession.enabled = true;
-		//yield return AsyncStartSession();
+		yield return AsyncStartSession();
 
 		yield return fieldStageManager.AsyncPrepareStage();
 
@@ -266,17 +257,10 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		yield return null;
 		fieldEntityManager.PrepareScene();
 
+		yield return null;
+		entityActionManager.Set2ARMode();
+
 		LoadingScreen.SetActive(false);
-		//ARSceneScanHint.SetActive(true);
-		//DebugLog("正在扫描构建环境，请使用手机缓慢扫描地面与墙壁");
-		//for (int i = 0; i < 20; i++) {
-		//	if (fieldEntityManager.isSurfacesReady) {
-		//		break;
-		//	}
-		//	yield return new WaitForSeconds(1);
-		//}
-		//DebugLog("环境扫描 " + (fieldEntityManager.isSurfacesReady ? "成功" : "失败"));
-		//ARSceneScanHint.SetActive(false);
 		dataManager.SetUserInfoSharing(true);
 		isLoading = false;
 		yield break;
@@ -292,16 +276,16 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 			);
 		yield return www;
 		if (www.isError) {
-			Debug.LogWarning(www.error);
+			LogManager.Warning(www.error);
 			yield break;
 		}
 		if (string.IsNullOrEmpty(www.text)) {
-			Debug.LogWarning("FAILED to create session due to missing return info");
+			LogManager.Warning("FAILED to create session due to missing return info");
 			yield break;
 		}
 		Debug.Log(www.text);
 		if (!InitSessionInfo(www.text)) {
-			Debug.LogWarning("FAILED to create session due to missing session id");
+			LogManager.Warning("FAILED to create session due to missing session id");
 			yield break;
 		}
 		yield return null;
@@ -315,14 +299,14 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 			);
 		yield return www;
 		if (www.isError) {
-			Debug.LogWarning(www.error);
+			LogManager.Warning(www.error);
 			yield break;
 		}
 		if (string.IsNullOrEmpty(www.text)) {
-			Debug.LogWarning("FAILED to join session due to missing return info");
+			LogManager.Warning("FAILED to join session due to missing return info");
 			yield break;
 		}
-		Debug.Log(www.text);
+		LogManager.Debug(www.text);
 		yield return null;
 		yield break;
 	}
@@ -349,10 +333,10 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 			);
 		yield return www;
 		if (www.isError) {
-			Debug.LogWarning(www.error);
+			LogManager.Warning(www.error);
 			yield break;
 		}
-		Debug.Log(www.text);
+		LogManager.Debug(www.text);
 		yield return null;
 		yield break;
 	}
@@ -360,9 +344,6 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	IEnumerator ScrollerLoader() {
 		LoadingScreen.SetActive(true);
 		yield return null;
-		//if (isLoading) {
-		//	yield return new WaitForSeconds(5);
-		//}
 		while (isLoading) {
 			yield return null;
 		}
@@ -381,12 +362,13 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	}
 	public void ExitScene() {
 		StopAllCoroutines();
-		SplashWebView.StartWebView("splash.html");
+		SplashWebView.StartWebView("https://h5.zspiritx.com.cn/home");
 
 		StartCoroutine(StopScenes());
 	}
 	IEnumerator StopScenes() {
 		isLoading = true;
+		entityActionManager.Set2IdleMode();
 		switch (sceneMode) {
 			case SceneMode.None:
 				break;

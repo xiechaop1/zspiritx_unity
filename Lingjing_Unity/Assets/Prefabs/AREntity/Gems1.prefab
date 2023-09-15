@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7891759175718601748
 Transform:
   m_ObjectHideFlags: 0
@@ -160,7 +160,8 @@ MonoBehaviour:
   strHintbox: 
   goInteractionMode: {fileID: 0}
   arUtiity: {fileID: 0}
-  entityId: 0
+  entityItemId: 0
+  entityName: 0
   enumARType: 0
   uuidImageTracking: 
   latitude: 0

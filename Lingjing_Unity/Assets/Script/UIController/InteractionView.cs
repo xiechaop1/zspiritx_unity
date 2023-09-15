@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class InteractionView : MonoBehaviour {
+	public SceneLoadManager sceneLoader;
 	public EntityActionManager actionManager;
 	public AudioSource voiceLogPlayer;
 	public GameObject goHintBox;
@@ -92,6 +93,13 @@ public class InteractionView : MonoBehaviour {
 		actionManager.OnInteractionFinished(entityInfo);
 		entityInfo = null;
 	}
+	public void ExitScene() {
+		if (goHintBox.activeInHierarchy) {
+			ExitHint();
+		}
+
+		sceneLoader.ExitScene();
+	}
 
 	public GameObject goNPCBox;
 	public Text txtNPC;
@@ -145,8 +153,8 @@ public class InteractionView : MonoBehaviour {
 			entityInfo.currDialog = sentence;
 			txtNPC.text = sentence.sentence;
 			//if (!string.IsNullOrWhiteSpace(sentence.name)) 
-				txtNPCName.text = sentence.name;
-			
+			txtNPCName.text = sentence.name;
+
 			for (int i = 0; i < btnSelects.Length; i++) {
 				if (i < sentence.userSelections.Length) {
 					btnSelects[i].SetActive(true);
