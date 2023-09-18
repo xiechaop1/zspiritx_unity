@@ -18,6 +18,7 @@ public class DebugMenuManager : MonoBehaviour {
 	//}
 	//private static DebugMenuManager instance;
 
+	public GameObject goDebugView;
 	public GameObject goHintBox;
 	public GameObject Notch;
 	public Text txtHint;
@@ -38,12 +39,23 @@ public class DebugMenuManager : MonoBehaviour {
 	public double lat = 39.852899870588018;//carpark 39.852899870588018; test 39.9347868240849;
 	public double lon = 116.36157978764194;//carpark 116.36157978764194; test 116.28647419295855;
 
+	public bool isDebugMode {
+		get => debugMode;
+		set {
+			if (debugMode != value) {
+				debugMode = value;
+				goDebugView.SetActive(value);
+			}
+		}
+	}
+
+	private bool debugMode = true;
 	private void Awake() {
 		//WorldInit();
 	}
 	private void Start() {
 		entityActionManager.eventEntityFound += ShowInfo;
-		sceneLoadManager.eventDebugInfo += ShowHint;
+		//sceneLoadManager.eventDebugInfo += ShowHint;
 		//DebugInfo
 		//StartCoroutine(Testloader());
 	}
@@ -104,7 +116,8 @@ public class DebugMenuManager : MonoBehaviour {
 	public void PicnicBtn() {
 		//SplashWebView.SetVisibility(false);
 		//UIEventManager.BroadcastEvent("WebViewCall", "Start2DScene");
-		sceneLoadManager.DebugWebViewCallback("WebViewOff&FalseAnswer");
+		//sceneLoadManager.DebugWebViewCallback("WebViewOff&FalseAnswer");
+		sceneLoadManager.DebugWebViewCallback("{'WebViewOff':1, 'DebugInfo':0}");
 	}
 	public void PanicBtn() {
 		//SplashWebView.SetVisibility(false);
@@ -122,84 +135,6 @@ public class DebugMenuManager : MonoBehaviour {
 		fieldEntityManager.PlaceImageTrackingEntity(fakeImageName, fakeImage);
 	}
 
-	//IEnumerator GPSTest() {
-	//	isDebugMode = !isDebugMode;
-	//	LocationService locServ = Input.location;
-	//	if (!isDebugMode) {
-	//		locServ.Stop();
-	//		yield break;
-	//	}
-	//	locServ.Start();
-	//	LocationInfo locInfo;
-	//	while (isDebugMode) {
-	//		locInfo = locServ.lastData;
-	//		ShowHint("lat: " + locInfo.latitude + "\nlon: " + locInfo.longitude + "\nalt: " + locInfo.altitude);
-	//		yield return new WaitForSeconds(2f);
-	//	}
-
-	//}
-	//void WorldInit() {
-	//	UIEventManager eventManager = UIEventManager.getInstance();
-	//	inventoryItemManager.Init(eventManager);
-
-	//	fieldEntityManager.Init(eventManager);
-	//	entityActionManager.Init(eventManager);
-	//	arSightManager.Init(eventManager);
-
-	//	//fieldEntityManager.actionManager = entityActionManager;
-	//	//entityActionManager.interactionView = interactionController;
-	//}
-	//	IEnumerator Testloader() {
-
-	//		entityActionManager.eventEntityFound += ShowInfo;
-
-	//#if UNITY_EDITOR
-	//		float notch = 20;//Screen.safeArea.x;
-	//#else
-	//		float notch = Screen.safeArea.x;
-	//#endif
-	//		if (notch > 0.0f) {
-	//			Notch.GetComponent<RectTransform>().anchorMin = new Vector2(0.0f, 1.0f - notch / Screen.width);
-	//			//SplashWebView.GetComponent<RectTransform>().anchorMax = new Vector2(1.0f, 1.0f - notch / Screen.width);
-	//		}
-	//		//yield return null;
-	//		SplashWebView.StartWebViewHome();
-	//		//SplashWebView.StartWebViewHome();
-	//		while (SplashWebView.isActive) {
-	//			yield return null;
-	//		}
-	//		//		for (int i = 0; SplashWebView.isActive;) {
-	//		//			yield return null;
-	//		//#if UNITY_EDITOR
-	//		//			i++;
-	//		//			if (i > 1200) {
-	//		//				SplashWebView.UnityWebViewListener("StartARScene");
-	//		//			}
-	//		//#endif
-	//		//		}
-
-	//		fieldEntityManager.PrepareScene();
-	//		ShowHint("正在扫描构建环境，请使用手机缓慢扫描地面与墙壁");
-	//		for (int i = 0; i < 20; i++) {
-	//			if (fieldEntityManager.isSurfacesReady) {
-	//				break;
-	//			}
-	//			yield return new WaitForSeconds(1);
-	//		}
-	//		ShowHint("环境扫描 " + (fieldEntityManager.isSurfacesReady ? "成功" : "失败"));
-
-	//		yield return null;
-	//		for (int i = 0; i < 10; i++) {
-	//			if (fieldEntityManager.isLoadFinish) {
-	//				break;
-	//			}
-	//			fieldEntityManager.TryPlaceEntitys(10);
-	//			yield return new WaitForSeconds(1);
-	//		}
-	//		//bool entityLoadingResult = fieldEntityManager.isLoadFinish;
-	//		//Debug.Log(entityLoadingResult);
-	//		ShowHint("模型放置 " + (fieldEntityManager.isLoadFinish ? "成功" : "失败"));
-	//	}
 }
 public class LogManager {
 	public static void Debug(string info) {

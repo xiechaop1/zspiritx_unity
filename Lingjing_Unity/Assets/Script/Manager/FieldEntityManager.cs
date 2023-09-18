@@ -320,7 +320,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	}
 
 	public GameObject GetStageDir() {
-		if (stageManager.currentStage.stageToggleType == FieldStageInfo.StageToggleType.ARTag) {
+		if (stageManager.currentStage.stageToggleType == FieldStageInfo.StageToggleType.ARTag && imageDirs.ContainsKey(stageManager.currentStage.uuidARTag)) {
 			return imageDirs[stageManager.currentStage.uuidARTag];
 		}
 		return null;

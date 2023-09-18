@@ -215,6 +215,9 @@ public class WebViewBehaviour : MonoBehaviour {
 
 	}
 	public void SetVisibility(bool state) {
+		if (isActive == state) {
+			return;
+		}
 		splashBackground.SetActive(state);
 		sceneLoadManager.webViewObject.SetVisibility(state);
 		isActive = state;

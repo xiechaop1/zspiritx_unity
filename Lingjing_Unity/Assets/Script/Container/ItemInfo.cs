@@ -12,6 +12,7 @@ public abstract class ItemInfo : MonoBehaviour, IEventMessage {
 	[TextArea]
 	public string strHintbox = "";
 	public GameObject goInteractionMode;
+	public InteractionAnimation interactionAnimation;
 	public ARUtilityListener arUtiity;
 
 	public DialogSentence currDialog;
@@ -19,6 +20,15 @@ public abstract class ItemInfo : MonoBehaviour, IEventMessage {
 	public void SetInteractionMode(bool value) {
 		if (goInteractionMode != null) {
 			goInteractionMode?.SetActive(value);
+		}
+	}
+	public void SetInteractionState(bool value) {
+		if (interactionAnimation != null) {
+			if (value) {
+				interactionAnimation.BeginInteraction();
+			} else {
+				interactionAnimation.EndInteraction();
+			}
 		}
 	}
 }
@@ -34,4 +44,8 @@ public class FileInfo : IEventMessage {
 		strName = origin.strName;
 		strHintbox = origin.strHintbox;
 	}
+}
+public abstract class InteractionAnimation : MonoBehaviour {
+	public abstract void BeginInteraction();
+	public abstract void EndInteraction();
 }

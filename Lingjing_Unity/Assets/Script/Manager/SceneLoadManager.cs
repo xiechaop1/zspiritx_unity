@@ -21,7 +21,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	//public GameObject Notch;
 	public GameObject LoadingScreen;
 	public WebViewBehaviour SplashWebView;
-	public event Action<string> eventDebugInfo;
+	//public event Action<string> eventDebugInfo;
 
 
 	//Utility
@@ -30,6 +30,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	private WWWManager networkManager;
 	private InputGPSManager gpsManager;
 	public ActorDataManager dataManager;
+	public DebugMenuManager debugManager;
 
 	//AR
 	public ARSession arSession;
@@ -55,7 +56,8 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		StartCoroutine(InitStartUp());
 	}
 	public void DebugLog(string log) {
-		eventDebugInfo?.Invoke(log);
+		debugManager.ShowHint(log);
+		//eventDebugInfo?.Invoke(log);
 	}
 	void WorldInit() {
 		//Utility Init
@@ -76,7 +78,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		entityActionManager = inventoryItemManager.GetComponent<EntityActionManager>();
 
 		fieldEntityManager = fieldStageManager.GetComponent<FieldEntityManager>();
-		entityActionManager.Init(eventManager, fieldEntityManager);
+		entityActionManager.Init(eventManager, fieldEntityManager,networkManager);
 
 		//AR Init
 
@@ -215,11 +217,11 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		}
 
 		if (ARSession.state == ARSessionState.NeedsInstall) {
-			eventDebugInfo?.Invoke("ARCore Needs Install");
+			DebugLog("ARCore Needs Install");
 			isARPossible = false;
 			//yield break;
 		} else if (ARSession.state == ARSessionState.Unsupported) {
-			eventDebugInfo?.Invoke("ARCore Unsupported");
+			DebugLog("ARCore Unsupported");
 			isARPossible = false;
 			//yield break;
 		} else {
@@ -243,14 +245,34 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		webViewCallback(msg);
 	}
 	void WebviewCallbackSceneControl(string msg) {
-		string[] args = msg.Split('&');
-		if (args[0] == "WebViewOff") {
-			SplashWebView.SetVisibility(false);
-			StartCoroutine(ARLoader());
-		} else
-		if (args[0] == "Start2DScene") {
-			SplashWebView.SetVisibility(false);
-			StartCoroutine(ScrollerLoader());
+		try {
+			JSONReader jsonMsg = new JSONReader(msg);
+			int tmpInt = 0;
+			//string tmpString;
+			if (jsonMsg.TryPraseInt("WebViewOff", ref tmpInt) && tmpInt == 1) {
+				SplashWebView.SetVisibility(false);
+				StartCoroutine(ARLoader());
+			}
+			if (jsonMsg.TryPraseInt("DebugInfo", ref tmpInt)) {
+				debugManager.isDebugMode = (tmpInt == 1);
+			}
+			if (jsonMsg.TryPraseInt("UserId", ref tmpInt)) {
+				ConfigInfo.userId = tmpInt;
+				//debugManager.isDebugMode = (tmpInt == 1);
+			}
+			if (jsonMsg.TryPraseInt("StoryId", ref tmpInt)) {
+				ConfigInfo.storyId = tmpInt;
+				//debugManager.isDebugMode = (tmpInt == 1);
+			}
+		} catch (Exception) {
+			string[] args = msg.Split('&');
+			if (args[0] == "WebViewOff") {
+				SplashWebView.SetVisibility(false);
+				StartCoroutine(ARLoader());
+			} else if (args[0] == "Start2DScene") {
+				SplashWebView.SetVisibility(false);
+				StartCoroutine(ScrollerLoader());
+			}
 		}
 	}
 	void LoadAR() {
@@ -268,6 +290,11 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		}
 		isLoading = true;
 		sceneMode = SceneMode.AR;
+		if (isARPossible) {
+
+		} else {
+
+		}
 		arSession.enabled = true;
 		yield return AsyncStartSession();
 

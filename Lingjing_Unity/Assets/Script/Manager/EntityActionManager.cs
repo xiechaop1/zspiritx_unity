@@ -1,10 +1,13 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
+using Network;
+using Config;
 
 [RequireComponent(typeof(InventoryItemManager))]
 public class EntityActionManager : MonoBehaviour, IManager {
 	private FieldEntityManager entityManager;
+	private WWWManager networkManager;
 	public event Action<ItemInfo> eventEntityFound;
 	public InteractionView interactionView;
 	private ActionMode actionMode = ActionMode.Idle;
@@ -74,13 +77,15 @@ public class EntityActionManager : MonoBehaviour, IManager {
 	public void RegisterManager(IManager manager) {
 		if (manager is FieldEntityManager) {
 			entityManager = manager as FieldEntityManager;
+		} else if (manager is WWWManager) {
+			networkManager = manager as WWWManager;
 		}
 	}
 
-	public void Set2ARMode(){
+	public void Set2ARMode() {
 		actionMode = ActionMode.World;
 	}
-	public void Set2IdleMode(){
+	public void Set2IdleMode() {
 		actionMode = ActionMode.Idle;
 	}
 
@@ -151,9 +156,7 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				break;
 			case EntityActionType.CollectableItem:
 				entityInfo.enumActionType = entityInfo.enumItemType;
-
-				UIEventManager.CallEvent("FieldEntityManager", "RemoveFieldEntitys", entityInfo);
-				UIEventManager.CallEvent("InventoryItemManager", "AddItem", entityInfo);
+				PickUpItem(entityInfo);
 				interactionView.ExitHint();
 				break;
 			case EntityActionType.DialogActor:
@@ -168,7 +171,34 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				break;
 		}
 	}
-
+	void PickUpItem(ItemInfo entityInfo) {
+		StartCoroutine(AsyncPickUpItem(entityInfo));
+		UIEventManager.CallEvent("FieldEntityManager", "RemoveFieldEntitys", entityInfo);
+		UIEventManager.CallEvent("InventoryItemManager", "AddItem", entityInfo);
+	}
+	IEnumerator AsyncPickUpItem(ItemInfo entityInfo) {
+		//is_test=1&session_id=6&user_id=1&story_id=1&story_model_id=19
+		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingProcess,
+			"pickup",
+			string.Format("is_test=1&session_id={0}&user_id={1}1&story_id={2}&story_model_id={3}",
+				ConfigInfo.sessionId,
+				ConfigInfo.userId,
+				ConfigInfo.storyId,
+				((FieldEntityInfo)entityInfo).entityItemId
+				)
+			);
+		yield return www;
+		if (www.isError) {
+			LogManager.Warning(www.error);
+			yield break;
+		}
+		if (string.IsNullOrEmpty(www.text)) {
+			LogManager.Warning("FAILED to pickup item due to missing return info");
+			yield break;
+		}
+		Debug.Log(www.text);
+		yield break;
+	}
 
 	public void OnInteractionFinished(ItemInfo entityInfo) {
 		//LogManager.Debug("Finished Interaction");
@@ -177,9 +207,8 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				case EntityActionType.CollectableInfo:
 					break;
 				case EntityActionType.InteractiveItem:
-					entityInfo.SetInteractionMode(false);
-					break;
 				case EntityActionType.CollectableItem:
+					entityInfo.SetInteractionMode(false);
 					break;
 				case EntityActionType.Debug:
 				case EntityActionType.ViewableInfo:
