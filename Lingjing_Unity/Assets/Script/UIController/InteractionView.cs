@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Config;
 
 public class InteractionView : MonoBehaviour {
 	public SceneLoadManager sceneLoader;
@@ -15,10 +16,67 @@ public class InteractionView : MonoBehaviour {
 	public Text txtExitBtn;
 	private ItemInfo entityInfo;
 	public WebViewBehaviour webViewQuiz;
+	public WebViewBehaviour webViewUtility;
 
 	public void Awake() {
 		webViewQuiz.OnCallback += OnQuizCallback;
 	}
+
+	bool isBackpack = false;
+	public void ToggleBackpack() {
+		if (isInDialog)
+			return;
+
+		isBackpack = !isBackpack;
+		if (isBackpack) {
+			isMap = false;
+			isTask = false;
+			webViewUtility.StartWebView(Network.HttpUrlInfo.urlLingjingBackpack +
+				string.Format("user_id={0}&session_id={1}&story_id={2}",
+					ConfigInfo.userId,
+					ConfigInfo.sessionId,
+					ConfigInfo.storyId));
+		} else {
+			webViewUtility.SetVisibility(false);
+		}
+	}
+	bool isMap = false;
+	public void ToggleMap() {
+		//if (isInDialog) 
+		return;
+
+		isMap = !isMap;
+		if (isMap) {
+			isBackpack = false;
+			isTask = false;
+			//webViewUtility.StartWebView(Network.HttpUrlInfo.urlLingjingBackpack +
+			//	string.Format("user_id={0}&session_id={1}&story_id={2}",
+			//		ConfigInfo.userId,
+			//		ConfigInfo.sessionId,
+			//		ConfigInfo.storyId));
+		} else {
+			webViewUtility.SetVisibility(false);
+		}
+	}
+	bool isTask = false;
+	public void ToggleTask() {
+		//if (isInDialog) 
+		return;
+
+		isTask = !isTask;
+		if (isTask) {
+			isBackpack = false;
+			isMap = false;
+			//webViewUtility.StartWebView(Network.HttpUrlInfo.urlLingjingBackpack +
+			//	string.Format("user_id={0}&session_id={1}&story_id={2}",
+			//		ConfigInfo.userId,
+			//		ConfigInfo.sessionId,
+			//		ConfigInfo.storyId));
+		} else {
+			webViewUtility.SetVisibility(false);
+		}
+	}
+
 
 	public void ShowHint(string hint, string textComfirm = "确认") {
 		goHintBox.SetActive(true);
@@ -33,8 +91,11 @@ public class InteractionView : MonoBehaviour {
 	}
 
 	public void ShowHint(ItemInfo info, string textCancel = "取消") {
-		goHintBox.SetActive(true);
-		goHomeIcon.SetActive(false);
+		entityInfo = info;
+		SetHintBoxActive(true);
+		//goHintBox.SetActive(true);
+		//goHomeIcon.SetActive(false);
+		//info.SetInteractionState(true);
 		txtHint.text = info.strHintbox;
 		if (info is FieldEntityInfo) {
 			Vector3 pos;
@@ -45,12 +106,14 @@ public class InteractionView : MonoBehaviour {
 				txtHint.text += "\n 相对用户坐标:" + pos.ToString();
 			}
 		}
-		entityInfo = info;
 		btnComfirm.SetActive(false);
 	}
 	public void ShowCollectableHint(ItemInfo info, string textCancel = "取消") {
-		goHintBox.SetActive(true);
-		goHomeIcon.SetActive(false);
+		entityInfo = info;
+		SetHintBoxActive(true);
+		//goHintBox.SetActive(true);
+		//goHomeIcon.SetActive(false);
+		//info.SetInteractionState(true);
 		txtHint.text = info.strHintbox;
 		if (info is FieldEntityInfo) {
 			Vector3 pos;
@@ -61,13 +124,15 @@ public class InteractionView : MonoBehaviour {
 				txtHint.text += "\n 相对用户坐标:" + pos.ToString();
 			}
 		}
-		entityInfo = info;
 		btnComfirm.SetActive(true);
 		txtConfirmBtn.text = "记录信息";
 	}
 	public void ShowCollectableItem(ItemInfo info, string textCancel = "取消") {
-		goHintBox.SetActive(true);
-		goHomeIcon.SetActive(false);
+		entityInfo = info;
+		SetHintBoxActive(true);
+		//goHintBox.SetActive(true);
+		//goHomeIcon.SetActive(false);
+		//info.SetInteractionState(true);
 		txtHint.text = info.strHintbox;
 		if (info is FieldEntityInfo) {
 			Vector3 pos;
@@ -78,7 +143,6 @@ public class InteractionView : MonoBehaviour {
 				txtHint.text += "\n 相对用户坐标:" + pos.ToString();
 			}
 		}
-		entityInfo = info;
 		btnComfirm.SetActive(true);
 		txtConfirmBtn.text = "收集道具";
 	}
@@ -94,11 +158,21 @@ public class InteractionView : MonoBehaviour {
 		}
 	}
 	public void ExitHint() {
-		goHintBox.SetActive(false);
-		goHomeIcon.SetActive(true);
+		SetHintBoxActive(false);
+		//goHintBox.SetActive(false);
+		//goHomeIcon.SetActive(true);
+		//entityInfo.SetInteractionState(false);
 		actionManager.OnInteractionFinished(entityInfo);
 		entityInfo = null;
 	}
+	void SetHintBoxActive(bool isActive) {
+		goHintBox.SetActive(isActive);
+		goHomeIcon.SetActive(!isActive);
+		if (entityInfo != null) {
+			entityInfo.SetInteractionState(isActive);
+		}
+	}
+
 	public void ExitScene() {
 		if (goHintBox.activeInHierarchy) {
 			ExitHint();
@@ -115,10 +189,13 @@ public class InteractionView : MonoBehaviour {
 	public Text[] txtSelects;
 	public Text txtNPCName;
 
+	bool isInDialog = false;
 	public void ShowNPCLog(ItemInfo info) {
 		entityInfo = info;
 		goNPCBox.SetActive(true);
 		goHomeIcon.SetActive(false);
+		webViewUtility.SetVisibility(false);
+		isInDialog = true;
 		AdvancedLog(entityInfo.currDialog);
 		if (entityInfo is FieldEntityInfo) {
 			Vector3 pos;
@@ -134,6 +211,7 @@ public class InteractionView : MonoBehaviour {
 	public void ExitNPCLog() {
 		goNPCBox.SetActive(false);
 		goHomeIcon.SetActive(true);
+		isInDialog = false;
 		actionManager.OnInteractionFinished(entityInfo);
 		entityInfo = null;
 	}
@@ -178,7 +256,12 @@ public class InteractionView : MonoBehaviour {
 			}
 		} else if (!string.IsNullOrWhiteSpace(sentence.quizID)) {
 			entityInfo.currDialog = sentence;
-			webViewQuiz.StartWebView(Network.HttpUrlInfo.urlLingjingQuiz + sentence.quizID);
+			//webViewQuiz.StartWebView(Network.HttpUrlInfo.urlLingjingQuiz + sentence.quizID + "&session_id=" + ConfigInfo.sessionId);
+			webViewQuiz.StartWebView(Network.HttpUrlInfo.urlLingjingQuiz +
+				string.Format("id={0}&user_id={1}&session_id={2}",
+				   sentence.quizID,
+				   ConfigInfo.userId,
+				   ConfigInfo.sessionId));
 		} else if (!string.IsNullOrWhiteSpace(sentence.url)) {
 			entityInfo.currDialog = sentence;
 			webViewQuiz.StartWebView(sentence.url);
@@ -191,22 +274,37 @@ public class InteractionView : MonoBehaviour {
 	}
 	void OnQuizCallback(string msg) {
 		string[] args = msg.Split('&');
-		if (args[0] == "WebViewOff") {
-			webViewQuiz.SetVisibility(false);
-			try {
-				if (args.Length > 1) {
-					if (args[1] == "TrueAnswer") {
+		try {
+			JSONReader jsonMsg = new JSONReader(msg);
+			int tmpInt = 0;
+			if (jsonMsg.TryPraseInt("WebViewOff", ref tmpInt) && tmpInt == 1) {
+				webViewQuiz.SetVisibility(false);
+			}
+			if (jsonMsg.TryPraseInt("AnswerType", ref tmpInt)) {
+				AdvancedLog(tmpInt);
+			} else {
+				AdvancedLog(1);
+			}
+		} catch (Exception) {
+			if (args[0] == "WebViewOff") {
+				webViewQuiz.SetVisibility(false);
+				try {
+					if (args.Length > 1) {
+						if (args[1] == "TrueAnswer") {
+							AdvancedLog(1);
+						} else if (args[1] == "FalseAnswer") {
+							AdvancedLog(2);
+						}
+					} else {
 						AdvancedLog(1);
-					} else if (args[1] == "FalseAnswer") {
-						AdvancedLog(2);
 					}
-				} else {
-					AdvancedLog(1);
+				} catch (Exception) {
+					ExitQuiz();
 				}
-			} catch (Exception) {
-				ExitQuiz();
 			}
 		}
+
+
 	}
 	#endregion
 
