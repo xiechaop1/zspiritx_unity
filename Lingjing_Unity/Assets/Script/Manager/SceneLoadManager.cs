@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.ARFoundation;
 using Network;
 using Config;
 
@@ -31,12 +32,13 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	public ActorDataManager dataManager;
 
 	//AR
-	public UnityEngine.XR.ARFoundation.ARSession arSession;
+	public ARSession arSession;
 	public FieldStageManager fieldStageManager;
 	private FieldEntityManager fieldEntityManager;
 	private EntityActionManager entityActionManager;
 	private ARSightManager arSightManager;
 
+	private bool isARPossible = true;
 	//public GameObject ARSceneScanHint;
 
 	//Scroller
@@ -157,7 +159,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
                     };
                 ";
 #else
-                var js = "";
+				var js = "";
 #endif
 				webViewObject.EvaluateJS(js + @"Unity.call('ua=' + navigator.userAgent)");
 			}
@@ -204,6 +206,25 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 
 	IEnumerator InitStartUp() {
 		yield return null;
+
+		if (ARSession.state == ARSessionState.None) {
+			StartCoroutine(ARSession.CheckAvailability());
+		}
+		while (ARSession.state == ARSessionState.CheckingAvailability) {
+			yield return null;
+		}
+
+		if (ARSession.state == ARSessionState.NeedsInstall) {
+			eventDebugInfo?.Invoke("ARCore Needs Install");
+			isARPossible = false;
+			//yield break;
+		} else if (ARSession.state == ARSessionState.Unsupported) {
+			eventDebugInfo?.Invoke("ARCore Unsupported");
+			isARPossible = false;
+			//yield break;
+		} else {
+			isARPossible = true;
+		}
 
 		SplashWebView.OnCallback += WebviewCallbackSceneControl;
 		//SplashWebView.OnWebClose += LoadAR;
@@ -382,9 +403,9 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 				yield return null;
 				try {
 					arSession.enabled = false;
-					eventDebugInfo?.Invoke("AR关闭成功");
+					//eventDebugInfo?.Invoke("AR关闭成功");
 				} catch {
-					eventDebugInfo?.Invoke("AR关闭失败");
+					//eventDebugInfo?.Invoke("AR关闭失败");
 				}
 				break;
 			default:
@@ -396,7 +417,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		yield return new WaitForSeconds(1f);
 		sceneMode = SceneMode.Ready;
 		isLoading = false;
-		eventDebugInfo?.Invoke("场景关闭成功");
+		//eventDebugInfo?.Invoke("场景关闭成功");
 		yield break;
 	}
 

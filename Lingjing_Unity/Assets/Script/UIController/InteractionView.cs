@@ -7,6 +7,7 @@ public class InteractionView : MonoBehaviour {
 	public SceneLoadManager sceneLoader;
 	public EntityActionManager actionManager;
 	public AudioSource voiceLogPlayer;
+	public GameObject goHomeIcon;
 	public GameObject goHintBox;
 	public Text txtHint;
 	public GameObject btnComfirm;
@@ -21,6 +22,7 @@ public class InteractionView : MonoBehaviour {
 
 	public void ShowHint(string hint, string textComfirm = "确认") {
 		goHintBox.SetActive(true);
+		goHomeIcon.SetActive(false);
 		txtHint.text = hint;
 		if (string.IsNullOrWhiteSpace(textComfirm)) {
 			btnComfirm.SetActive(false);
@@ -32,6 +34,7 @@ public class InteractionView : MonoBehaviour {
 
 	public void ShowHint(ItemInfo info, string textCancel = "取消") {
 		goHintBox.SetActive(true);
+		goHomeIcon.SetActive(false);
 		txtHint.text = info.strHintbox;
 		if (info is FieldEntityInfo) {
 			Vector3 pos;
@@ -47,6 +50,7 @@ public class InteractionView : MonoBehaviour {
 	}
 	public void ShowCollectableHint(ItemInfo info, string textCancel = "取消") {
 		goHintBox.SetActive(true);
+		goHomeIcon.SetActive(false);
 		txtHint.text = info.strHintbox;
 		if (info is FieldEntityInfo) {
 			Vector3 pos;
@@ -63,6 +67,7 @@ public class InteractionView : MonoBehaviour {
 	}
 	public void ShowCollectableItem(ItemInfo info, string textCancel = "取消") {
 		goHintBox.SetActive(true);
+		goHomeIcon.SetActive(false);
 		txtHint.text = info.strHintbox;
 		if (info is FieldEntityInfo) {
 			Vector3 pos;
@@ -90,6 +95,7 @@ public class InteractionView : MonoBehaviour {
 	}
 	public void ExitHint() {
 		goHintBox.SetActive(false);
+		goHomeIcon.SetActive(true);
 		actionManager.OnInteractionFinished(entityInfo);
 		entityInfo = null;
 	}
@@ -112,6 +118,7 @@ public class InteractionView : MonoBehaviour {
 	public void ShowNPCLog(ItemInfo info) {
 		entityInfo = info;
 		goNPCBox.SetActive(true);
+		goHomeIcon.SetActive(false);
 		AdvancedLog(entityInfo.currDialog);
 		if (entityInfo is FieldEntityInfo) {
 			Vector3 pos;
@@ -126,6 +133,7 @@ public class InteractionView : MonoBehaviour {
 
 	public void ExitNPCLog() {
 		goNPCBox.SetActive(false);
+		goHomeIcon.SetActive(true);
 		actionManager.OnInteractionFinished(entityInfo);
 		entityInfo = null;
 	}
