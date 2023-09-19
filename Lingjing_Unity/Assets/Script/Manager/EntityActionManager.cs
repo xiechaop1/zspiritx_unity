@@ -180,7 +180,7 @@ public class EntityActionManager : MonoBehaviour, IManager {
 		//is_test=1&session_id=6&user_id=1&story_id=1&story_model_id=19
 		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingProcess,
 			"pickup",
-			string.Format("is_test=1&session_id={0}&user_id={1}1&story_id={2}&story_model_id={3}",
+			string.Format("is_test=1&session_id={0}&user_id={1}&story_id={2}&story_model_id={3}",
 				ConfigInfo.sessionId,
 				ConfigInfo.userId,
 				ConfigInfo.storyId,
