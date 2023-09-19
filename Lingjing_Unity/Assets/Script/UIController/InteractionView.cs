@@ -20,6 +20,7 @@ public class InteractionView : MonoBehaviour {
 
 	public void Awake() {
 		webViewQuiz.OnCallback += OnQuizCallback;
+		webViewUtility.OnCallback += OnUtilityCallback;
 	}
 
 	bool isBackpack = false;
@@ -77,7 +78,22 @@ public class InteractionView : MonoBehaviour {
 		}
 	}
 
-
+	void OnUtilityCallback(string msg) {
+		string[] args = msg.Split('&');
+		try {
+			JSONReader jsonMsg = new JSONReader(msg);
+			int tmpInt = 0;
+			if (jsonMsg.TryPraseInt("WebViewOff", ref tmpInt) && tmpInt == 1) {
+				webViewUtility.SetVisibility(false);
+				isBackpack = false;
+			}
+		} catch (Exception) {
+			if (args[0] == "WebViewOff") {
+				webViewUtility.SetVisibility(false);
+				isBackpack = false;
+			}
+		}
+	}
 	public void ShowHint(string hint, string textComfirm = "х╥хо") {
 		goHintBox.SetActive(true);
 		goHomeIcon.SetActive(false);
@@ -303,8 +319,6 @@ public class InteractionView : MonoBehaviour {
 				}
 			}
 		}
-
-
 	}
 	#endregion
 
