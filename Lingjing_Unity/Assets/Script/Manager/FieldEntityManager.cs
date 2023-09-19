@@ -17,6 +17,9 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	List<FieldEntityInfo> lstPlacedEntity = new List<FieldEntityInfo>();
 	public FieldEntityInfo[] arrPlacedEntity => lstPlacedEntity.ToArray();
 	public bool isLoadFinish => queFieldEntity.Count == 0;
+
+	public float maxShowDistance = 1.5f;
+
 	private EntityActionManager actionManager;
 	private FieldStageManager stageManager;
 	private SceneLoadManager loadManager;
@@ -249,7 +252,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			}
 
 			entityInfo = queLatLonEntity.Dequeue();
-			obj = geolocManager.GetPosObject(entityInfo.latitude, entityInfo.longitude);
+			obj = geolocManager.GetPosObject(entityInfo.latitude, entityInfo.longitude, maxShowDistance);
 			if (obj == null) {
 				queLatLonEntity.Enqueue(entityInfo);
 			} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocPosition) {

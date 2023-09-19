@@ -63,7 +63,7 @@ public class InputGPSManager : MonoBehaviour, IManager {
 		return Quaternion.Euler(0, mainCamera.transform.rotation.eulerAngles.y - compass.trueHeading, 0);
 	}
 	public bool UpdateCamPos() {
-		GetCurrentLatLonWGS84(out double lat, out double lon);
+		GetCurrentLatLonGCJ02(out double lat, out double lon);
 		if (camLatitude == lat && camLongitude == lon) {
 			return false;
 		}
@@ -118,11 +118,11 @@ public class InputGPSManager : MonoBehaviour, IManager {
 	#endregion
 
 	#region Get Advanced GeoLoc
-	public GameObject GetPosObject(double lat, double lon) {
+	public GameObject GetPosObject(double lat, double lon,float maxDistance = 20f) {
 		UpdateGroundCampass();
 		UpdateGroundLatLonByCameraPos();
 		Vector3 objPos = FastGetDeltaDistance(groundLatitude, groundLongitude, lat, lon);
-		if (objPos.sqrMagnitude > 40000f) {
+		if (objPos.sqrMagnitude > maxDistance*maxDistance) {
 			return null;
 		}
 		GameObject ret = new GameObject("go_at_geoloc:" + lat + "," + lon);

@@ -11,12 +11,16 @@ public class InteractionView : MonoBehaviour {
 	public GameObject goHomeIcon;
 	public GameObject goHintBox;
 	public Text txtHint;
+	public GameObject goNoteBox;
+	public Text txtNote;
 	public GameObject btnComfirm;
 	public Text txtConfirmBtn;
 	public Text txtExitBtn;
 	private ItemInfo entityInfo;
 	public WebViewBehaviour webViewQuiz;
 	public WebViewBehaviour webViewUtility;
+	public MonoWebView webViewMap;
+	public MonoWebView webViewTask;
 
 	public void Awake() {
 		webViewQuiz.OnCallback += OnQuizCallback;
@@ -43,6 +47,13 @@ public class InteractionView : MonoBehaviour {
 	}
 	bool isMap = false;
 	public void ToggleMap() {
+		//isMap = !isMap;
+		//if (isMap) {
+		//	webViewMap.StartWebViewHome();
+		//} else {
+		//	webViewMap.SetVisibility(false);
+		//}
+
 		//if (isInDialog) 
 		return;
 
@@ -61,6 +72,13 @@ public class InteractionView : MonoBehaviour {
 	}
 	bool isTask = false;
 	public void ToggleTask() {
+		//isTask = !isTask;
+		//if (isTask) {
+		//	webViewTask.StartWebViewHome();
+		//} else {
+		//	webViewTask.SetVisibility(false);
+		//}
+
 		//if (isInDialog) 
 		return;
 
@@ -94,6 +112,33 @@ public class InteractionView : MonoBehaviour {
 			}
 		}
 	}
+
+	List<NotificationMessage> lstMsg = new List<NotificationMessage>();
+	Queue<NotificationMessage> queMsg = new Queue<NotificationMessage>();
+
+	public void AddNotice(NotificationMessage note) {
+		foreach (var msg in lstMsg) {
+			if (msg.id == note.id) {
+				return;
+			}
+		}
+		queMsg.Enqueue(note);
+		lstMsg.Add(note);
+		if (!goNoteBox.activeSelf) {
+			goNoteBox.SetActive(true);
+			ShowNextNotice();
+		}
+	}
+	public void ShowNextNotice() {
+		if (queMsg.Count > 0) {
+			NotificationMessage note = queMsg.Dequeue();
+			txtNote.text = note.msg;
+		} else {
+			goNoteBox.SetActive(false);
+		}
+	}
+
+
 	public void ShowHint(string hint, string textComfirm = "х╥хо") {
 		goHintBox.SetActive(true);
 		goHomeIcon.SetActive(false);

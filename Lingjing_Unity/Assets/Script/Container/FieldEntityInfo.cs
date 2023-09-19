@@ -32,26 +32,30 @@ public class FieldEntityInfo : ItemInfo {
 	public bool hasProximityDialog = false;
 	public ParticleSystem animEmerge;
 	public GameObject goVisual;
+	bool isShow = true;
 
 	int stageShowAnimation = -1;
 	int stageHideAnimation = -1;
 	float animationTimer = 0f;
 	private void Update() {
+		animationTimer += Time.deltaTime;
 		if (stageShowAnimation >= 0) {
-			animationTimer += Time.deltaTime;
-			switch (stageShowAnimation) {
-				case 0:
-					if (animationTimer > 0.5f) {
-						ShowSelf();
-						stageShowAnimation = -1;
-					}
-					break;
-				default:
-					break;
+			if (isShow) {
+				switch (stageShowAnimation) {
+					case 0:
+						if (animationTimer > 0.5f) {
+							ShowSelf();
+							stageShowAnimation = -1;
+						}
+						break;
+					default:
+						break;
+				}
 			}
-		}
-		if (stageHideAnimation >= 0) {
-			animationTimer += Time.deltaTime;
+			//animationTimer += Time.deltaTime;
+
+		} else if (stageHideAnimation >= 0) {
+			//animationTimer += Time.deltaTime;
 			switch (stageHideAnimation) {
 				case 0:
 					if (animationTimer > 0.5f) {
@@ -61,13 +65,30 @@ public class FieldEntityInfo : ItemInfo {
 					break;
 				case 1:
 					if (animationTimer > 1f) {
-						StoreSelf();
+						if (!isShow) {
+							StoreSelf();
+						}
 						stageHideAnimation = -1;
 					}
 					break;
 				default:
 					break;
 			}
+		} else if (animationTimer > 1f) {
+			if (TryGetUserPos(out Vector3 pos)) {
+				Debug.Log(pos.magnitude + " " + (entityManager.maxShowDistance * 1.5f) + " " + (pos.magnitude > entityManager.maxShowDistance * 1.5f));
+				if (goVisual.activeInHierarchy) {
+					if (pos.magnitude > entityManager.maxShowDistance * 1.5f) {
+						HideFromField();
+					}
+				} else {
+					if (pos.magnitude < entityManager.maxShowDistance) {
+						PlaceOntoField();
+					}
+				}
+			}
+
+			animationTimer = 0f;
 		}
 	}
 
@@ -91,14 +112,16 @@ public class FieldEntityInfo : ItemInfo {
 			//if (hit.collider.gameObject == targetSurface) 
 			//Debug.Log("place at " + posTarget);
 			gameObject.transform.parent = rootWorld;
-			if (!goVisual.activeInHierarchy) {
-				if (animEmerge) {
-					ShowAnim();
-				} else {
-					ShowSelf();
-				}
-			}
 
+			isShow = true;
+			//PlaceOntoField();
+			//if (!goVisual.activeInHierarchy) {
+			//	if (animEmerge) {
+			//		ShowAnim();
+			//	} else {
+			//		ShowSelf();
+			//	}
+			//}
 			return true;
 			//}
 		}
@@ -117,20 +140,22 @@ public class FieldEntityInfo : ItemInfo {
 			}
 		}
 		gameObject.transform.parent = rootWorld;
-		if (!goVisual.activeInHierarchy) {
-			if (animEmerge) {
-				ShowAnim();
-			} else {
-				ShowSelf();
-			}
-		}
+
+		isShow = true;
+		//PlaceOntoField();
+		//if (!goVisual.activeInHierarchy) {
+		//	if (animEmerge) {
+		//		ShowAnim();
+		//	} else {
+		//		ShowSelf();
+		//	}
+		//}
 	}
 
 	public void RemoveFromField() {
-		if (animEmerge) {
-			HideAnim();
-		} else {
-			HideSelf();
+		isShow = false;
+		HideFromField();
+		if (!animEmerge) {
 			StoreSelf();
 		}
 	}
@@ -153,6 +178,23 @@ public class FieldEntityInfo : ItemInfo {
 		pos = go.transform.InverseTransformPoint(transform.position);
 		return true;
 	}
+
+	public void PlaceOntoField() {
+		if (isShow && !goVisual.activeInHierarchy) {
+			if (animEmerge) {
+				ShowAnim();
+			} else {
+				ShowSelf();
+			}
+		}
+	}
+	public void HideFromField() {
+		if (animEmerge) {
+			HideAnim();
+		} else {
+			HideSelf();
+		}
+	}
 	void ShowAnim() {
 		stageShowAnimation = 0;
 		stageHideAnimation = -1;
@@ -165,6 +207,7 @@ public class FieldEntityInfo : ItemInfo {
 			hasProximityDialog = true;
 		}
 	}
+
 	void HideAnim() {
 		stageShowAnimation = -1;
 		stageHideAnimation = 0;
