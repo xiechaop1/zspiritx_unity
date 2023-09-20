@@ -41,12 +41,12 @@ public class FieldStageManager : MonoBehaviour, IManager {
 			}
 		}
 	}
-	public void LocationUpdate(Vector2 newLatLng) {
+	public void LocationUpdate(double newLat, double newLng) {
 		FieldStageInfo[] nextStages = currentStage.nextStages;
 		foreach (var stageInfo in nextStages) {
 			if (stageInfo.stageToggleType == FieldStageInfo.StageToggleType.Location) {
 				if ((stageInfo.lat == 0 && stageInfo.lng == 0) ||
-					InputGPSManager.FastGetDistance(stageInfo.lat, stageInfo.lng, newLatLng.x, newLatLng.y) < stageInfo.proximity) {
+					InputGPSManager.FastGetDistance(stageInfo.lat, stageInfo.lng, newLat, newLng) < stageInfo.proximity) {
 					StageAdvanced(stageInfo);
 					break;
 				}
@@ -269,6 +269,11 @@ LoopEnd:
 				stage.proximity = (float)tmpD;
 			} else {
 				stage.proximity = 0;
+			}
+			if (jsonInfo.TryPraseString("session_stage", ref tmpStr) && JSONReader.TryPraseInt(tmpStr, "stroy_stage_id", ref tmpInt)) {
+				stage.stroy_stage_id = tmpInt;
+			} else {
+				stage.stroy_stage_id = 0;
 			}
 			if (jsonInfo.TryPraseArray("session_models", out List<string> lstModels)) {
 				stage.lstStageEntities = PrepareEntities(lstModels.ToArray());

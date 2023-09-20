@@ -76,10 +76,10 @@ public class DebugMenuManager : MonoBehaviour {
 		//SplashWebView.StartWebView("splash.html");
 	}
 	public void ShowCurrentGeoLoc() {
-		ShowHint(gpsManager.camLatitude.ToString("F9") + ", " + gpsManager.camLongitude.ToString("F9") + "\n" +
-			gpsManager.GetCurrentLatLonGCJ02().ToString("F9") + "\n" +
-			gpsManager.GetCurrentLatLonBD09().ToString("F9") + "\n" +
-			gpsManager.groundLatitude.ToString("F9") + ", " + gpsManager.groundLongitude.ToString("F9") + "\n");
+		//ShowHint(gpsManager.camLatitude.ToString("F9") + ", " + gpsManager.camLongitude.ToString("F9") + "\n" +
+		//	gpsManager.GetCurrentLatLonGCJ02().ToString("F9") + "\n" +
+		//	gpsManager.GetCurrentLatLonBD09().ToString("F9") + "\n" +
+		//	gpsManager.groundLatitude.ToString("F9") + ", " + gpsManager.groundLongitude.ToString("F9") + "\n");
 	}
 	//bool isDebugMode = false;
 	public void DebugBtn() {

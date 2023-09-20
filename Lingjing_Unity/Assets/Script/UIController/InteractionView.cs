@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +7,9 @@ using Config;
 
 public class InteractionView : MonoBehaviour {
 	public SceneLoadManager sceneLoader;
+	public FieldStageManager stageManager;
 	public EntityActionManager actionManager;
+	public InputGPSManager gpsManager;
 	public AudioSource voiceLogPlayer;
 	public GameObject goHomeIcon;
 	public GameObject goHintBox;
@@ -36,8 +39,8 @@ public class InteractionView : MonoBehaviour {
 		if (isBackpack) {
 			isMap = false;
 			isTask = false;
-			webViewUtility.StartWebView(Network.HttpUrlInfo.urlLingjingBackpack +
-				string.Format("user_id={0}&session_id={1}&story_id={2}",
+			webViewUtility.StartWebView(Network.HttpUrlInfo.urlLingjingHtml +
+				string.Format("baggageh5/all?user_id={0}&session_id={1}&story_id={2}",
 					ConfigInfo.userId,
 					ConfigInfo.sessionId,
 					ConfigInfo.storyId));
@@ -49,23 +52,32 @@ public class InteractionView : MonoBehaviour {
 	public void ToggleMap() {
 		//isMap = !isMap;
 		//if (isMap) {
-		//	webViewMap.StartWebViewHome();
+		//	webViewMap.StartWebView(Network.HttpUrlInfo.urlLingjingBackpack +
+		//		string.Format("user_id={0}&session_id={1}&story_id={2}",
+		//			ConfigInfo.userId,
+		//			ConfigInfo.sessionId,
+		//			ConfigInfo.storyId));
 		//} else {
 		//	webViewMap.SetVisibility(false);
 		//}
 
-		//if (isInDialog) 
-		return;
+		if (isInDialog)
+			return;
 
 		isMap = !isMap;
 		if (isMap) {
 			isBackpack = false;
 			isTask = false;
-			//webViewUtility.StartWebView(Network.HttpUrlInfo.urlLingjingBackpack +
-			//	string.Format("user_id={0}&session_id={1}&story_id={2}",
-			//		ConfigInfo.userId,
-			//		ConfigInfo.sessionId,
-			//		ConfigInfo.storyId));
+			///maph5/get?user_id=1&session_id=1&story_id=1&story_stage_id=1&user_lng=116.1234&user_lat=39.1234&team_id=0
+			webViewUtility.StartWebView(Network.HttpUrlInfo.urlLingjingHtml +
+				string.Format("maph5/get?user_id={0}&session_id={1}&story_id={2}&story_stage_id={3}&user_lat={4}&user_lng={5}&team_id=0",
+					ConfigInfo.userId,
+					ConfigInfo.sessionId,
+					ConfigInfo.storyId,
+					stageManager.currentStage.stroy_stage_id,
+					gpsManager.camLatitude,
+					gpsManager.camLongitude
+					));
 		} else {
 			webViewUtility.SetVisibility(false);
 		}
@@ -74,7 +86,7 @@ public class InteractionView : MonoBehaviour {
 	public void ToggleTask() {
 		//isTask = !isTask;
 		//if (isTask) {
-		//	webViewTask.StartWebViewHome();
+		//	webViewTask.StartWebView("https://h5.zspiritx.com.cn/home");
 		//} else {
 		//	webViewTask.SetVisibility(false);
 		//}
@@ -97,18 +109,22 @@ public class InteractionView : MonoBehaviour {
 	}
 
 	void OnUtilityCallback(string msg) {
-		string[] args = msg.Split('&');
 		try {
 			JSONReader jsonMsg = new JSONReader(msg);
 			int tmpInt = 0;
 			if (jsonMsg.TryPraseInt("WebViewOff", ref tmpInt) && tmpInt == 1) {
 				webViewUtility.SetVisibility(false);
 				isBackpack = false;
+				isMap = false;
+				isTask = false;
 			}
 		} catch (Exception) {
+			string[] args = msg.Split('&');
 			if (args[0] == "WebViewOff") {
 				webViewUtility.SetVisibility(false);
 				isBackpack = false;
+				isMap = false;
+				isTask = false;
 			}
 		}
 	}
@@ -127,6 +143,7 @@ public class InteractionView : MonoBehaviour {
 		if (!goNoteBox.activeSelf) {
 			goNoteBox.SetActive(true);
 			ShowNextNotice();
+			StartCoroutine(AsyncAutoNextNotice(queMsg.Count > 0 ? queMsg.Peek() : null));
 		}
 	}
 	public void ShowNextNotice() {
@@ -137,6 +154,14 @@ public class InteractionView : MonoBehaviour {
 			goNoteBox.SetActive(false);
 		}
 	}
+
+	IEnumerator AsyncAutoNextNotice(NotificationMessage nextNotice) {
+		yield return new WaitForSeconds(5f);
+		if (nextNotice == null || queMsg.Peek() == nextNotice) {
+			ShowNextNotice();
+		}
+	}
+
 
 
 	public void ShowHint(string hint, string textComfirm = "х╥хо") {
