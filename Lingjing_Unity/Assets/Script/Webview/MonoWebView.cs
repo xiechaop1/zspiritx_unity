@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class MonoWebView : MonoBehaviour {
 	//public SceneLoadManager sceneLoadManager;
-	public string HomepageUrl;
+	//public string HomepageUrl;
 	public Text status;
 	WebViewObject webViewObject;
 	public GameObject splashBackground;
@@ -136,9 +136,9 @@ public class MonoWebView : MonoBehaviour {
 		webViewObject.SetVisibility(false);
 
 	}
-	public void StartWebViewHome() {
-		StartWebView(HomepageUrl);
-	}
+	//public void StartWebViewHome() {
+	//	StartWebView(HomepageUrl);
+	//}
 	IEnumerator LoadURL(string PageURL) {
 		LogManager.Debug("TryLoadPage: " + PageURL);
 #if !UNITY_WEBPLAYER && !UNITY_WEBGL

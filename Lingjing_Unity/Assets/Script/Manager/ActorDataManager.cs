@@ -45,7 +45,8 @@ public class ActorDataManager : MonoBehaviour, IManager {
 	}
 	bool GeoLocUpdate() {
 		if (gpsManager.UpdateCamPos()) {
-			stageManager.LocationUpdate(gpsManager.GetCurrentLatLonWGS84());
+			gpsManager.GetCurrentLatLon(out double newLat, out double newLng);
+			stageManager.LocationUpdate(newLat, newLng);
 			return true;
 		}
 		return false;
@@ -62,13 +63,14 @@ public class ActorDataManager : MonoBehaviour, IManager {
 		}
 	}
 	IEnumerator AsyncUpdatePlayerPos() {
-		var latlon = gpsManager.GetCurrentLatLonGCJ02();
+		gpsManager.GetCurrentLatLon(out double newLat, out double newLng);
+		//var latlon = gpsManager.GetCurrentLatLonGCJ02();
 		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingUser,
 			"update_user_loc",
 			string.Format("user_id={0}&lat={1}&lng={2}",
 				ConfigInfo.userId,
-				latlon.x,
-				latlon.y
+				newLat,//latlon.x,
+				newLng//latlon.y
 				)
 			);
 		yield return www;
@@ -117,7 +119,7 @@ public class ActorDataManager : MonoBehaviour, IManager {
 			string tmp = "";
 			JSONReader json = new JSONReader(rawInfo);
 			NotificationMessage note = new NotificationMessage();
-			if (json.TryPraseInt("id",ref tmpInt)) {
+			if (json.TryPraseInt("id", ref tmpInt)) {
 				note.id = tmpInt;
 			} else {
 				return;

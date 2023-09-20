@@ -8,6 +8,7 @@ public class FieldStageInfo {
 		ARTag = 1,
 		Location = 2,
 	}
+	public int stroy_stage_id = 0;
 	public string uuid = "";
 	public StageToggleType stageToggleType = StageToggleType.None;
 	public string uuidARTag = "";

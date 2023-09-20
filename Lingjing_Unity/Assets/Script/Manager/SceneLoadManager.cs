@@ -2,6 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_ANDROID
+using UnityEngine.Android;
+#endif
 using UnityEngine.XR.ARFoundation;
 using Network;
 using Config;
@@ -60,6 +63,12 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		//eventDebugInfo?.Invoke(log);
 	}
 	void WorldInit() {
+#if UNITY_ANDROID
+		Permission.RequestUserPermissions(new string[] { 
+				Permission.Camera, 
+				Permission.FineLocation
+			});
+#endif
 		//Utility Init
 		WebInit();
 
@@ -78,7 +87,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		entityActionManager = inventoryItemManager.GetComponent<EntityActionManager>();
 
 		fieldEntityManager = fieldStageManager.GetComponent<FieldEntityManager>();
-		entityActionManager.Init(eventManager, fieldEntityManager,networkManager);
+		entityActionManager.Init(eventManager, fieldEntityManager, networkManager);
 
 		//AR Init
 

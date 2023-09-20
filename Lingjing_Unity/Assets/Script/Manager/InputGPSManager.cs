@@ -63,7 +63,7 @@ public class InputGPSManager : MonoBehaviour, IManager {
 		return Quaternion.Euler(0, mainCamera.transform.rotation.eulerAngles.y - compass.trueHeading, 0);
 	}
 	public bool UpdateCamPos() {
-		GetCurrentLatLonGCJ02(out double lat, out double lon);
+		GetCurrentLatLon(out double lat, out double lon);
 		if (camLatitude == lat && camLongitude == lon) {
 			return false;
 		}
@@ -82,7 +82,15 @@ public class InputGPSManager : MonoBehaviour, IManager {
 	#endregion
 
 	#region Get Basic GeoLoc
-	public void GetCurrentLatLonWGS84(out double latitude, out double longitude) {
+	public void GetCurrentLatLon(out double latitude, out double longitude) {
+		GetCurrentLatLonGCJ02(out latitude, out longitude);
+	}
+	public Vector2 GetCurrentLatLon() {
+		GetCurrentLatLon(out double dLat, out double dLon);
+		return new Vector2((float)dLat, (float)dLon);
+	}
+
+	private void GetCurrentLatLonWGS84(out double latitude, out double longitude) {
 #if UNITY_EDITOR
 		latitude = ConfigInfo.test.testLatLon.x;
 		longitude = ConfigInfo.test.testLatLon.y;
@@ -91,29 +99,17 @@ public class InputGPSManager : MonoBehaviour, IManager {
 		longitude = NativeGPSPlugin.GetLongitude();
 #endif
 	}
-	public Vector2 GetCurrentLatLonWGS84() {
-		GetCurrentLatLonWGS84(out double dLat, out double dLon);
-		return new Vector2((float)dLat, (float)dLon);
-	}
-	public void GetCurrentLatLonGCJ02(out double latitude, out double longitude) {
+	private void GetCurrentLatLonGCJ02(out double latitude, out double longitude) {
 		GetCurrentLatLonWGS84(out double dLat, out double dLon);
 		WGS84ToGCJ02(dLat, dLon, out double lat, out double lon);
 		latitude = lat;
 		longitude = lon;
 	}
-	public Vector2 GetCurrentLatLonGCJ02() {
-		GetCurrentLatLonGCJ02(out double lat, out double lon);
-		return new Vector2((float)lat, (float)lon);
-	}
-	public void GetCurrentLatLonBD09(out double latitude, out double longitude) {
+	private void GetCurrentLatLonBD09(out double latitude, out double longitude) {
 		GetCurrentLatLonWGS84(out double dLat, out double dLon);
 		WGS84ToBD09(dLat, dLon, out double lat, out double lon);
 		latitude = lat;
 		longitude = lon;
-	}
-	public Vector2 GetCurrentLatLonBD09() {
-		GetCurrentLatLonBD09(out double lat, out double lon);
-		return new Vector2((float)lat, (float)lon);
 	}
 	#endregion
 
