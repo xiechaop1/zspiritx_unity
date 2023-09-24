@@ -23,11 +23,13 @@ public class InteractionView : MonoBehaviour {
 	public WebViewBehaviour webViewQuiz;
 	public WebViewBehaviour webViewUtility;
 	public WebViewBehaviour webViewMap;
-	public MonoWebView webViewTask;
+	public WebViewBehaviour webViewTask;
 
 	public void Awake() {
 		webViewQuiz.OnCallback += OnQuizCallback;
 		webViewUtility.OnCallback += OnUtilityCallback;
+		webViewMap.OnCallback += OnMapCallback;
+		webViewTask.OnCallback += OnTaskCallback;
 	}
 
 	float timer = 0f;
@@ -47,7 +49,7 @@ public class InteractionView : MonoBehaviour {
 
 	bool isBackpack = false;
 	public void ToggleBackpack() {
-		if (isInDialog || isMap)
+		if (isInDialog || isMap || isTask)
 			return;
 
 		isBackpack = !isBackpack;
@@ -76,7 +78,7 @@ public class InteractionView : MonoBehaviour {
 		//	webViewMap.SetVisibility(false);
 		//}
 
-		if (isInDialog || isBackpack)
+		if (isInDialog || isBackpack || isTask)
 			return;
 
 		isMap = !isMap;
@@ -106,20 +108,17 @@ public class InteractionView : MonoBehaviour {
 		//	webViewTask.SetVisibility(false);
 		//}
 
-		//if (isInDialog) 
-		return;
+		if (isInDialog || isBackpack || isMap)
+			return;
 
 		isTask = !isTask;
 		if (isTask) {
 			isBackpack = false;
 			isMap = false;
-			//webViewUtility.StartWebView(Network.HttpUrlInfo.urlLingjingBackpack +
-			//	string.Format("user_id={0}&session_id={1}&story_id={2}",
-			//		ConfigInfo.userId,
-			//		ConfigInfo.sessionId,
-			//		ConfigInfo.storyId));
+			webViewTask.StartWebView(Network.HttpUrlInfo.urlLingjingHtml +
+				"knowledgeh5/knowledge");
 		} else {
-			webViewUtility.SetVisibility(false);
+			webViewTask.SetVisibility(false);
 		}
 	}
 
@@ -137,6 +136,48 @@ public class InteractionView : MonoBehaviour {
 			string[] args = msg.Split('&');
 			if (args[0] == "WebViewOff") {
 				webViewUtility.SetVisibility(false);
+				isBackpack = false;
+				isMap = false;
+				isTask = false;
+			}
+		}
+	}
+
+	void OnMapCallback(string msg) {
+		try {
+			JSONReader jsonMsg = new JSONReader(msg);
+			int tmpInt = 0;
+			if (jsonMsg.TryPraseInt("WebViewOff", ref tmpInt) && tmpInt == 1) {
+				webViewMap.SetVisibility(false);
+				isBackpack = false;
+				isMap = false;
+				isTask = false;
+			}
+		} catch (Exception) {
+			string[] args = msg.Split('&');
+			if (args[0] == "WebViewOff") {
+				webViewMap.SetVisibility(false);
+				isBackpack = false;
+				isMap = false;
+				isTask = false;
+			}
+		}
+	}
+
+	void OnTaskCallback(string msg) {
+		try {
+			JSONReader jsonMsg = new JSONReader(msg);
+			int tmpInt = 0;
+			if (jsonMsg.TryPraseInt("WebViewOff", ref tmpInt) && tmpInt == 1) {
+				webViewTask.SetVisibility(false);
+				isBackpack = false;
+				isMap = false;
+				isTask = false;
+			}
+		} catch (Exception) {
+			string[] args = msg.Split('&');
+			if (args[0] == "WebViewOff") {
+				webViewTask.SetVisibility(false);
 				isBackpack = false;
 				isMap = false;
 				isTask = false;
