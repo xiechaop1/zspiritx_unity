@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class WebViewBehaviour : MonoBehaviour {
 	public SceneLoadManager sceneLoadManager;
-	public string HomepageUrl;
+	//public string HomepageUrl;
 	public Text status;
 	WebViewObject webViewObject;
 	public GameObject splashBackground;
@@ -199,6 +199,9 @@ public class WebViewBehaviour : MonoBehaviour {
 		}
 		//Debug.Log(rectTransf.position + "\n" + rectTransf.rect + "\n" + ret + "\n" + rectTransf.lossyScale);
 		return ret;
+	}
+	public void Eval(string js){
+		sceneLoadManager.webViewObject.EvaluateJS(js);
 	}
 
 	public void UnityWebViewListener(string msg) {

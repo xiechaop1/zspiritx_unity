@@ -8153,6 +8153,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1057492388}
   - component: {fileID: 1057492389}
+  - component: {fileID: 1057492390}
   m_Layer: 5
   m_Name: MapWebView
   m_TagString: Untagged
@@ -8177,11 +8178,25 @@ RectTransform:
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 100, y: 0}
-  m_SizeDelta: {x: -200, y: -900}
-  m_Pivot: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 842}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1057492389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057492387}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00e6830b3ab06d149a27c4ed9221dc95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  status: {fileID: 1573982584}
+  splashBackground: {fileID: 1787292452}
+--- !u!114 &1057492390
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8190,10 +8205,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1057492387}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00e6830b3ab06d149a27c4ed9221dc95, type: 3}
+  m_Script: {fileID: 11500000, guid: 23556b4a68156ab49944ba4eacd4cae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  status: {fileID: 1573982584}
+  sceneLoadManager: {fileID: 538542694}
+  status: {fileID: 1936790369}
   splashBackground: {fileID: 1787292452}
 --- !u!1 &1064369089
 GameObject:
@@ -11864,7 +11880,7 @@ MonoBehaviour:
   txtExitBtn: {fileID: 1239091691}
   webViewQuiz: {fileID: 2058968282}
   webViewUtility: {fileID: 1968501509}
-  webViewMap: {fileID: 1057492389}
+  webViewMap: {fileID: 1057492390}
   webViewTask: {fileID: 1098260859}
   goNPCBox: {fileID: 252905364}
   txtNPC: {fileID: 52019441}
@@ -15010,7 +15026,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneLoadManager: {fileID: 538542694}
-  HomepageUrl: splash.html
   status: {fileID: 941681934}
   splashBackground: {fileID: 178351138}
 --- !u!1 &1936790367
@@ -15481,7 +15496,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneLoadManager: {fileID: 538542694}
-  HomepageUrl: quiz.html
   status: {fileID: 1936790369}
   splashBackground: {fileID: 247784047}
 --- !u!1 &1970561701
@@ -16110,7 +16124,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneLoadManager: {fileID: 538542694}
-  HomepageUrl: quiz.html
   status: {fileID: 1262037207}
   splashBackground: {fileID: 2026159253}
 --- !u!1 &2085875843
