@@ -22,7 +22,7 @@ public class InteractionView : MonoBehaviour {
 	private ItemInfo entityInfo;
 	public WebViewBehaviour webViewQuiz;
 	public WebViewBehaviour webViewUtility;
-	public MonoWebView webViewMap;
+	public WebViewBehaviour webViewMap;
 	public MonoWebView webViewTask;
 
 	public void Awake() {
@@ -30,9 +30,24 @@ public class InteractionView : MonoBehaviour {
 		webViewUtility.OnCallback += OnUtilityCallback;
 	}
 
+	float timer = 0f;
+	public void Update() {
+		if (isMap) {
+			if (timer <= 0f) {
+				webViewMap.Eval(string.Format("getLocation({0},{1});",
+					gpsManager.camLatitude,
+					gpsManager.camLongitude
+					));
+				timer = 3f;
+			}
+			timer -= Time.deltaTime;
+
+		}
+	}
+
 	bool isBackpack = false;
 	public void ToggleBackpack() {
-		if (isInDialog)
+		if (isInDialog || isMap)
 			return;
 
 		isBackpack = !isBackpack;
@@ -61,7 +76,7 @@ public class InteractionView : MonoBehaviour {
 		//	webViewMap.SetVisibility(false);
 		//}
 
-		if (isInDialog)
+		if (isInDialog || isBackpack)
 			return;
 
 		isMap = !isMap;
@@ -69,7 +84,7 @@ public class InteractionView : MonoBehaviour {
 			isBackpack = false;
 			isTask = false;
 			///maph5/get?user_id=1&session_id=1&story_id=1&story_stage_id=1&user_lng=116.1234&user_lat=39.1234&team_id=0
-			webViewUtility.StartWebView(Network.HttpUrlInfo.urlLingjingHtml +
+			webViewMap.StartWebView(Network.HttpUrlInfo.urlLingjingHtml +
 				string.Format("maph5/get?user_id={0}&session_id={1}&story_id={2}&story_stage_id={3}&user_lat={4}&user_lng={5}&team_id=0",
 					ConfigInfo.userId,
 					ConfigInfo.sessionId,
@@ -79,7 +94,7 @@ public class InteractionView : MonoBehaviour {
 					gpsManager.camLongitude
 					));
 		} else {
-			webViewUtility.SetVisibility(false);
+			webViewMap.SetVisibility(false);
 		}
 	}
 	bool isTask = false;
