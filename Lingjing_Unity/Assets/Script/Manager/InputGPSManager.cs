@@ -90,7 +90,7 @@ public class InputGPSManager : MonoBehaviour, IManager {
 		return new Vector2((float)dLat, (float)dLon);
 	}
 
-	private void GetCurrentLatLonWGS84(out double latitude, out double longitude) {
+	public void GetCurrentLatLonWGS84(out double latitude, out double longitude) {
 #if UNITY_EDITOR
 		latitude = ConfigInfo.test.testLatLon.x;
 		longitude = ConfigInfo.test.testLatLon.y;
@@ -99,13 +99,13 @@ public class InputGPSManager : MonoBehaviour, IManager {
 		longitude = NativeGPSPlugin.GetLongitude();
 #endif
 	}
-	private void GetCurrentLatLonGCJ02(out double latitude, out double longitude) {
+	public void GetCurrentLatLonGCJ02(out double latitude, out double longitude) {
 		GetCurrentLatLonWGS84(out double dLat, out double dLon);
 		WGS84ToGCJ02(dLat, dLon, out double lat, out double lon);
 		latitude = lat;
 		longitude = lon;
 	}
-	private void GetCurrentLatLonBD09(out double latitude, out double longitude) {
+	public void GetCurrentLatLonBD09(out double latitude, out double longitude) {
 		GetCurrentLatLonWGS84(out double dLat, out double dLon);
 		WGS84ToBD09(dLat, dLon, out double lat, out double lon);
 		latitude = lat;
