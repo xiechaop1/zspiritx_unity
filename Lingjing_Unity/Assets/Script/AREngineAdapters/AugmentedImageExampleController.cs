@@ -18,7 +18,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace HuaweiARUnitySDK.Examples.AugmentedImage
+namespace HuaweiARUnityAdapter
 {
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
@@ -26,7 +26,7 @@ namespace HuaweiARUnitySDK.Examples.AugmentedImage
     using UnityEngine;
     using HuaweiARInternal;
     using UnityEngine.UI;
-    using Common;
+    //using Common;
 
     /// <summary>
     /// Controller for AugmentedImage example.

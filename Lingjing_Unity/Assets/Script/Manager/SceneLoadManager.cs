@@ -17,6 +17,13 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		Scroller,
 		AR,
 	}
+	enum ARSystem {
+		ARFoundation,
+		HWAREngine,
+		ARFoundationNeedInstalled,
+		HWARNeedInstalled,
+		Unsupport
+	}
 
 	public WebViewObject webViewObject;
 	public event Action<string> webViewCallback;
@@ -36,13 +43,15 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	public DebugMenuManager debugManager;
 
 	//AR
-	public ARSession arSession;
+	private ARFoundationAdaptor arFoundationAdaptor;
+	private HWAREngineAdaptor hwAREngineAdaptor;
+	//public ARSession arSession;
 	public FieldStageManager fieldStageManager;
 	private FieldEntityManager fieldEntityManager;
 	private EntityActionManager entityActionManager;
 	private ARSightManager arSightManager;
 
-	private bool isARPossible = true;
+	private ARSystem isARPossible;
 	//public GameObject ARSceneScanHint;
 
 	//Scroller
@@ -64,11 +73,14 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	}
 	void WorldInit() {
 #if UNITY_ANDROID
-		Permission.RequestUserPermissions(new string[] { 
-				Permission.Camera, 
+		Permission.RequestUserPermissions(new string[] {
+				Permission.Camera,
 				Permission.FineLocation
 			});
 #endif
+		arFoundationAdaptor = GetComponent<ARFoundationAdaptor>();
+		hwAREngineAdaptor = GetComponent<HWAREngineAdaptor>();
+
 		//Utility Init
 		WebInit();
 
@@ -218,25 +230,86 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	IEnumerator InitStartUp() {
 		yield return null;
 
+		//Unity ARFoundation
 		if (ARSession.state == ARSessionState.None) {
 			StartCoroutine(ARSession.CheckAvailability());
 		}
 		while (ARSession.state == ARSessionState.CheckingAvailability) {
 			yield return null;
 		}
-
-		if (ARSession.state == ARSessionState.NeedsInstall) {
-			DebugLog("ARCore Needs Install");
-			isARPossible = false;
-			//yield break;
-		} else if (ARSession.state == ARSessionState.Unsupported) {
-			DebugLog("ARCore Unsupported");
-			isARPossible = false;
-			//yield break;
-		} else {
-			isARPossible = true;
+		switch (ARSession.state) {
+			case ARSessionState.Installing:
+			case ARSessionState.Ready:
+			case ARSessionState.SessionInitializing:
+			case ARSessionState.SessionTracking:
+				arFoundationAdaptor.Init();
+				isARPossible = ARSystem.ARFoundation;
+				goto ARSystemReady;
+			case ARSessionState.NeedsInstall:
+				DebugLog("ARCore Needs Install");
+				isARPossible = ARSystem.ARFoundationNeedInstalled;
+				goto ARSystemReady;
+			case ARSessionState.Unsupported:
+				break;
+			case ARSessionState.CheckingAvailability:
+			case ARSessionState.None:
+			default:
+				DebugLog("UnKnown Status");
+				break;
+				//isARPossible = ARSystem.Unsupport;
+				//goto ARSystemReady;
 		}
 
+
+		//Fallback to HuaweiAREngine
+		try {
+			HuaweiARUnitySDK.ARAvailability isHWAR;
+			int cnt = 0;
+			for (; ; ) {
+				isHWAR = HuaweiARUnitySDK.AREnginesApk.Instance.CheckAvailability();
+				if (isHWAR != HuaweiARUnitySDK.ARAvailability.UNKNOWN_CHECKING) {
+					if (isHWAR == HuaweiARUnitySDK.ARAvailability.UNKNOWN_TIMED_OUT) {
+						if (cnt > 3) {
+							break;
+						}
+						cnt++;
+					} else {
+						break;
+					}
+				}
+			}
+			switch (isHWAR) {
+				case HuaweiARUnitySDK.ARAvailability.SUPPORTED_INSTALLED:
+					hwAREngineAdaptor.Init();
+					isARPossible = ARSystem.HWAREngine;
+					goto ARSystemReady;
+				case HuaweiARUnitySDK.ARAvailability.SUPPORTED_NOT_INSTALLED:
+				case HuaweiARUnitySDK.ARAvailability.SUPPORTED_APK_TOO_OLD:
+					DebugLog("AREngine Needs Install");
+					isARPossible = ARSystem.HWARNeedInstalled;
+					goto ARSystemReady;
+				case HuaweiARUnitySDK.ARAvailability.UNSUPPORTED_DEVICE_NOT_CAPABLE:
+				case HuaweiARUnitySDK.ARAvailability.UNSUPPORTED_EMUI_NOT_CAPABLE:
+					break;
+				case HuaweiARUnitySDK.ARAvailability.UNKNOWN_ERROR:
+				case HuaweiARUnitySDK.ARAvailability.UNKNOWN_TIMED_OUT:
+				case HuaweiARUnitySDK.ARAvailability.UNKNOWN_CHECKING:
+				default:
+					DebugLog("Unknown Status");
+					break;
+					//isARPossible = ARSystem.Unsupport;
+					//goto ARSystemReady;
+			}
+		} catch (Exception) {
+
+		}
+
+		//FALLBACK to Other AR solutions.
+		DebugLog("ARCore & AREngine Unsupported");
+		isARPossible = ARSystem.Unsupport;
+
+
+ARSystemReady:
 		SplashWebView.OnCallback += WebviewCallbackSceneControl;
 		//SplashWebView.OnWebClose += LoadAR;
 		SplashWebView.StartWebView("https://h5.zspiritx.com.cn/home");
@@ -299,12 +372,24 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		}
 		isLoading = true;
 		sceneMode = SceneMode.AR;
-		if (isARPossible) {
-
-		} else {
-
+		switch (isARPossible) {
+			case ARSystem.ARFoundation:
+				arFoundationAdaptor.Enable();
+				//arSession.enabled = true;
+				break;
+			case ARSystem.HWAREngine:
+				hwAREngineAdaptor.Enable();
+				break;
+			case ARSystem.ARFoundationNeedInstalled:
+				break;
+			case ARSystem.HWARNeedInstalled:
+				break;
+			case ARSystem.Unsupport:
+				break;
+			default:
+				break;
 		}
-		arSession.enabled = true;
+
 		yield return AsyncStartSession();
 
 		yield return fieldStageManager.AsyncPrepareStage();
@@ -438,7 +523,19 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 				fieldEntityManager.StopScene();
 				yield return null;
 				try {
-					arSession.enabled = false;
+					switch (isARPossible) {
+						case ARSystem.ARFoundation:
+							arFoundationAdaptor.Disable();
+							break;
+						case ARSystem.HWAREngine:
+							hwAREngineAdaptor.Disable();
+							break;
+						case ARSystem.Unsupport:
+							break;
+						default:
+							break;
+					}
+					//arSession.enabled = false;
 					//eventDebugInfo?.Invoke("AR关闭成功");
 				} catch {
 					//eventDebugInfo?.Invoke("AR关闭失败");

@@ -176,8 +176,8 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	#region ARPlane
 	private List<ARPlaneInfo> planeHorizontal = new List<ARPlaneInfo>();
 	private List<ARPlaneInfo> planeVertical = new List<ARPlaneInfo>();
-	private float areaFloor = 0f;
-	private float areaWall = 0f;
+	//private float areaFloor = 0f;
+	//private float areaWall = 0f;
 
 	public void ARPlaneUpdated(ARPlaneInfo arPlane) {
 		if (arPlane.isHorizontal) {
@@ -186,13 +186,13 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			OnWallUpdate();
 		}
 	}
-	private float CalculateArea(List<ARPlaneInfo> planes) {
-		float sum = 0f;
-		foreach (var plane in planes) {
-			sum += plane.area;
-		}
-		return sum;
-	}
+	//private float CalculateArea(List<ARPlaneInfo> planes) {
+	//	float sum = 0f;
+	//	foreach (var plane in planes) {
+	//		sum += plane.area;
+	//	}
+	//	return sum;
+	//}
 	public void RegisterARPlane(IEventMessage arInfo) {
 		ARPlaneInfo arPlane = arInfo as ARPlaneInfo;
 		if (arPlane.isHorizontal) {
@@ -223,7 +223,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		ARPlaneUpdated(arPlane);
 	}
 	private void OnFloorUpdate() {
-		areaFloor = CalculateArea(planeHorizontal);
+		//areaFloor = CalculateArea(planeHorizontal);
 		foreach (var entity in entityHorizontal) {
 			if (entity) {
 				ShiftOnNormal(entity);
@@ -231,7 +231,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		}
 	}
 	private void OnWallUpdate() {
-		areaWall = CalculateArea(planeVertical);
+		//areaWall = CalculateArea(planeVertical);
 		foreach (var entity in entityVertical) {
 			if (entity) {
 				ShiftOnNormal(entity);

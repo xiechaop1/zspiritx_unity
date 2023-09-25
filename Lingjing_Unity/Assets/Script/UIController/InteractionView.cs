@@ -93,8 +93,7 @@ public class InteractionView : MonoBehaviour {
 					ConfigInfo.storyId,
 					stageManager.currentStage.stroy_stage_id,
 					gpsManager.camLatitude,
-					gpsManager.camLongitude
-					));
+					gpsManager.camLongitude));
 		} else {
 			webViewMap.SetVisibility(false);
 		}
@@ -115,8 +114,12 @@ public class InteractionView : MonoBehaviour {
 		if (isTask) {
 			isBackpack = false;
 			isMap = false;
+			//knowledgeh5/all?story_id=1&session_id=1&user_id=1 
 			webViewTask.StartWebView(Network.HttpUrlInfo.urlLingjingHtml +
-				"knowledgeh5/knowledge");
+				string.Format("knowledgeh5/all?user_id={0}&session_id={1}&story_id={2}",
+					ConfigInfo.userId,
+					ConfigInfo.sessionId,
+					ConfigInfo.storyId));
 		} else {
 			webViewTask.SetVisibility(false);
 		}

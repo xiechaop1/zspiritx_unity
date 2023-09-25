@@ -59,7 +59,6 @@ public class DebugMenuManager : MonoBehaviour {
 		//DebugInfo
 		//StartCoroutine(Testloader());
 	}
-
 	public void ExitHint() {
 		goHintBox.SetActive(false);
 	}
@@ -88,7 +87,7 @@ public class DebugMenuManager : MonoBehaviour {
 	public void DebugBtn() {
 		//Config.ConfigInfo.test.testLatLon = new Vector2((float)lat,(float)lon);
 		//carpark
-		Config.ConfigInfo.test.testLatLon = new Vector2(39.852899870588018f, 116.36157978764194f);
+		//Config.ConfigInfo.test.testLatLon = new Vector2(39.852899870588018f, 116.36157978764194f);
 		//test
 		//Config.ConfigInfo.test.testLatLon = new Vector2(39.9347868240849f, 116.28647419295855f);
 
@@ -100,6 +99,7 @@ public class DebugMenuManager : MonoBehaviour {
 		//ShowHint(fieldEntityManager.goCamDir.transform.rotation.eulerAngles.y + "\n" + Input.compass.trueHeading + "\n" + (fieldEntityManager.goCamDir.transform.rotation.eulerAngles.y - Input.compass.trueHeading));
 
 		//StartCoroutine(GPSTest());
+		FakeImageFound();
 #if UNITY_EDITOR
 		//FakeImageFound();
 #else

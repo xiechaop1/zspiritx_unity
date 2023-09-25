@@ -42,7 +42,6 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				default:
 					break;
 			}
-
 		}
 		if (actionMode == ActionMode.World && timer < 0) {
 			FieldEntityInfo[] lstPlacedEntity = entityManager.arrPlacedEntity;
