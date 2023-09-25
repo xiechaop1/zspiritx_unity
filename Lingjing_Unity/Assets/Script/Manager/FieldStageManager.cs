@@ -197,6 +197,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 				goto LoopEnd;
 			}
 			if (JSONReader.TryPraseArray(www.text, "data", out lstTmp) && lstTmp.Count > 0 && !string.IsNullOrWhiteSpace(lstTmp[0])) {
+				//Debug.Log(lstTmp[0]);
 				tmpStages.Add(PrepareStage(lstTmp[0]));
 			} else {
 				LogManager.Warning("FAILED to create stage due to missing return info");

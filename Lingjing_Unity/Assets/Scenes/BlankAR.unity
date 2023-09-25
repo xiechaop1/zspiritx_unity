@@ -3160,7 +3160,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   matOnLoad: {fileID: 2100000, guid: b2d8e7e9616b5294facd5f1f9e4d1b76, type: 2}
   matOnPlay: {fileID: 2100000, guid: e1cc921f65d59964bb650b7d769e6209, type: 2}
-  size: {x: 10, y: 10}
+  arEngineType: 0
 --- !u!64 &344113551
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -4428,6 +4428,8 @@ GameObject:
   m_Component:
   - component: {fileID: 538542695}
   - component: {fileID: 538542694}
+  - component: {fileID: 538542696}
+  - component: {fileID: 538542697}
   m_Layer: 0
   m_Name: SceneLoadManager
   m_TagString: Untagged
@@ -4453,7 +4455,6 @@ MonoBehaviour:
   inventoryItemManager: {fileID: 390938061}
   dataManager: {fileID: 999401650}
   debugManager: {fileID: 1281373147}
-  arSession: {fileID: 656880747}
   fieldStageManager: {fileID: 119510841}
   scrollerElementManager: {fileID: 1394274636}
   sceneMode: 0
@@ -4473,6 +4474,39 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &538542696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538542693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7658b468b190cfa4cb15cfdaa05305b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arSession: {fileID: 656880747}
+  cameraManager: {fileID: 1100591809}
+  cameraBackground: {fileID: 1100591808}
+  poseDriver: {fileID: 1100591807}
+--- !u!114 &538542697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538542693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99ce4a3c955f1964abe54ae1240a13d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deviceChanged: {fileID: 1064369096}
+  worldARController: {fileID: 1064369098}
+  sessionComponent: {fileID: 1064369097}
+  imageController: {fileID: 1064369095}
+  backGroundRenderer: {fileID: 1100591812}
 --- !u!1 &554442327
 GameObject:
   m_ObjectHideFlags: 0
@@ -4944,7 +4978,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   matOnLoad: {fileID: 2100000, guid: b2d8e7e9616b5294facd5f1f9e4d1b76, type: 2}
   matOnPlay: {fileID: 2100000, guid: 4a9bb33ab0c8fb149aa1a43faf6d444d, type: 2}
-  size: {x: 10, y: 10}
+  arEngineType: 0
 --- !u!64 &609179854
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6121,7 +6155,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   matOnLoad: {fileID: 2100000, guid: b2d8e7e9616b5294facd5f1f9e4d1b76, type: 2}
   matOnPlay: {fileID: 2100000, guid: e1cc921f65d59964bb650b7d769e6209, type: 2}
-  size: {x: 10, y: 10}
+  arEngineType: 0
 --- !u!64 &789391504
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -8280,7 +8314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1760703bbd54c04488a8d10600262ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PlanePrefab: {fileID: 5417231269304963609, guid: c309c0aec3e374f419fce810a857e17a,
+  m_PlanePrefab: {fileID: 5852949502157013172, guid: c309c0aec3e374f419fce810a857e17a,
     type: 3}
   m_DetectionMode: -1
 --- !u!114 &1064369093
@@ -8335,7 +8369,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1064369089}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ecf865c00dd6c184985181f0a62ae271, type: 3}
   m_Name: 
@@ -8347,7 +8381,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1064369089}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2162e9aa87d67cd4cadc3bb6a4507227, type: 3}
   m_Name: 
@@ -8360,12 +8394,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1064369089}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89a7843bb5181ed4b98726c969bfaa16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  planePrefabs: {fileID: 6449097246651160554, guid: 5719f6601a9b94b478fbab5dd3a7db8e,
+  planePrefabs: {fileID: 8031238922113762173, guid: 5719f6601a9b94b478fbab5dd3a7db8e,
     type: 3}
 --- !u!1 &1067935032
 GameObject:
@@ -9039,7 +9073,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1100591805}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 027fdbb7d9ff0354b9e71776286514f9, type: 3}
   m_Name: 
@@ -15229,7 +15263,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   matOnLoad: {fileID: 2100000, guid: b2d8e7e9616b5294facd5f1f9e4d1b76, type: 2}
   matOnPlay: {fileID: 2100000, guid: e1cc921f65d59964bb650b7d769e6209, type: 2}
-  size: {x: 10, y: 10}
+  arEngineType: 0
 --- !u!64 &1948261155
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -15619,7 +15653,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   matOnLoad: {fileID: 2100000, guid: b2d8e7e9616b5294facd5f1f9e4d1b76, type: 2}
   matOnPlay: {fileID: 2100000, guid: e1cc921f65d59964bb650b7d769e6209, type: 2}
-  size: {x: 10, y: 10}
+  arEngineType: 0
 --- !u!64 &1970561703
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -16806,7 +16840,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   matOnLoad: {fileID: 2100000, guid: b2d8e7e9616b5294facd5f1f9e4d1b76, type: 2}
   matOnPlay: {fileID: 2100000, guid: e1cc921f65d59964bb650b7d769e6209, type: 2}
-  size: {x: 10, y: 10}
+  arEngineType: 0
 --- !u!64 &2126509855
 MeshCollider:
   m_ObjectHideFlags: 0

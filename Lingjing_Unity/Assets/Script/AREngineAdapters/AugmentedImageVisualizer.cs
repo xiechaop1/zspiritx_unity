@@ -18,7 +18,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace HuaweiARUnitySDK.Examples.AugmentedImage
+namespace HuaweiARUnityAdapter
 {
     using System;
     using System.Collections.Generic;
