@@ -4505,7 +4505,7 @@ MonoBehaviour:
   deviceChanged: {fileID: 1064369096}
   worldARController: {fileID: 1064369098}
   sessionComponent: {fileID: 1064369097}
-  imageController: {fileID: 1064369095}
+  imageController: {fileID: 0}
   backGroundRenderer: {fileID: 1100591812}
 --- !u!1 &554442327
 GameObject:
@@ -8261,7 +8261,6 @@ GameObject:
   - component: {fileID: 1064369098}
   - component: {fileID: 1064369097}
   - component: {fileID: 1064369096}
-  - component: {fileID: 1064369095}
   m_Layer: 0
   m_Name: XR Origin
   m_TagString: Untagged
@@ -8348,20 +8347,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityManager: {fileID: 119510838}
   stageManager: {fileID: 119510841}
---- !u!114 &1064369095
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064369089}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e11ff74e29f543543be305474216a5f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AugmentedImageVisualizerPrefab: {fileID: 114456719788833914, guid: e7b3e60fc4ae9fa41a308721971d52c2,
-    type: 3}
 --- !u!114 &1064369096
 MonoBehaviour:
   m_ObjectHideFlags: 0
