@@ -51,6 +51,7 @@ public class DebugMenuManager : MonoBehaviour {
 
 	private bool debugMode = true;
 	private void Awake() {
+		instance = this;
 		//WorldInit();
 	}
 	private void Start() {
@@ -62,6 +63,10 @@ public class DebugMenuManager : MonoBehaviour {
 	public void ExitHint() {
 		goHintBox.SetActive(false);
 	}
+	public static void ShowLog(string log){
+		instance.ShowHint(log);
+	}
+	static DebugMenuManager instance;
 	public void ShowHint(string hint) {
 		goHintBox.SetActive(true);
 		txtHint.text = hint;

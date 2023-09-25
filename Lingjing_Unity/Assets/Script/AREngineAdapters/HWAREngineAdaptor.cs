@@ -16,7 +16,7 @@ public class HWAREngineAdaptor : MonoBehaviour {
 		deviceChanged.enabled = true;
 		worldARController.enabled = true;
 		sessionComponent.enabled = true;
-		imageController.enabled = true;
+		//imageController.enabled = true;
 	}
 	public void Enable() {
 		backGroundRenderer.enabled = true;
