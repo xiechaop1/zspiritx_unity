@@ -546,7 +546,7 @@ ARSystemReady:
 		}
 		yield return null;
 		dataManager.SetUserInfoSharing(false);
-		//yield return AsyncEndSession();
+		yield return AsyncEndSession();
 		yield return new WaitForSeconds(1f);
 		sceneMode = SceneMode.Ready;
 		isLoading = false;
