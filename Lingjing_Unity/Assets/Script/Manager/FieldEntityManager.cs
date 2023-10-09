@@ -18,7 +18,8 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	public FieldEntityInfo[] arrPlacedEntity => lstPlacedEntity.ToArray();
 	public bool isLoadFinish => queFieldEntity.Count == 0;
 
-	public float maxShowDistance = 1.5f;
+	public float maxShowDistance = 20f;
+	public float maxTolerance = 1f;
 
 	private EntityActionManager actionManager;
 	private FieldStageManager stageManager;
@@ -252,7 +253,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			}
 
 			entityInfo = queLatLonEntity.Dequeue();
-			obj = geolocManager.GetPosObject(entityInfo.latitude, entityInfo.longitude, maxShowDistance);
+			obj = geolocManager.GetPosObject(entityInfo.latitude, entityInfo.longitude, entityInfo.geoLocDistance);
 			if (obj == null) {
 				queLatLonEntity.Enqueue(entityInfo);
 			} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocPosition) {
@@ -389,7 +390,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			if (!entityInfo.goReference) {
 				entityInfo.goReference = goCamDir;
 			}
-			if (TryPlaceEntityAround(entityInfo, 1f)) {
+			if (TryPlaceEntityAround(entityInfo, entityInfo.maxTolerance)) {
 				if (OnEntityPlaced != null) {
 					OnEntityPlaced.Invoke(entityInfo);
 				}
@@ -405,8 +406,8 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 			ARSceneScanHint.SetActive(true);
 		}
 	}
-	public bool TryPlaceEntityAround(FieldEntityInfo entityInfo, float marginError) {
-		(bool hasPos, RaycastHit hit, int enumSurfaceType) = TryGetPos(entityInfo.IdealPos, entityInfo.enumSurfaceType, marginError);
+	public bool TryPlaceEntityAround(FieldEntityInfo entityInfo, float maxTolerance) {
+		(bool hasPos, RaycastHit hit, int enumSurfaceType) = TryGetPos(entityInfo.IdealPos, entityInfo.enumSurfaceType, maxTolerance);
 		if (hasPos) {
 			if (enumSurfaceType == 1) {
 				if (entityInfo.TryPlacing(hit.point, entityInfo.goReference.transform.rotation, arPlane.gameObject, goRoot.transform)) {
@@ -423,44 +424,50 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		return false;
 	}
 
-	(bool, RaycastHit, int) TryGetPos(Vector3 origin, int enumSurfaceType, float marginError) {
+	(bool, RaycastHit, int) TryGetPos(Vector3 origin, FieldEntityInfo.EntitySurfaceType enumSurfaceType, float maxTolerance) {
 		RaycastHit hit = new RaycastHit();
 		//bool isHorizontal;
-		if (enumSurfaceType == 1) {
-			for (int i = 0; i < 50; i++) {
-				//Debug.Log("tryGetPos horizontal, attempt: " + i);
-				if (Physics.Raycast(origin + new Vector3(UnityEngine.Random.Range(-marginError, marginError), 1f, UnityEngine.Random.Range(-marginError, marginError)), Vector3.down, out hit, 4f, 8)) {
-					if (hit.collider.gameObject.TryGetComponent(out arPlane) && arPlane.isHorizontal) {
-						return (true, hit, 1);
-					}
-				}
-			}
-		} else if (enumSurfaceType == 2) {
-			Ray ray;
-			for (int i = 0; i < 50; i++) {
-				//Debug.Log("tryGetPos omni, attempt: " + i);
-				if (Physics.Raycast(origin, new Vector3(UnityEngine.Random.Range(-2f, 2f), 0, UnityEngine.Random.Range(-2f, 2f)).normalized, out hit, marginError, 8)) {
-					if (hit.collider.gameObject.TryGetComponent(out arPlane) && !arPlane.isHorizontal) {
-						ray = new Ray(hit.point + arPlane.up * 0.01f + new Vector3(0, UnityEngine.Random.Range(-0.5f, 0.5f), 0), -arPlane.up);
-						//Debug.Log("wallfound at: "+ hit.point+" raycast from: "+ray.origin);
-						if (Physics.Raycast(ray, out hit, 0.1f) && hit.collider.gameObject.TryGetComponent(out arPlane) && !arPlane.isHorizontal) {
-							return (true, hit, 2);
+		switch (enumSurfaceType) {
+			case FieldEntityInfo.EntitySurfaceType.Any:
+				for (int i = 0; i < 50; i++) {
+					//Debug.Log("tryGetPos omni, attempt: " + i);
+					if (Physics.Raycast(origin, new Vector3(UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f)).normalized, out hit, maxTolerance, 8)) {
+						if (hit.collider.gameObject.TryGetComponent(out arPlane)) {
+							//isHorizontal = Physics.Raycast(hit.point + new Vector3(0, 0.01f, 0), Vector3.down);
+							return (true, hit, arPlane.isHorizontal ? 1 : 2);
+
 						}
 					}
 				}
-			}
-		} else if (enumSurfaceType == -1) {
-			for (int i = 0; i < 50; i++) {
-				//Debug.Log("tryGetPos omni, attempt: " + i);
-				if (Physics.Raycast(origin, new Vector3(UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f)).normalized, out hit, marginError, 8)) {
-					if (hit.collider.gameObject.TryGetComponent(out arPlane)) {
-						//isHorizontal = Physics.Raycast(hit.point + new Vector3(0, 0.01f, 0), Vector3.down);
-						return (true, hit, arPlane.isHorizontal ? 1 : 2);
-
+				break;
+			case FieldEntityInfo.EntitySurfaceType.Horizontal:
+				for (int i = 0; i < 50; i++) {
+					//Debug.Log("tryGetPos horizontal, attempt: " + i);
+					if (Physics.Raycast(origin + new Vector3(UnityEngine.Random.Range(-maxTolerance, maxTolerance), 1f, UnityEngine.Random.Range(-maxTolerance, maxTolerance)), Vector3.down, out hit, 4f, 8)) {
+						if (hit.collider.gameObject.TryGetComponent(out arPlane) && arPlane.isHorizontal) {
+							return (true, hit, 1);
+						}
 					}
 				}
-			}
-		} else {
+				break;
+			case FieldEntityInfo.EntitySurfaceType.Vertical:
+				Ray ray;
+				for (int i = 0; i < 50; i++) {
+					//Debug.Log("tryGetPos omni, attempt: " + i);
+					if (Physics.Raycast(origin, new Vector3(UnityEngine.Random.Range(-2f, 2f), 0, UnityEngine.Random.Range(-2f, 2f)).normalized, out hit, maxTolerance, 8)) {
+						if (hit.collider.gameObject.TryGetComponent(out arPlane) && !arPlane.isHorizontal) {
+							ray = new Ray(hit.point + arPlane.up * 0.01f + new Vector3(0, UnityEngine.Random.Range(-0.5f, 0.5f), 0), -arPlane.up);
+							//Debug.Log("wallfound at: "+ hit.point+" raycast from: "+ray.origin);
+							if (Physics.Raycast(ray, out hit, 0.1f) && hit.collider.gameObject.TryGetComponent(out arPlane) && !arPlane.isHorizontal) {
+								return (true, hit, 2);
+							}
+						}
+					}
+				}
+				break;
+			case FieldEntityInfo.EntitySurfaceType.None:
+			default:
+				break;
 		}
 		return (false, hit, 0);
 	}

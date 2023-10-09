@@ -92,7 +92,7 @@ public class MonoWebView : MonoBehaviour {
 	                    };
 	                ";
 #else
-	                var js = "";
+				var js = "";
 #endif
 				webViewObject.EvaluateJS(js + @"Unity.call('ua=' + navigator.userAgent)");
 			}
@@ -200,6 +200,9 @@ public class MonoWebView : MonoBehaviour {
 		}
 		//Debug.Log(rectTransf.position + "\n" + rectTransf.rect + "\n" + ret + "\n" + rectTransf.lossyScale);
 		return ret;
+	}
+	public void Eval(string js) {
+		webViewObject.EvaluateJS(js);
 	}
 
 	public void UnityWebViewListener(string msg) {

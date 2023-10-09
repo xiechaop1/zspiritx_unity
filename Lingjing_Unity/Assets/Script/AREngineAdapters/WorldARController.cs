@@ -58,7 +58,7 @@ namespace HuaweiARUnityAdapter {
 			List<HWTrackedImage> removed = new List<HWTrackedImage>();
 			HWTrackedImage ARTag;
 			foreach (ARAugmentedImage image in m_TempAugmentedImages) {
-				DebugMenuManager.ShowLog(image.AcquireName().Split('.')[0]);
+				//DebugMenuManager.ShowLog(image.AcquireName().Split('.')[0]);
 				ARTag = null;
 				int idxImage = image.GetDataBaseIndex();
 				//m_AugmentedImages.TryGetValue(idxImage, out ARTag);

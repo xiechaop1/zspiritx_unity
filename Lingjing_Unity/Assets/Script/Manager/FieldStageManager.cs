@@ -415,10 +415,34 @@ BuildEntity:
 		} else {
 			info.isLookAt = false;
 		}
+		if (infoJson.TryPraseDouble("placingTolerance", ref tmpD)) {
+			info.maxTolerance = (float)tmpD;
+		} else {
+			info.maxTolerance = entityManager.maxTolerance;
+		}
+		if (infoJson.TryPraseDouble("geoLocRange", ref tmpD)) {
+			info.geoLocDistance = (float)tmpD;
+		} else {
+			info.geoLocDistance = entityManager.maxShowDistance;
+		}
+		if (infoJson.TryPraseDouble("visualRange", ref tmpD)) {
+			info.maxShowDistance = (float)tmpD;
+		} else {
+			info.maxShowDistance = entityManager.maxShowDistance;
+		}
 		if (infoJson.TryPraseDouble("act_misrange", ref tmpD)) {
 			info.proximityDialog = (float)tmpD;
 		} else {
 			info.proximityDialog = 0f;
+		}
+		if (info.enumActionType == EntityActionType.DialogEvent) {
+			if (infoJson.TryPraseString("dialog", ref tmp)) {
+				info.strHintbox = tmp;
+				//Debug.Log(tmp);
+				info.enumActionType = EntityActionType.DialogActor;
+			} else {
+				info.enumActionType = EntityActionType.ViewableInfo;
+			}
 		}
 
 		if (info.enumActionType == EntityActionType.DialogActor) {
