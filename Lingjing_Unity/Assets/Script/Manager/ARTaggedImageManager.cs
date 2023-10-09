@@ -8,7 +8,7 @@ using HuaweiARUnityAdapter;
 public class ARTaggedImageManager : MonoBehaviour, IManager {
 
 	ARTrackedImageManager TrackedImgManager;
-	WorldARController HWWorlfController;
+	WorldARController HWWorldController;
 	Camera MainCamera;
 	List<GameObject> lstTrackedImage = new List<GameObject>();
 
@@ -26,18 +26,18 @@ public class ARTaggedImageManager : MonoBehaviour, IManager {
 	}
 	void Awake() {
 		TrackedImgManager = GetComponent<ARTrackedImageManager>();
-		HWWorlfController = GetComponent<WorldARController>();
+		HWWorldController = GetComponent<WorldARController>();
 		MainCamera = GetComponent<Unity.XR.CoreUtils.XROrigin>().Camera;
 	}
 
 	void OnEnable() {
 		TrackedImgManager.trackedImagesChanged += OnTrackedImagesChanged;
-		HWWorlfController.trackedImagesChanged += OnTrackedImagesChanged;
+		HWWorldController.trackedImagesChanged += OnTrackedImagesChanged;
 	}
 
 	void OnDisable() {
 		TrackedImgManager.trackedImagesChanged -= OnTrackedImagesChanged;
-		HWWorlfController.trackedImagesChanged -= OnTrackedImagesChanged;
+		HWWorldController.trackedImagesChanged -= OnTrackedImagesChanged;
 	}
 	void OnTrackedImagesChanged(ARTrackedImagesChangedEventArgs eventArgs) {
 		foreach (ARTrackedImage trackedImage in eventArgs.added) {
@@ -56,7 +56,9 @@ public class ARTaggedImageManager : MonoBehaviour, IManager {
 	}
 
 	void RefreshImageRecongition(ARTrackedImage trackedImage) {
-		stageManager.ImageFound(trackedImage.referenceImage.name);
+		string name = trackedImage.referenceImage.name;
+		DebugMenuManager.ShowLog(name);
+		stageManager.ImageFound(name);
 		trackedImage.transform.localScale = Vector3.one;
 		entityManager.PlaceImageTrackingEntity(trackedImage.referenceImage.name, trackedImage.gameObject);
 	}
@@ -79,6 +81,7 @@ public class ARTaggedImageManager : MonoBehaviour, IManager {
 
 	void RefreshImageRecongition(HWTrackedImage trackedImage) {
 		string name = trackedImage.referenceImage.AcquireName().Split('.')[0];
+		DebugMenuManager.ShowLog(name);
 		stageManager.ImageFound(name);
 		trackedImage.gameObject.transform.localScale = Vector3.one;
 		entityManager.PlaceImageTrackingEntity(name, trackedImage.gameObject);

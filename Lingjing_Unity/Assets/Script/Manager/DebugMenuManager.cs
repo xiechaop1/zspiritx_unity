@@ -22,6 +22,8 @@ public class DebugMenuManager : MonoBehaviour {
 	public GameObject goHintBox;
 	public GameObject Notch;
 	public Text txtHint;
+	public GameObject goGeoLoc;
+	public Text txtGeoLoc;
 	public SceneLoadManager sceneLoadManager;
 	public FieldStageManager fieldStageManager;
 	public FieldEntityManager fieldEntityManager;
@@ -29,7 +31,7 @@ public class DebugMenuManager : MonoBehaviour {
 	public ARSightManager arSightManager;
 	public InteractionView interactionController;
 	public InventoryItemManager inventoryItemManager;
-	public WebViewBehaviour SplashWebView;
+	//public WebViewBehaviour SplashWebView;
 	public InputGPSManager gpsManager;
 	//public UnityEngine.XR.ARFoundation.ARTrackedImageManager imageManager;
 	//public UnityEngine.XR.ARSubsystems.XRReferenceImageLibrary altImageLib;
@@ -60,10 +62,15 @@ public class DebugMenuManager : MonoBehaviour {
 		//DebugInfo
 		//StartCoroutine(Testloader());
 	}
+	private void Update(){
+		if (goGeoLoc.activeInHierarchy) {
+			txtGeoLoc.text = GetLatLon();
+		}
+	}
 	public void ExitHint() {
 		goHintBox.SetActive(false);
 	}
-	public static void ShowLog(string log){
+	public static void ShowLog(string log) {
 		instance.ShowHint(log);
 	}
 	static DebugMenuManager instance;
@@ -80,13 +87,17 @@ public class DebugMenuManager : MonoBehaviour {
 		//SplashWebView.StartWebView("splash.html");
 	}
 	public void ShowCurrentGeoLoc() {
+		goGeoLoc.SetActive(!goGeoLoc.activeSelf);
+		//ShowHint(GetLatLon());
+	}
+	private string GetLatLon() {
 		gpsManager.GetCurrentLatLonWGS84(out double wgsLat, out double wgsLon);
 		gpsManager.GetCurrentLatLonGCJ02(out double gcjLat, out double gcjLon);
 		gpsManager.GetCurrentLatLonBD09(out double bdLat, out double bdLon);
-		ShowHint(wgsLat.ToString("F9") + ", " + wgsLon.ToString("F9") + "\n" +
+		return wgsLat.ToString("F9") + ", " + wgsLon.ToString("F9") + "\n" +
 			gcjLat.ToString("F9") + ", " + gcjLon.ToString("F9") + "\n" +
 			bdLat.ToString("F9") + ", " + bdLon.ToString("F9") + "\n" +
-			gpsManager.groundLatitude.ToString("F9") + ", " + gpsManager.groundLongitude.ToString("F9") + "\n");
+			gpsManager.groundLatitude.ToString("F9") + ", " + gpsManager.groundLongitude.ToString("F9") + "\n";
 	}
 	//bool isDebugMode = false;
 	public void DebugBtn() {

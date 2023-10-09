@@ -240,5 +240,6 @@ public enum EntityActionType {
 	UtilityItem = 14,
 	PlacableItem = 15,
 	DialogActor = 21,
+	DialogEvent =22,
 	Quiz = 22,
 }

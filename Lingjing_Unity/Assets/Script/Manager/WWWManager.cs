@@ -95,6 +95,7 @@
 			}
 
 			string requestUri = url + getMethod + "?" + parameter;
+			//Debug.Log(requestUri);
 			//SLogManager.LogInfo(string.Format("NetworkSend: uri:{0} observer:{1} callback:{2}", requestUri, observer.name, callback));
 			//发送网络请求
 			UnityWebRequest www = UnityWebRequest.Get(requestUri);

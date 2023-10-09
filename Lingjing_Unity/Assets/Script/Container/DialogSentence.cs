@@ -41,7 +41,9 @@ public class DialogSentence {
 			url = tmpStr;
 		}
 		if (obj.TryPraseString("quizID", ref tmpStr)) {
-			quizID = tmpStr;
+			if (int.TryParse(tmpStr, out int tmpInt) && tmpInt > 0) {
+				quizID = tmpStr;
+			}
 		}
 		if (obj.TryPraseString("sentenceClip", ref tmpStr)) {
 			clipID = tmpStr;
@@ -63,9 +65,15 @@ public class DialogSentence {
 		DialogSentence output;
 		nextSentence = new DialogSentence[nextID.Length];
 		for (int i = 0; i < nextID.Length; i++) {
+			output = null;
 			Id = nextID[i];
-			output = lstSentences.First(chat => chat.localID == Id);
-			nextSentence[i] = output;
+			try {
+				output = lstSentences.First(chat => chat.localID == Id);
+				nextSentence[i] = output;
+			} catch (Exception) {
+
+			}
+
 			if (output == null) {
 				Debug.LogError("MISSING-SENTENCE OR WRONG ID: " + nextID);
 			}

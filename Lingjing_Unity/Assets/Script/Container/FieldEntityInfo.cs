@@ -14,6 +14,12 @@ public class FieldEntityInfo : ItemInfo {
 		StageAround = 31,
 		StagePosition = 32
 	}
+	public enum EntitySurfaceType {
+		Any = -1,
+		None = 0,
+		Horizontal = 1,
+		Vertical = 2
+	}
 	public int entitySessionId = 0;
 	public int entityItemId = 0;
 	public string entityName = "0";
@@ -23,11 +29,14 @@ public class FieldEntityInfo : ItemInfo {
 	public double longitude = 0d;
 	public Vector3 offset = Vector3.zero;
 	public bool isLookAt = false;
-	public int enumSurfaceType = -1;
+	public EntitySurfaceType enumSurfaceType = EntitySurfaceType.Horizontal;
 	public GameObject goReference;
 	public Vector3 IdealPos => goReference.transform.position + goReference.transform.rotation * offset;
 	//public GameObject[] lstEntityCorner;
 	public GameObject goFPSightMode;
+	public float maxTolerance = 1f;
+	public float geoLocDistance = 20f;
+	public float maxShowDistance = 20f;
 	public float proximityDialog = 0f;
 	public bool hasProximityDialog = false;
 	public ParticleSystem animEmerge;
@@ -76,13 +85,13 @@ public class FieldEntityInfo : ItemInfo {
 			}
 		} else if (animationTimer > 1f) {
 			if (TryGetUserPos(out Vector3 pos)) {
-				Debug.Log(pos.magnitude + " " + (entityManager.maxShowDistance * 1.5f) + " " + (pos.magnitude > entityManager.maxShowDistance * 1.5f));
+				//Debug.Log(pos.magnitude + " " + (entityManager.maxShowDistance * 1.5f) + " " + (pos.magnitude > entityManager.maxShowDistance * 1.5f));
 				if (goVisual.activeInHierarchy) {
-					if (pos.magnitude > entityManager.maxShowDistance * 1.5f) {
+					if (pos.magnitude > maxShowDistance * 1.5f) {
 						HideFromField();
 					}
 				} else {
-					if (pos.magnitude < entityManager.maxShowDistance) {
+					if (pos.magnitude < maxShowDistance) {
 						PlaceOntoField();
 					}
 				}
@@ -174,9 +183,15 @@ public class FieldEntityInfo : ItemInfo {
 		return false;
 	}
 	public bool TryGetUserPos(out Vector3 pos) {
-		GameObject go = entityManager.goCamDir;
-		pos = go.transform.InverseTransformPoint(transform.position);
-		return true;
+		try {
+			GameObject go = entityManager.goCamDir;
+			pos = go.transform.InverseTransformPoint(transform.position);
+			return true;
+		} catch (System.Exception) {
+			pos = Vector3.zero;
+			return false;
+		}
+
 	}
 
 	public void PlaceOntoField() {

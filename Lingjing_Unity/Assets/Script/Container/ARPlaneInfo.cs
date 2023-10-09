@@ -12,7 +12,7 @@ public class ARPlaneInfo : MonoBehaviour, IEventMessage {
 		get {
 			if (arEngineType == 1) {
 				return gameObject.transform.up;
-			} else if (arEngineType == 1) {
+			} else if (arEngineType == 2) {
 				return  hwPlane.planeNormal;
 			}
 			return Vector3.up;
@@ -44,7 +44,7 @@ public class ARPlaneInfo : MonoBehaviour, IEventMessage {
 
 	//}
 	public void Start() {
-#if UNITY_EDITOR
+#if !UNITY_EDITOR
 		if (TryGetComponent(out arPlane)) {
 			arPlane.boundaryChanged += OnPlaneUpdate;
 			arEngineType = 1;

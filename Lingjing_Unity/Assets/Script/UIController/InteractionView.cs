@@ -20,10 +20,10 @@ public class InteractionView : MonoBehaviour {
 	public Text txtConfirmBtn;
 	public Text txtExitBtn;
 	private ItemInfo entityInfo;
-	public WebViewBehaviour webViewQuiz;
-	public WebViewBehaviour webViewUtility;
-	public WebViewBehaviour webViewMap;
-	public WebViewBehaviour webViewTask;
+	public MonoWebView webViewQuiz;
+	public MonoWebView webViewUtility;
+	public MonoWebView webViewMap;
+	public MonoWebView webViewTask;
 
 	public void Awake() {
 		webViewQuiz.OnCallback += OnQuizCallback;
@@ -114,9 +114,10 @@ public class InteractionView : MonoBehaviour {
 		if (isTask) {
 			isBackpack = false;
 			isMap = false;
+			//myh5/my?user_id=1&session_id=1&story_id=1
 			//knowledgeh5/all?story_id=1&session_id=1&user_id=1 
 			webViewTask.StartWebView(Network.HttpUrlInfo.urlLingjingHtml +
-				string.Format("knowledgeh5/all?user_id={0}&session_id={1}&story_id={2}",
+				string.Format("myh5/my?user_id={0}&session_id={1}&story_id={2}",
 					ConfigInfo.userId,
 					ConfigInfo.sessionId,
 					ConfigInfo.storyId));
@@ -337,10 +338,11 @@ public class InteractionView : MonoBehaviour {
 	bool isInDialog = false;
 	public void ShowNPCLog(ItemInfo info) {
 		entityInfo = info;
-		goNPCBox.SetActive(true);
-		goHomeIcon.SetActive(false);
+		SetNPCLogActive(true);
+		//goNPCBox.SetActive(true);
+		//goHomeIcon.SetActive(false);
+		//isInDialog = true;
 		webViewUtility.SetVisibility(false);
-		isInDialog = true;
 		AdvancedLog(entityInfo.currDialog);
 		if (entityInfo is FieldEntityInfo) {
 			Vector3 pos;
@@ -354,13 +356,22 @@ public class InteractionView : MonoBehaviour {
 	}
 
 	public void ExitNPCLog() {
-		goNPCBox.SetActive(false);
-		goHomeIcon.SetActive(true);
-		isInDialog = false;
+		SetNPCLogActive(false);
+		//goNPCBox.SetActive(false);
+		//goHomeIcon.SetActive(true);
+		//isInDialog = false;
 		actionManager.OnInteractionFinished(entityInfo);
 		entityInfo = null;
 	}
 
+	void SetNPCLogActive(bool isActive) {
+		goNPCBox.SetActive(isActive);
+		goHomeIcon.SetActive(!isActive);
+		isInDialog = isActive;
+		if (entityInfo != null) {
+			entityInfo.SetInteractionState(isActive);
+		}
+	}
 	public void AdvancedLog(int selection) {
 		DialogSentence nextDialog;
 		if (selection == 0) {
@@ -401,7 +412,6 @@ public class InteractionView : MonoBehaviour {
 			}
 		} else if (!string.IsNullOrWhiteSpace(sentence.quizID)) {
 			entityInfo.currDialog = sentence;
-			//webViewQuiz.StartWebView(Network.HttpUrlInfo.urlLingjingQuiz + sentence.quizID + "&session_id=" + ConfigInfo.sessionId);
 			webViewQuiz.StartWebView(Network.HttpUrlInfo.urlLingjingQuiz +
 				string.Format("id={0}&user_id={1}&session_id={2}",
 				   sentence.quizID,
