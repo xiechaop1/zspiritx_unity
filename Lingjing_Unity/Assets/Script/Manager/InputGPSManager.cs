@@ -114,13 +114,16 @@ public class InputGPSManager : MonoBehaviour, IManager {
 	#endregion
 
 	#region Get Advanced GeoLoc
-	public GameObject GetPosObject(double lat, double lon,float maxDistance = 20f) {
+	public GameObject GetPosObject(double lat, double lon, float maxDistance = 20f) {
 		UpdateGroundCampass();
 		UpdateGroundLatLonByCameraPos();
 		Vector3 objPos = FastGetDeltaDistance(groundLatitude, groundLongitude, lat, lon);
-		if (objPos.sqrMagnitude > maxDistance*maxDistance) {
+		if (FastGetDistance(camLatitude, camLongitude, lat, lon) > maxDistance) {
 			return null;
 		}
+		//if (objPos.sqrMagnitude > maxDistance * maxDistance) {
+		//	return null;
+		//}
 		GameObject ret = new GameObject("go_at_geoloc:" + lat + "," + lon);
 		ret.transform.position = transform.TransformPoint(objPos);
 		ret.transform.rotation = transform.rotation;
@@ -330,7 +333,7 @@ public class InputGPSManager : MonoBehaviour, IManager {
 	public static double FastGetDistance(double startLat, double startLng, double endLat, double endLng) {
 		double x = FastGetDeltaE(startLat, startLng, endLng);
 		double z = FastGetDeltaN(startLat, endLat, endLng);
-		return Mathf.Sqrt((float)(x*x+z*z));
+		return Mathf.Sqrt((float)(x * x + z * z));
 	}
 	public static Vector3 FastGetDeltaDistance(Vector2 startLatLng, Vector2 endLatLng) {
 		return new Vector3((float)FastGetDeltaE(startLatLng.x, startLatLng.y, endLatLng.y), 0, (float)FastGetDeltaN(startLatLng.x, endLatLng.x, endLatLng.y));

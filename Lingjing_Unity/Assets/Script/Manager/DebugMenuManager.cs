@@ -24,6 +24,8 @@ public class DebugMenuManager : MonoBehaviour {
 	public Text txtHint;
 	public GameObject goGeoLoc;
 	public Text txtGeoLoc;
+	public GameObject goObjLst;
+	public Text txtObjLst;
 	public SceneLoadManager sceneLoadManager;
 	public FieldStageManager fieldStageManager;
 	public FieldEntityManager fieldEntityManager;
@@ -62,10 +64,13 @@ public class DebugMenuManager : MonoBehaviour {
 		//DebugInfo
 		//StartCoroutine(Testloader());
 	}
-	private void Update(){
+	private void Update() {
 		if (goGeoLoc.activeInHierarchy) {
 			txtGeoLoc.text = GetLatLon();
 		}
+		//if (goObjLst.activeInHierarchy) {
+		//	txtObjLst.text = GetObjectList();
+		//}
 	}
 	public void ExitHint() {
 		goHintBox.SetActive(false);
@@ -99,6 +104,26 @@ public class DebugMenuManager : MonoBehaviour {
 			bdLat.ToString("F9") + ", " + bdLon.ToString("F9") + "\n" +
 			gpsManager.groundLatitude.ToString("F9") + ", " + gpsManager.groundLongitude.ToString("F9") + "\n";
 	}
+	private string GetObjectList() {
+		List<FieldEntityInfo> lstEntities = new List<FieldEntityInfo>();
+		lstEntities.AddRange(fieldEntityManager.arrGeoLocEntity);
+		lstEntities.AddRange(fieldEntityManager.arrTaggedEntity);
+		lstEntities.AddRange(fieldEntityManager.arrFieldEntity);
+		gpsManager.GetCurrentLatLon(out double newLat, out double newLng);
+		string output = "";
+		string tmp;
+		foreach (FieldEntityInfo entity in lstEntities) {
+			tmp = entity.entityName;
+			if (entity.enumARType == FieldEntityInfo.EntityToggleType.GeoLocAround || entity.enumARType == FieldEntityInfo.EntityToggleType.GeoLocPosition) {
+				tmp += ": " + InputGPSManager.FastGetDistance(entity.latitude, entity.longitude, newLat, newLng).ToString("F3");
+			} else if (entity.enumARType == FieldEntityInfo.EntityToggleType.ARTagAround || entity.enumARType == FieldEntityInfo.EntityToggleType.ARTagPosition) {
+				tmp += ": " + entity.uuidImageTracking;
+			}
+			//tmp = string.Format("{1}:{2}\n",entity.entityName,entity.geoLocDistance);
+			output += tmp + "\n";
+		}
+		return output;
+	}
 	//bool isDebugMode = false;
 	public void DebugBtn() {
 		//Config.ConfigInfo.test.testLatLon = new Vector2((float)lat,(float)lon);
@@ -111,11 +136,12 @@ public class DebugMenuManager : MonoBehaviour {
 		//	gpsManager.UpdateGroundLatLonByCameraPos();
 		//}
 
+		ShowHint(GetObjectList());
 
 		//ShowHint(fieldEntityManager.goCamDir.transform.rotation.eulerAngles.y + "\n" + Input.compass.trueHeading + "\n" + (fieldEntityManager.goCamDir.transform.rotation.eulerAngles.y - Input.compass.trueHeading));
 
 		//StartCoroutine(GPSTest());
-		FakeImageFound();
+		//FakeImageFound();
 #if UNITY_EDITOR
 		//FakeImageFound();
 #else

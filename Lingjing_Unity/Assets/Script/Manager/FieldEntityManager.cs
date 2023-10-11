@@ -11,11 +11,19 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	public GameObject goRoot;
 	public GameObject goStorage;
 	private ARPlaneInfo arPlane;
+
 	Queue<FieldEntityInfo> queFieldEntity = new Queue<FieldEntityInfo>();
+	public FieldEntityInfo[] arrFieldEntity => queFieldEntity.ToArray();
+
 	List<FieldEntityInfo> queTaggedEntity = new List<FieldEntityInfo>();
+	public FieldEntityInfo[] arrTaggedEntity => queTaggedEntity.ToArray();
+
 	Queue<FieldEntityInfo> queLatLonEntity = new Queue<FieldEntityInfo>();
+	public FieldEntityInfo[] arrGeoLocEntity => queLatLonEntity.ToArray();
+
 	List<FieldEntityInfo> lstPlacedEntity = new List<FieldEntityInfo>();
 	public FieldEntityInfo[] arrPlacedEntity => lstPlacedEntity.ToArray();
+
 	public bool isLoadFinish => queFieldEntity.Count == 0;
 
 	public float maxShowDistance = 20f;
