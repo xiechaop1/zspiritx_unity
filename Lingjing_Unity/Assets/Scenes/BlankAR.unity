@@ -8387,10 +8387,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dea56a9eaadd1c439095de4f9a371cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SerializedLibrary: {fileID: 11400000, guid: 397c651f05643684f859de01e311dcf5,
+  m_SerializedLibrary: {fileID: 11400000, guid: dbf084582bce3884b962cc89c67bee37,
     type: 2}
-  m_MaxNumberOfMovingImages: 1
-  m_TrackedImagePrefab: {fileID: 9094615260567797287, guid: 1dccdde05ded8e2408742bf77f802eb6,
+  m_MaxNumberOfMovingImages: 0
+  m_TrackedImagePrefab: {fileID: 5437974863756102426, guid: 1dccdde05ded8e2408742bf77f802eb6,
     type: 3}
 --- !u!114 &1064369094
 MonoBehaviour:
@@ -11362,6 +11362,8 @@ MonoBehaviour:
   txtHint: {fileID: 1251536721}
   goGeoLoc: {fileID: 871684774}
   txtGeoLoc: {fileID: 1229390080}
+  goObjLst: {fileID: 0}
+  txtObjLst: {fileID: 0}
   sceneLoadManager: {fileID: 538542694}
   fieldStageManager: {fileID: 119510841}
   fieldEntityManager: {fileID: 119510838}

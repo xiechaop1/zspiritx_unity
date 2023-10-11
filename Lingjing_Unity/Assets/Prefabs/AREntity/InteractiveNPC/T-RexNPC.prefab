@@ -2645,6 +2645,9 @@ MonoBehaviour:
   enumSurfaceType: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  maxTolerance: 5
+  geoLocDistance: 2
+  maxShowDistance: 20
   proximityDialog: 0
   hasProximityDialog: 0
   animEmerge: {fileID: 0}

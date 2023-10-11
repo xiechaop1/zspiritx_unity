@@ -451,8 +451,10 @@ BuildEntity:
 			if (JSONReader.TryPraseArray(info.strHintbox, "Dialog", out lstRawDialogs)) {
 				List<DialogSentence> lstSentences = new List<DialogSentence>();
 				foreach (string rawDialog in lstRawDialogs) {
-					sentence = new DialogSentence(rawDialog);
-					lstSentences.Add(sentence);
+					if (!string.IsNullOrWhiteSpace(rawDialog)) {
+						sentence = new DialogSentence(rawDialog);
+						lstSentences.Add(sentence);
+					}
 				}
 				foreach (var item in lstSentences) {
 					item.LinkSentences(lstSentences);
@@ -460,10 +462,11 @@ BuildEntity:
 				}
 
 				if (JSONReader.TryPraseString(info.strHintbox, "Intro", ref tmp)) {
-					info.currDialog = DialogSentence.FindSentence(tmp, lstSentences);
+					info.introDialog = DialogSentence.FindSentence(tmp, lstSentences);
 				} else {
-					info.currDialog = lstSentences[0];
+					info.introDialog = lstSentences[0];
 				}
+				info.currDialog = info.introDialog;
 				info.lstDialogs = lstSentences.ToArray();
 			}
 		}
