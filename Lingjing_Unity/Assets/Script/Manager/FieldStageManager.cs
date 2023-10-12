@@ -10,6 +10,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 	public AudioSource backgroundMusicPlayer;
 
 	public FieldStageInfo currentStage;
+	public FieldStageInfo[] lstLoadedStages;
 	private FieldEntityManager entityManager;
 	private WWWManager networkManager;
 	private List<FieldEntityInfo> entitiesManaged = new List<FieldEntityInfo>();
@@ -19,6 +20,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 	public FieldEntityInfo[] lstFieldEntity = new FieldEntityInfo[0];
 	public FieldEntityInfo[] lstTaggedEntity = new FieldEntityInfo[0];
 	public FieldEntityInfo[] lstLocEntity = new FieldEntityInfo[0];
+	public FieldEntityInfo[] lstHiddenEntity = new FieldEntityInfo[0];
 
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
 		foreach (var manager in managers) {
@@ -32,6 +34,15 @@ public class FieldStageManager : MonoBehaviour, IManager {
 			networkManager = manager as WWWManager;
 		}
 	}
+	public void ForceLoadStage(string stageId) {
+		foreach (var stageInfo in lstLoadedStages) {
+			if (stageInfo.uuid == stageId) {
+				StageAdvanced(stageInfo);
+				break;
+			}
+		}
+	}
+
 	public void ImageFound(string uuid) {
 		FieldStageInfo[] nextStages = currentStage.nextStages;
 		foreach (var stageInfo in nextStages) {
@@ -85,10 +96,32 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		if (!string.IsNullOrWhiteSpace(targetStage.uuidBGM)) {
 			LoadMusic(targetStage.uuidBGM);
 		}
+		StartCoroutine(AsyncLoadStageMsg());
+	}
+	IEnumerator AsyncLoadStageMsg() {
+		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingUser,
+		   "update_user_stage",
+		   string.Format("is_test=1&user_id={0}&stroy_stage_id={1}&story_id={2}&session_id={3}",
+			   ConfigInfo.userId,
+			   currentStage.stroy_stage_id,
+			   ConfigInfo.storyId,
+			   ConfigInfo.sessionId
+			   )
+		   );
+		yield return null;
+		yield return www;
+		if (www.isError) {
+			LogManager.Warning(www.error);
+			yield break;
+		}
+		if (string.IsNullOrEmpty(www.text)) {
+			LogManager.Warning("FAILED to create stages due to missing return info");
+			yield break;
+		}
 	}
 	public void CleanBackstage() {
 		currentStage = null;
-		lstFieldEntity = lstTaggedEntity = lstLocEntity = null;
+		lstFieldEntity = lstTaggedEntity = lstLocEntity = lstHiddenEntity = null;
 		backgroundMusicPlayer.Pause();
 	}
 
@@ -96,6 +129,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		List<FieldEntityInfo> lstField = new List<FieldEntityInfo>();
 		List<FieldEntityInfo> lstTagged = new List<FieldEntityInfo>();
 		List<FieldEntityInfo> lstGeoLoc = new List<FieldEntityInfo>();
+		List<FieldEntityInfo> lstHide = new List<FieldEntityInfo>();
 
 		FieldEntityInfo info;
 		for (int i = 0; i < entities.Length; i++) {
@@ -104,27 +138,33 @@ public class FieldStageManager : MonoBehaviour, IManager {
 			} else {
 				continue;
 			}
-			switch (info.enumARType) {
-				case FieldEntityInfo.EntityToggleType.ARTagTracking:
-				case FieldEntityInfo.EntityToggleType.ARTagAround:
-				case FieldEntityInfo.EntityToggleType.ARTagPosition:
-					lstTagged.Add(info);
-					break;
-				case FieldEntityInfo.EntityToggleType.GeoLocAround:
-				case FieldEntityInfo.EntityToggleType.GeoLocPosition:
-					lstGeoLoc.Add(info);
-					break;
-				case FieldEntityInfo.EntityToggleType.StageAround:
-				case FieldEntityInfo.EntityToggleType.StagePosition:
-				case FieldEntityInfo.EntityToggleType.RamdomAroundCam:
-				default:
-					lstField.Add(info);
-					break;
+			if (info.enumVisibleType != 0) {
+				lstHide.Add(info);
+			} else {
+				switch (info.enumARType) {
+					case FieldEntityInfo.EntityToggleType.ARTagTracking:
+					case FieldEntityInfo.EntityToggleType.ARTagAround:
+					case FieldEntityInfo.EntityToggleType.ARTagPosition:
+						lstTagged.Add(info);
+						break;
+					case FieldEntityInfo.EntityToggleType.GeoLocAround:
+					case FieldEntityInfo.EntityToggleType.GeoLocPosition:
+						lstGeoLoc.Add(info);
+						break;
+					case FieldEntityInfo.EntityToggleType.StageAround:
+					case FieldEntityInfo.EntityToggleType.StagePosition:
+					case FieldEntityInfo.EntityToggleType.RamdomAroundCam:
+					default:
+						lstField.Add(info);
+						break;
+				}
 			}
+
 		}
 		lstFieldEntity = lstField.ToArray();
 		lstTaggedEntity = lstTagged.ToArray();
 		lstLocEntity = lstGeoLoc.ToArray();
+		lstHiddenEntity = lstHide.ToArray();
 	}
 	void LoadMusic(string uuid) {
 		AudioClip clip = null;
@@ -210,6 +250,7 @@ LoopEnd:
 			stage.nextStages = tmpStages.Where(x => x != stage).ToArray();
 		}
 		yield return null;
+		lstLoadedStages = tmpStages.ToArray();
 		PrepareBackstage(tmpStages[0]);
 		yield break;
 	}
@@ -415,15 +456,15 @@ BuildEntity:
 		} else {
 			info.isLookAt = false;
 		}
-		if (infoJson.TryPraseDouble("placingTolerance", ref tmpD)) {
+		if (infoJson.TryPraseDouble("misrange", ref tmpD) && tmpD > 0) {
 			info.maxTolerance = (float)tmpD;
 		} else {
 			info.maxTolerance = entityManager.maxTolerance;
 		}
-		if (infoJson.TryPraseDouble("geoLocRange", ref tmpD)) {
+		if (infoJson.TryPraseDouble("trigger_misrange", ref tmpD) && tmpD > 0) {
 			info.geoLocDistance = (float)tmpD;
 		} else {
-			info.geoLocDistance = entityManager.maxShowDistance;
+			info.geoLocDistance = entityManager.maxGeoLocToggle;
 		}
 		if (infoJson.TryPraseDouble("visualRange", ref tmpD)) {
 			info.maxShowDistance = (float)tmpD;
@@ -434,6 +475,11 @@ BuildEntity:
 			info.proximityDialog = (float)tmpD;
 		} else {
 			info.proximityDialog = 0f;
+		}
+		if (infoJson.TryPraseInt("is_visable", ref tmpInt)) {
+			info.enumVisibleType = tmpInt;
+		} else {
+			info.enumVisibleType = 1;
 		}
 		if (info.enumActionType == EntityActionType.DialogEvent) {
 			if (infoJson.TryPraseString("dialog", ref tmp)) {
@@ -480,8 +526,37 @@ BuildEntity:
 		return info;
 	}
 
+	#endregion
+
 	public void OnRemoveFieldEntity(FieldEntityInfo info) {
 		entitiesManaged.Remove(info);
 	}
-	#endregion
+	public bool ContainsEntity(FieldEntityInfo info) {
+		return entitiesManaged.Contains(info);
+	}
+	public bool ContainsEntity(string entityName) {
+		return entitiesManaged.Exists(x => x.entityName == entityName);
+	}
+	public FieldEntityInfo FindEntityByName(string entityName) {
+		if (!ContainsEntity(entityName)) {
+			return null;
+		}
+		return entitiesManaged.First(x => x.entityName == entityName);
+	}
+
+	public void ShowEntities(IEnumerable<string> entitiesName) {
+		foreach (string entityName in entitiesName.ToArray()) {
+			entityManager.ShowHiddenEntity(entityName);
+		}
+	}
+	public void HideEntities(IEnumerable<string> entitiesName) {
+		foreach (string entityName in entitiesName.ToArray()) {
+			entityManager.HideExistEntity(entityName);
+		}
+	}
+	public void PickupEntities(IEnumerable<string> entitiesName) {
+		foreach (string entityName in entitiesName.ToArray()) {
+			Debug.LogWarning("Need Implimentation");
+		}
+	}
 }

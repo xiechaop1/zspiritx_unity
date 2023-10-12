@@ -11,9 +11,14 @@ public class DialogSentence {
 	public string quizID = "";
 	string clipID;
 	public AudioClip sentenceClip;
+
 	public string[] userSelections;
 	string[] nextID;
 	public DialogSentence[] nextSentence;
+
+	public string[] showModels;
+	public string[] hideModels;
+	public string[] pickupModels;
 	public DialogSentence(string json) {
 		JSONReader obj;
 		string tmpStr = "";
@@ -58,6 +63,21 @@ public class DialogSentence {
 			nextID = tmpLst.ToArray();
 		} else {
 			nextID = new string[0];
+		}
+		if (obj.TryPraseArray("showModels", out tmpLst)) {
+			showModels = tmpLst.ToArray();
+		} else {
+			showModels = new string[0];
+		}
+		if (obj.TryPraseArray("hideModels", out tmpLst)) {
+			hideModels = tmpLst.ToArray();
+		} else {
+			hideModels = new string[0];
+		}
+		if (obj.TryPraseArray("pickupModels", out tmpLst)) {
+			pickupModels = tmpLst.ToArray();
+		} else {
+			pickupModels = new string[0];
 		}
 	}
 	public void LinkSentences(IEnumerable<DialogSentence> lstSentences) {

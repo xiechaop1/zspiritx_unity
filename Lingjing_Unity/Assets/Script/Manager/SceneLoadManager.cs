@@ -289,11 +289,11 @@ ARSystemReady:
 
 		yield return null;
 		entityActionManager.Set2ARMode();
-	
+
 		LoadingScreen.SetActive(false);
 		dataManager.SetUserInfoSharing(true);
 		isLoading = false;
-		debugManager.ShowHint("user_id: " + ConfigInfo.userId + "\nstory_id: " + ConfigInfo.storyId+ "\nsession_id: " + ConfigInfo.sessionId);
+		debugManager.ShowHint("user_id: " + ConfigInfo.userId + "\nstory_id: " + ConfigInfo.storyId + "\nsession_id: " + ConfigInfo.sessionId);
 		yield break;
 	}
 

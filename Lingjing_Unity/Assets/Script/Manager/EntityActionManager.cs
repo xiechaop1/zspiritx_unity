@@ -170,6 +170,9 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				break;
 		}
 	}
+	public void TryPickUpItem(string entityName){
+
+	}
 	void PickUpItem(ItemInfo entityInfo) {
 		StartCoroutine(AsyncPickUpItem(entityInfo));
 		UIEventManager.CallEvent("FieldEntityManager", "RemoveFieldEntitys", entityInfo);

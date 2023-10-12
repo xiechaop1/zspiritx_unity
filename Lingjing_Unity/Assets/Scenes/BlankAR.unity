@@ -1168,8 +1168,9 @@ MonoBehaviour:
     type: 3}
   goRoot: {fileID: 254332185}
   goStorage: {fileID: 1656574707}
+  maxGeoLocToggle: 5
   maxShowDistance: 20
-  maxTolerance: 1
+  maxTolerance: 10
 --- !u!4 &119510839
 Transform:
   m_ObjectHideFlags: 0
@@ -1219,6 +1220,7 @@ MonoBehaviour:
   lstFieldEntity: []
   lstTaggedEntity: []
   lstLocEntity: []
+  lstHiddenEntity: []
 --- !u!1 &131915490
 GameObject:
   m_ObjectHideFlags: 0
@@ -12093,6 +12095,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneLoader: {fileID: 538542694}
   stageManager: {fileID: 119510841}
+  entityManager: {fileID: 119510838}
   actionManager: {fileID: 390938063}
   gpsManager: {fileID: 803468632}
   voiceLogPlayer: {fileID: 1835211563}
@@ -14157,7 +14160,7 @@ MonoBehaviour:
   - {fileID: 2106844446473325926, guid: 6427dfcda8deb3a41b4f6abcc678512f, type: 3}
   - {fileID: 945974398287456623, guid: 902c4ab44840c75479137f06b3583671, type: 3}
   - {fileID: 5406095013555397811, guid: 8922f363ef5a1474d8b89f430d204f40, type: 3}
-  - {fileID: 739891019778337, guid: dca57faf6eb596549b73dc467f6fa87a, type: 3}
+  - {fileID: 2158635248490421759, guid: dca57faf6eb596549b73dc467f6fa87a, type: 3}
   - {fileID: 5011086627988617525, guid: e6d454700639f4944ab4a7f461bbf994, type: 3}
   - {fileID: 6743747283530784041, guid: d3f85d26be4663e468255ed34e4ea71b, type: 3}
   - {fileID: 3728996035649267597, guid: 2d6e40f46bbba9c4aaeaf26500fd5b05, type: 3}
@@ -17784,6 +17787,7 @@ MonoBehaviour:
   entitySessionId: 0
   entityItemId: 0
   entityName: 0
+  enumVisibleType: 0
   enumARType: 0
   uuidImageTracking: 
   latitude: 0
