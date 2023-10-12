@@ -12,13 +12,16 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	public GameObject goStorage;
 	private ARPlaneInfo arPlane;
 
+	List<FieldEntityInfo> queHiddenEntity = new List<FieldEntityInfo>();
+	public FieldEntityInfo[] arrHiddenEntity => queHiddenEntity.ToArray();
+
 	Queue<FieldEntityInfo> queFieldEntity = new Queue<FieldEntityInfo>();
 	public FieldEntityInfo[] arrFieldEntity => queFieldEntity.ToArray();
 
 	List<FieldEntityInfo> queTaggedEntity = new List<FieldEntityInfo>();
 	public FieldEntityInfo[] arrTaggedEntity => queTaggedEntity.ToArray();
 
-	Queue<FieldEntityInfo> queLatLonEntity = new Queue<FieldEntityInfo>();
+	List<FieldEntityInfo> queLatLonEntity = new List<FieldEntityInfo>();
 	public FieldEntityInfo[] arrGeoLocEntity => queLatLonEntity.ToArray();
 
 	List<FieldEntityInfo> lstPlacedEntity = new List<FieldEntityInfo>();
@@ -26,8 +29,9 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 
 	public bool isLoadFinish => queFieldEntity.Count == 0;
 
+	public float maxGeoLocToggle = 5f;
 	public float maxShowDistance = 20f;
-	public float maxTolerance = 1f;
+	public float maxTolerance = 10f;
 
 	private EntityActionManager actionManager;
 	private FieldStageManager stageManager;
@@ -52,7 +56,8 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		} else if (timeLastCheck > 1f && timeLastCheck < 1.5f) {
 			if (!loadManager.isLoading && loadManager.sceneMode == SceneLoadManager.SceneMode.AR) {
 				if (queLatLonEntity.Count > 0) {
-					PlaceGeoLocEntities(10);
+					PlaceGeoLocEntities();
+					//PlaceGeoLocEntities(10);
 				}
 			}
 			timeLastCheck = 0.5f;
@@ -97,6 +102,11 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		}
 	}
 	public void PrepareStage(GameObject stageRoot = null) {
+		foreach (FieldEntityInfo entityInfo in stageManager.lstHiddenEntity) {
+			if (PrepareEntity(entityInfo)) {
+				queHiddenEntity.Add(entityInfo);
+			}
+		}
 		foreach (FieldEntityInfo entityInfo in stageManager.lstFieldEntity) {
 			if (PrepareEntity(entityInfo)) {
 				queFieldEntity.Enqueue(entityInfo);
@@ -109,7 +119,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		}
 		foreach (FieldEntityInfo entityInfo in stageManager.lstLocEntity) {
 			if (PrepareEntity(entityInfo)) {
-				queLatLonEntity.Enqueue(entityInfo);
+				queLatLonEntity.Add(entityInfo);
 			}
 		}
 	}
@@ -145,6 +155,13 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	}
 	public void StopStage() {
 		FieldEntityInfo entityInfo;
+		for (int i = queHiddenEntity.Count - 1; i >= 0; i--) {
+			entityInfo = queHiddenEntity[i];
+			queHiddenEntity.RemoveAt(i);
+			if (entityInfo != null) {
+				StopEntity(entityInfo);
+			}
+		}
 		while (queFieldEntity.Count > 0) {
 			entityInfo = queFieldEntity.Dequeue();
 			if (entityInfo != null) {
@@ -158,12 +175,19 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 				StopEntity(entityInfo);
 			}
 		}
-		while (queLatLonEntity.Count > 0) {
-			entityInfo = queLatLonEntity.Dequeue();
+		for (int i = queLatLonEntity.Count - 1; i >= 0; i--) {
+			entityInfo = queLatLonEntity[i];
+			queLatLonEntity.RemoveAt(i);
 			if (entityInfo != null) {
 				StopEntity(entityInfo);
 			}
 		}
+		//while (queLatLonEntity.Count > 0) {
+		//	entityInfo = queLatLonEntity.Dequeue();
+		//	if (entityInfo != null) {
+		//		StopEntity(entityInfo);
+		//	}
+		//}
 		for (int i = lstPlacedEntity.Count - 1; i >= 0; i--) {
 			entityInfo = lstPlacedEntity[i];
 			lstPlacedEntity.RemoveAt(i);
@@ -250,31 +274,145 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 
 	#endregion
 
+	#region Show-and-Hide Entity
+	public void ShowHiddenEntity(string entityName) {
+		FieldEntityInfo entityInfo = null;
+		for (int i = 0; i < queHiddenEntity.Count; i++) {
+			if (queHiddenEntity[i].entityName == entityName) {
+				entityInfo = queHiddenEntity[i];
+			}
+		}
+		if (entityInfo != null) {
+			queHiddenEntity.Remove(entityInfo);
+			switch (entityInfo.enumARType) {
+				case FieldEntityInfo.EntityToggleType.ARTagTracking:
+				case FieldEntityInfo.EntityToggleType.ARTagAround:
+				case FieldEntityInfo.EntityToggleType.ARTagPosition:
+					queTaggedEntity.Add(entityInfo);
+					break;
+				case FieldEntityInfo.EntityToggleType.GeoLocAround:
+				case FieldEntityInfo.EntityToggleType.GeoLocPosition:
+					queLatLonEntity.Add(entityInfo);
+					break;
+				case FieldEntityInfo.EntityToggleType.StageAround:
+				case FieldEntityInfo.EntityToggleType.StagePosition:
+				case FieldEntityInfo.EntityToggleType.RamdomAroundCam:
+				default:
+					queFieldEntity.Enqueue(entityInfo);
+					break;
+			}
+		}
+	}
+
+	public void HideExistEntity(string entityName) {
+		FieldEntityInfo entityInfo = null;
+		foreach (FieldEntityInfo entity in queTaggedEntity) {
+			if (entity.entityName == entityName) {
+				entityInfo = entity;
+			}
+		}
+		if (entityInfo != null) {
+			queTaggedEntity.Remove(entityInfo);
+			goto BackStageHiding;
+		}
+
+		foreach (FieldEntityInfo entity in queLatLonEntity) {
+			if (entity.entityName == entityName) {
+				entityInfo = entity;
+			}
+		}
+		if (entityInfo != null) {
+			queLatLonEntity.Remove(entityInfo);
+			goto BackStageHiding;
+		}
+
+		//int cnt = queLatLonEntity.Count;
+		//for (int i = 0; i < cnt; i++) {
+		//	tmpInfo = queLatLonEntity.Dequeue();
+		//	if (tmpInfo.entityName == entityName) {
+		//		entityInfo = tmpInfo;
+		//	} else {
+		//		queLatLonEntity.Enqueue(tmpInfo);
+		//	}
+		//}
+		//if (entityInfo != null) {
+		//	goto BackStageHiding;
+		//}
+
+		FieldEntityInfo tmpInfo;
+		int cnt = queFieldEntity.Count;
+		for (int i = 0; i < cnt; i++) {
+			tmpInfo = queFieldEntity.Dequeue();
+			if (tmpInfo.entityName == entityName) {
+				entityInfo = tmpInfo;
+			} else {
+				queFieldEntity.Enqueue(tmpInfo);
+			}
+		}
+		if (entityInfo != null) {
+			goto BackStageHiding;
+		}
+		foreach (FieldEntityInfo entity in lstPlacedEntity) {
+			if (entity.entityName == entityName) {
+				entityInfo = entity;
+			}
+		}
+		if (entityInfo == null) {
+			return;
+		}
+		entityInfo.RemoveFromField();
+		lstPlacedEntity.Remove(entityInfo);
+BackStageHiding:
+		queHiddenEntity.Add(entityInfo);
+		return;
+	}
+	#endregion
+
 	#region GeoLoc Pre-process
 	//List<GameObject> geolocDir = new List<GameObject>();
 	public void PlaceGeoLocEntities(int maxTries) {
 		GameObject obj;
 		FieldEntityInfo entityInfo;
 		for (int i = 0; i < maxTries; i++) {
-			if (queLatLonEntity.Count <= 0) {
-				break;
-			}
+			//if (queLatLonEntity.Count <= 0) {
+			//	break;
+			//}
 
-			entityInfo = queLatLonEntity.Dequeue();
-			obj = geolocManager.GetPosObject(entityInfo.latitude, entityInfo.longitude, entityInfo.geoLocDistance);
-			if (obj == null) {
-				queLatLonEntity.Enqueue(entityInfo);
-			} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocPosition) {
-				entityInfo.goReference = obj;
-				ForcePlacing(entityInfo);
-			} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocAround) {
-				entityInfo.goReference = obj;
-				queFieldEntity.Enqueue(entityInfo);
-			}
+			//entityInfo = queLatLonEntity.Dequeue();
+			//obj = geolocManager.GetPosObject(entityInfo.latitude, entityInfo.longitude, entityInfo.geoLocDistance);
+			//if (obj == null) {
+			//	queLatLonEntity.Enqueue(entityInfo);
+			//} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocPosition) {
+			//	entityInfo.goReference = obj;
+			//	ForcePlacing(entityInfo);
+			//} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocAround) {
+			//	entityInfo.goReference = obj;
+			//	queFieldEntity.Enqueue(entityInfo);
+			//}
 
 		}
 	}
-	public void PlaceGeoLocEntity() {
+	public void PlaceGeoLocEntities() {
+		if (queLatLonEntity.Count == 0) {
+			return;
+		}
+		GameObject obj;
+		FieldEntityInfo entityInfo;
+		for (int i = queLatLonEntity.Count - 1; i >= 0; i--) {
+			entityInfo = queLatLonEntity[i];
+			obj = geolocManager.GetPosObject(entityInfo.latitude, entityInfo.longitude, entityInfo.geoLocDistance);
+			if (obj == null) {
+				continue;
+			} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocPosition) {
+				entityInfo.goReference = obj;
+				queLatLonEntity.RemoveAt(i);
+				ForcePlacing(entityInfo);
+			} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocAround) {
+				entityInfo.goReference = obj;
+				queLatLonEntity.RemoveAt(i);
+				queFieldEntity.Enqueue(entityInfo);
+			}
+		}
 	}
 	#endregion
 
@@ -306,8 +444,9 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		if (queTaggedEntity.Count == 0) {
 			return;
 		}
+		FieldEntityInfo entityInfo;
 		for (int i = queTaggedEntity.Count - 1; i >= 0; i--) {
-			FieldEntityInfo entityInfo = queTaggedEntity[i];
+			entityInfo = queTaggedEntity[i];
 			if (entityInfo.uuidImageTracking == imgName) {
 				if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagTracking) {
 					entityInfo.transform.parent = imageTrackers[imgName].transform;
@@ -371,7 +510,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 
 	public void RemoveFieldEntitys(IEventMessage arInfo) {
 		FieldEntityInfo entityInfo = arInfo as FieldEntityInfo;
-		if (entityInfo == null) {
+		if (entityInfo == null || !stageManager.ContainsEntity(entityInfo)) {
 			return;
 		}
 		if (entityHorizontal.Contains(entityInfo)) {
@@ -381,7 +520,23 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		}
 		if (lstPlacedEntity.Contains(entityInfo)) {
 			lstPlacedEntity.Remove(entityInfo);
+		} else if (queHiddenEntity.Contains(entityInfo)) {
+			queHiddenEntity.Remove(entityInfo);
+		} else if (queTaggedEntity.Contains(entityInfo)) {
+			queTaggedEntity.Remove(entityInfo);
+		} else if (queLatLonEntity.Contains(entityInfo)) {
+			queLatLonEntity.Remove(entityInfo);
+		} else {
+			FieldEntityInfo entity;
+			int cnt = queFieldEntity.Count;
+			for (int i = 0; i < cnt; i++) {
+				entity = queFieldEntity.Dequeue();
+				if (entity != entityInfo) {
+					queFieldEntity.Enqueue(entity);
+				}
+			}
 		}
+
 		stageManager.OnRemoveFieldEntity(entityInfo);
 		if (OnEntityRemoved != null) {
 			OnEntityRemoved.Invoke(entityInfo);
@@ -480,5 +635,4 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		return (false, hit, 0);
 	}
 	#endregion
-
 }

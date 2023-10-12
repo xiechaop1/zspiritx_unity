@@ -425,7 +425,9 @@ public class InteractionView : MonoBehaviour {
 			entityInfo.currDialog = sentence.nextSentence[0];
 			ExitNPCLog();
 		}
-
+		stageManager.ShowEntities(sentence.showModels);
+		stageManager.HideEntities(sentence.hideModels);
+		stageManager.PickupEntities(sentence.pickupModels);
 	}
 	void OnQuizCallback(string msg) {
 		string[] args = msg.Split('&');

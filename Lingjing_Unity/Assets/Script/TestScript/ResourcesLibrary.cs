@@ -38,7 +38,19 @@ public class ResourcesLibrary : MonoBehaviour {
 			try {
 				extention = url.Split('.').Last();
 				switch (extention) {
+					case "aif":
+					case "aiff":
+						audioType = AudioType.AIFF;
+						break;
+					case "mp3":
+						audioType = AudioType.MPEG;
+						break;
+					case "ogg":
+						audioType = AudioType.OGGVORBIS;
+						break;
 					case "wav":
+						audioType = AudioType.WAV;
+						break;
 					default:
 						audioType = AudioType.WAV;
 						break;
@@ -48,7 +60,7 @@ public class ResourcesLibrary : MonoBehaviour {
 				goto LoadFail;
 			}
 
-			if (extention==url) {
+			if (extention == url) {
 				LogManager.Warning("Missing File extension");
 				goto LoadFail;
 			}

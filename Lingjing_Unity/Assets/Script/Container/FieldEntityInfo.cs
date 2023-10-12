@@ -23,6 +23,7 @@ public class FieldEntityInfo : ItemInfo {
 	public int entitySessionId = 0;
 	public int entityItemId = 0;
 	public string entityName = "0";
+	public int enumVisibleType = 0;
 	public EntityToggleType enumARType = EntityToggleType.RamdomAroundCam;
 	public string uuidImageTracking = "";
 	public double latitude = 0d;

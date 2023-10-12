@@ -115,22 +115,50 @@ public class ActorDataManager : MonoBehaviour, IManager {
 	}
 	void ResolveNote(string rawInfo) {
 		int tmpInt = 0;
-		if (JSONReader.TryPraseInt(rawInfo, "session_id", ref tmpInt) && tmpInt == ConfigInfo.sessionId) {
-			string tmp = "";
-			JSONReader json = new JSONReader(rawInfo);
-			NotificationMessage note = new NotificationMessage();
-			if (json.TryPraseInt("id", ref tmpInt)) {
-				note.id = tmpInt;
-			} else {
-				return;
-			}
-			if (json.TryPraseString("action_detail", ref tmp)) {
-				note.msg = tmp;
-			}
-			interactionView.AddNotice(note);
+		JSONReader json = new JSONReader(rawInfo);
+		if (!json.TryPraseInt("session_id", ref tmpInt)) { return; }
+		if (tmpInt != ConfigInfo.sessionId) { return; }
+		string tmp = "";
+		if (!json.TryPraseInt("id", ref tmpInt)) { return; }
+		if (lstInfoId.Contains(tmpInt)) { return; }
+		lstInfoId.Add(tmpInt);
 
+		int actionType = 0;
+		if (!json.TryPraseInt("action_type", ref actionType)) { return; }
+		switch (actionType) {
+			case 11:
+				if (json.TryPraseString("action_detail", ref tmp)) {
+					stageManager.ForceLoadStage(tmp);
+				}
+				break;
+			case 12:
+				if (json.TryPraseString("action_detail", ref tmp)) {
+					JSONReader jsonModels = new JSONReader(tmp);
+					List<string> tmpLst;
+					if (jsonModels.TryPraseArray("showModels", out tmpLst)) {
+						stageManager.ShowEntities(tmpLst);
+					}
+					if (jsonModels.TryPraseArray("hideModels", out tmpLst)) {
+						stageManager.HideEntities(tmpLst);
+					}
+					if (jsonModels.TryPraseArray("pickupModels", out tmpLst)) {
+						stageManager.PickupEntities(tmpLst);
+					}
+				}
+				break;
+			case 1:
+			case 2:
+			default:
+				NotificationMessage note = new NotificationMessage();
+				note.id = tmpInt;
+				if (json.TryPraseString("action_detail", ref tmp)) {
+					note.msg = tmp;
+				}
+				interactionView.AddNotice(note);
+				break;
 		}
 	}
+	List<int> lstInfoId = new List<int>();
 }
 public class NotificationMessage {
 	public int id;
