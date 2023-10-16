@@ -23,7 +23,7 @@ public class EntityActionManager : MonoBehaviour, IManager {
 			RaycastHit hit;
 			switch (actionMode) {
 				case ActionMode.World:
-					if (Physics.Raycast(ray, out hit, 2.0f, 64)) {
+					if (Physics.Raycast(ray, out hit, 4.0f, 64)) {
 						FieldEntityInfo entityInfo;
 						if (hit.collider.gameObject.TryGetComponent(out entityInfo)) {
 							InteractWithEntity(entityInfo);
@@ -31,7 +31,7 @@ public class EntityActionManager : MonoBehaviour, IManager {
 					}
 					break;
 				case ActionMode.Interactive:
-					if (Physics.Raycast(ray, out hit, 2.0f, 128)) {
+					if (Physics.Raycast(ray, out hit, 4.0f, 128)) {
 						ARInteractionInfo interactionInfo;
 						if (hit.collider.gameObject.TryGetComponent(out interactionInfo)) {
 							interactionInfo.SendInteraction();
@@ -53,9 +53,10 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				if (entityInfo.TryGetUserPos(out pos) && pos.sqrMagnitude < entityInfo.proximityDialog * entityInfo.proximityDialog) {
 					switch (entityInfo.enumActionType) {
 						case EntityActionType.DialogActor:
-							actionMode = ActionMode.Idle;
-							interactionView.ShowNPCLog(entityInfo);
-							entityInfo.hasProximityDialog = false;
+							if (interactionView.ShowNPCLog(entityInfo)) {
+								actionMode = ActionMode.Idle;
+								entityInfo.hasProximityDialog = false;
+							}
 							break;
 						default:
 							break;
@@ -126,8 +127,12 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				interactionView.ShowHint(entityInfo, "х╥хо");
 				break;
 			case EntityActionType.DialogActor:
-				actionMode = ActionMode.Idle;
-				interactionView.ShowNPCLog(entityInfo);
+				if (interactionView.ShowNPCLog(entityInfo)) {
+					actionMode = ActionMode.Idle;
+				} else {
+					actionMode = ActionMode.Idle;
+					interactionView.ShowHint(entityInfo);
+				}
 				break;
 			case EntityActionType.Quiz:
 				actionMode = ActionMode.Idle;
@@ -170,7 +175,7 @@ public class EntityActionManager : MonoBehaviour, IManager {
 				break;
 		}
 	}
-	public void TryPickUpItem(string entityName){
+	public void TryPickUpItem(string entityName) {
 
 	}
 	void PickUpItem(ItemInfo entityInfo) {
@@ -243,6 +248,6 @@ public enum EntityActionType {
 	UtilityItem = 14,
 	PlacableItem = 15,
 	DialogActor = 21,
-	DialogEvent =22,
+	DialogEvent = 22,
 	Quiz = 22,
 }

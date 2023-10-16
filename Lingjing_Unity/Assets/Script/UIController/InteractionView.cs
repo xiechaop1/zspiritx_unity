@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Config;
 
 public class InteractionView : MonoBehaviour {
+	public ResourcesLibrary resourcesLib;
 	public SceneLoadManager sceneLoader;
 	public FieldStageManager stageManager;
 	public EntityActionManager actionManager;
@@ -336,7 +337,10 @@ public class InteractionView : MonoBehaviour {
 	public Text txtNPCName;
 
 	bool isInDialog = false;
-	public void ShowNPCLog(ItemInfo info) {
+	public bool ShowNPCLog(ItemInfo info) {
+		if (string.IsNullOrEmpty(info.strHintbox) || info.currDialog == null) {
+			return false;
+		}
 		entityInfo = info;
 		SetNPCLogActive(true);
 		//goNPCBox.SetActive(true);
@@ -353,6 +357,7 @@ public class InteractionView : MonoBehaviour {
 				txtHint.text += "\n 相对用户坐标:" + pos.ToString();
 			}
 		}
+		return true;
 	}
 
 	public void ExitNPCLog() {
@@ -405,7 +410,9 @@ public class InteractionView : MonoBehaviour {
 					btnSelects[i].SetActive(false);
 				}
 			}
-
+			if (sentence.sentenceClip == null) {
+				sentence.LinkClips(resourcesLib.audios);
+			}
 			if (sentence.sentenceClip != null) {
 				voiceLogPlayer.clip = sentence.sentenceClip;
 				voiceLogPlayer.Play();

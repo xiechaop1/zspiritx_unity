@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Config {
 	public static class ConfigInfo {
 		public static int userId = 3;	//µÇÂ¼ÕËºÅ
-		public static int storyId = 1;  //¾ç±¾±àºÅ 
+		public static int storyId = 3;  //¾ç±¾±àºÅ 
 		public static int sessionId = 15;
 
 		public static class test {

@@ -10,6 +10,7 @@ public class DialogSentence {
 	public string url = "";
 	public string quizID = "";
 	string clipID;
+	public string clipURL = "";
 	public AudioClip sentenceClip;
 
 	public string[] userSelections;
@@ -52,6 +53,10 @@ public class DialogSentence {
 		}
 		if (obj.TryPraseString("sentenceClip", ref tmpStr)) {
 			clipID = tmpStr;
+		} 
+		if (obj.TryPraseString("sentenceClipURL", ref tmpStr) && !string.IsNullOrEmpty(tmpStr)) {
+			clipURL = tmpStr;
+			clipID = tmpStr.Split('/').Last();
 		}
 
 		if (obj.TryPraseArray("userSelections", out tmpLst)) {
