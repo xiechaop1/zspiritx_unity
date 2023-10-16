@@ -167,6 +167,9 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		lstHiddenEntity = lstHide.ToArray();
 	}
 	void LoadMusic(string uuid) {
+		if (string.IsNullOrWhiteSpace(uuid)) {
+			return;
+		}
 		AudioClip clip = null;
 		foreach (var music in resourcesManager.audios) {
 			if (music.name == uuid) {
@@ -177,7 +180,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		if (clip != null) {
 			backgroundMusicPlayer.clip = clip;
 			backgroundMusicPlayer.Play();
-		} else {
+		} else if (!string.IsNullOrWhiteSpace(uuid)) {
 			backgroundMusicPlayer.Pause();
 		}
 	}
@@ -483,7 +486,11 @@ BuildEntity:
 		}
 		if (info.enumActionType == EntityActionType.DialogEvent) {
 			if (infoJson.TryPraseString("dialog", ref tmp)) {
-				info.strHintbox = tmp;
+				if (tmp == "null") {
+					info.strHintbox = "";
+				} else {
+					info.strHintbox = tmp;
+				}
 				//Debug.Log(tmp);
 				info.enumActionType = EntityActionType.DialogActor;
 			} else {
@@ -499,6 +506,7 @@ BuildEntity:
 				foreach (string rawDialog in lstRawDialogs) {
 					if (!string.IsNullOrWhiteSpace(rawDialog)) {
 						sentence = new DialogSentence(rawDialog);
+						resourcesManager.AddAudioClip(sentence.clipURL);
 						lstSentences.Add(sentence);
 					}
 				}

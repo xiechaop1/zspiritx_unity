@@ -1292,6 +1292,7 @@ RectTransform:
   m_Children:
   - {fileID: 215198637}
   - {fileID: 468007953}
+  - {fileID: 895985708}
   m_Father: {fileID: 1444424131}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2184,10 +2185,10 @@ RectTransform:
   m_Father: {fileID: 134271649}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -48}
-  m_SizeDelta: {x: 490, y: 88}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -44}
+  m_SizeDelta: {x: -88, y: -88}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &215198638
 MonoBehaviour:
@@ -2221,7 +2222,7 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1.49
+    m_LineSpacing: 1.5
   m_Text: "\u6B63\u5728\u626B\u63CF\u6784\u5EFA\u73AF\u5883\n\u8BF7\u4F7F\u7528\u624B\u673A\u7F13\u6162\u626B\u63CF\u5730\u9762\u4E0E\u5899\u58C1\n"
 --- !u!222 &215198639
 CanvasRenderer:
@@ -6841,14 +6842,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 895985707}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1994545292}
   - {fileID: 1093703370}
-  m_Father: {fileID: 1444424131}
+  m_Father: {fileID: 134271649}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -12093,9 +12094,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f84a08b7dc7b254b81303b4434c28a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resourcesLib: {fileID: 1809045141}
   sceneLoader: {fileID: 538542694}
   stageManager: {fileID: 119510841}
-  entityManager: {fileID: 119510838}
   actionManager: {fileID: 390938063}
   gpsManager: {fileID: 803468632}
   voiceLogPlayer: {fileID: 1835211563}
@@ -12140,7 +12141,6 @@ RectTransform:
   - {fileID: 58386505}
   - {fileID: 252905367}
   - {fileID: 134271649}
-  - {fileID: 895985708}
   - {fileID: 1997514983}
   - {fileID: 2058968281}
   - {fileID: 1968501508}
@@ -15968,10 +15968,10 @@ RectTransform:
   m_Father: {fileID: 895985708}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -48}
-  m_SizeDelta: {x: 490, y: 88}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -44}
+  m_SizeDelta: {x: -88, y: -88}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1994545293
 CanvasRenderer:
@@ -16013,7 +16013,7 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1.499
+    m_LineSpacing: 1.5
   m_Text: "\u5F39\u7A97\u63D0\u793A\n\u8BE6\u7EC6\u5185\u5BB9"
 --- !u!1 &1997514982
 GameObject:
@@ -17775,7 +17775,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entityManager: {fileID: 0}
-  enumActionType: -1
+  enumActionType: 22
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
