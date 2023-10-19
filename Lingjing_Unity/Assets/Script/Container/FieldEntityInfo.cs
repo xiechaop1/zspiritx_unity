@@ -29,8 +29,10 @@ public class FieldEntityInfo : ItemInfo {
 	public double latitude = 0d;
 	public double longitude = 0d;
 	public Vector3 offset = Vector3.zero;
+	public float scale = 1f;
 	public bool isLookAt = false;
 	public EntitySurfaceType enumSurfaceType = EntitySurfaceType.Horizontal;
+	public bool isUpdateFloor = true;
 	public GameObject goReference;
 	public Vector3 IdealPos => goReference.transform.position + goReference.transform.rotation * offset;
 	//public GameObject[] lstEntityCorner;
@@ -40,6 +42,7 @@ public class FieldEntityInfo : ItemInfo {
 	public float maxShowDistance = 20f;
 	public float proximityDialog = 0f;
 	public bool hasProximityDialog = false;
+	public SerializedEntityAction actionOnPlaced = null;
 	public ParticleSystem animEmerge;
 	public GameObject goVisual;
 	bool isShow = true;
@@ -101,12 +104,18 @@ public class FieldEntityInfo : ItemInfo {
 			animationTimer = 0f;
 		}
 	}
+	public void ForcedMove(Vector3 displacement) {
+		var posOld = transform.position;
+		transform.position = posOld + transform.rotation * displacement;
+		isUpdateFloor = false;
+	}
 
 	public bool TryPlacing(Vector3 posTarget, Quaternion rotTarget, GameObject targetSurface, Transform rootWorld) {
 		var posOld = transform.position;
 		var rotOld = transform.rotation;
 		transform.position = posTarget;
 		transform.rotation = rotTarget;
+		transform.localScale = Vector3.one * scale;
 		if (isLookAt) {
 			Vector3 LookDir = entityManager.goCamDir.transform.position - posTarget;
 			LookDir.y = 0;
@@ -115,10 +124,9 @@ public class FieldEntityInfo : ItemInfo {
 			}
 		}
 
-		RaycastHit hit;
 		Ray ray = new Ray(posTarget + (transform.up * 0.01f), Vector3.down);
 		//Debug.Log("Try place at " + posTarget);
-		if (Physics.Raycast(ray, out hit, 1f)) {
+		if (Physics.Raycast(ray, out RaycastHit hit, 1f)) {
 			//if (hit.collider.gameObject == targetSurface) 
 			//Debug.Log("place at " + posTarget);
 			gameObject.transform.parent = rootWorld;
@@ -237,7 +245,12 @@ public class FieldEntityInfo : ItemInfo {
 		transform.parent = entityManager.goStorage.transform;//.stageManager.goRoot.transform;
 		transform.localPosition = Vector3.zero;
 	}
-
+	public void SetPassive() {
+		GetComponent<BoxCollider>().enabled = false;
+	}
+	public void SetActive() {
+		GetComponent<BoxCollider>().enabled = true;
+	}
 
 	public void OnDestroy() {
 		UIEventManager.CallEvent("FieldEntityManager", "RemoveFieldEntitys", this);

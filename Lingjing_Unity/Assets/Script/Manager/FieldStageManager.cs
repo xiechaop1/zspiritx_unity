@@ -447,6 +447,11 @@ BuildEntity:
 			offset.z = (float)tmpD;
 		}
 		info.offset = offset;
+		if (infoJson.TryPraseDouble("scale", ref tmpD)) {
+			info.scale = (float)tmpD;
+		} else {
+			info.scale = 1f;
+		}
 		if (infoJson.TryPraseInt("direction", ref tmpInt)) {
 			switch (tmpInt) {
 				case 2:
@@ -482,7 +487,7 @@ BuildEntity:
 		if (infoJson.TryPraseInt("is_visable", ref tmpInt)) {
 			info.enumVisibleType = tmpInt;
 		} else {
-			info.enumVisibleType = 1;
+			info.enumVisibleType = 0;
 		}
 		if (info.enumActionType == EntityActionType.DialogEvent) {
 			if (infoJson.TryPraseString("dialog", ref tmp)) {
@@ -500,12 +505,12 @@ BuildEntity:
 
 		if (info.enumActionType == EntityActionType.DialogActor) {
 			List<string> lstRawDialogs;
-			DialogSentence sentence;
+			SerializedEntityAction sentence;
 			if (JSONReader.TryPraseArray(info.strHintbox, "Dialog", out lstRawDialogs)) {
-				List<DialogSentence> lstSentences = new List<DialogSentence>();
+				List<SerializedEntityAction> lstSentences = new List<SerializedEntityAction>();
 				foreach (string rawDialog in lstRawDialogs) {
 					if (!string.IsNullOrWhiteSpace(rawDialog)) {
-						sentence = new DialogSentence(rawDialog);
+						sentence = new SerializedEntityAction(rawDialog);
 						resourcesManager.AddAudioClip(sentence.clipURL);
 						lstSentences.Add(sentence);
 					}
@@ -516,12 +521,19 @@ BuildEntity:
 				}
 
 				if (JSONReader.TryPraseString(info.strHintbox, "Intro", ref tmp)) {
-					info.introDialog = DialogSentence.FindSentence(tmp, lstSentences);
+					info.introDialog = SerializedEntityAction.FindSentence(tmp, lstSentences);
 				} else {
 					info.introDialog = lstSentences[0];
 				}
 				info.currDialog = info.introDialog;
 				info.lstDialogs = lstSentences.ToArray();
+			}
+			if (JSONReader.TryPraseString(info.strHintbox, "ActionOnPlaced", ref tmp)) {
+				if (!string.IsNullOrWhiteSpace(tmp)) {
+					Debug.Log(tmp);
+					sentence = new SerializedEntityAction(tmp);
+					info.actionOnPlaced = sentence;
+				}
 			}
 		}
 		if (prefabAnimEmerge != null) {
@@ -565,6 +577,16 @@ BuildEntity:
 	public void PickupEntities(IEnumerable<string> entitiesName) {
 		foreach (string entityName in entitiesName.ToArray()) {
 			Debug.LogWarning("Need Implimentation");
+		}
+	}
+	public void SetEntitiesPassive(IEnumerable<string> entitiesName) {
+		foreach (string entityName in entitiesName.ToArray()) {
+			entityManager.SetEntityPassive(entityName);
+		}
+	}
+	public void SetEntitiesActive(IEnumerable<string> entitiesName) {
+		foreach (string entityName in entitiesName.ToArray()) {
+			entityManager.SetEntityActive(entityName);
 		}
 	}
 }

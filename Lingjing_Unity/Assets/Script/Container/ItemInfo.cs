@@ -15,9 +15,9 @@ public abstract class ItemInfo : MonoBehaviour, IEventMessage {
 	public InteractionAnimation interactionAnimation;
 	public ARUtilityListener arUtiity;
 
-	public DialogSentence currDialog;
-	public DialogSentence introDialog;
-	public DialogSentence[] lstDialogs;
+	public SerializedEntityAction currDialog;
+	public SerializedEntityAction introDialog;
+	public SerializedEntityAction[] lstDialogs;
 	public void SetInteractionMode(bool value) {
 		if (goInteractionMode != null) {
 			goInteractionMode?.SetActive(value);

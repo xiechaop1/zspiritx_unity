@@ -10,6 +10,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	public GameObject prefabARDir;
 	public GameObject goRoot;
 	public GameObject goStorage;
+	public InteractionView interactionView;
 	private ARPlaneInfo arPlane;
 
 	List<FieldEntityInfo> queHiddenEntity = new List<FieldEntityInfo>();
@@ -275,6 +276,28 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	#endregion
 
 	#region Show-and-Hide Entity
+	public void SetEntityPassive(string entityName) {
+		FieldEntityInfo entityInfo = null;
+		foreach (FieldEntityInfo entity in lstPlacedEntity) {
+			if (entity.entityName == entityName) {
+				entityInfo = entity;
+			}
+		}
+		if (entityInfo != null) {
+			entityInfo.SetPassive();
+		}
+	}
+	public void SetEntityActive(string entityName) {
+		FieldEntityInfo entityInfo = null;
+		foreach (FieldEntityInfo entity in lstPlacedEntity) {
+			if (entity.entityName == entityName) {
+				entityInfo = entity;
+			}
+		}
+		if (entityInfo != null) {
+			entityInfo.SetActive();
+		}
+	}
 	public void ShowHiddenEntity(string entityName) {
 		FieldEntityInfo entityInfo = null;
 		for (int i = 0; i < queHiddenEntity.Count; i++) {
@@ -493,6 +516,9 @@ BackStageHiding:
 	private List<FieldEntityInfo> entityVertical = new List<FieldEntityInfo>();
 
 	public void ShiftOnNormal(FieldEntityInfo entity) {
+		if (!entity.isUpdateFloor) {
+			return;
+		}
 		Ray ray = new Ray(entity.transform.position + entity.transform.up * 0.5f, -entity.transform.up);
 		RaycastHit hit;
 		if (Physics.Raycast(ray, out hit, 1f, 8)) {

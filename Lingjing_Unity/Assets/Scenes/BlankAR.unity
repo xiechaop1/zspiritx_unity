@@ -1168,9 +1168,10 @@ MonoBehaviour:
     type: 3}
   goRoot: {fileID: 254332185}
   goStorage: {fileID: 1656574707}
-  maxGeoLocToggle: 5
+  interactionView: {fileID: 0}
+  maxGeoLocToggle: 3
   maxShowDistance: 20
-  maxTolerance: 10
+  maxTolerance: 3
 --- !u!4 &119510839
 Transform:
   m_ObjectHideFlags: 0
@@ -4735,7 +4736,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Test text.
+  m_Text: 'Test text.
+
+'
 --- !u!1 &597155232
 GameObject:
   m_ObjectHideFlags: 0
@@ -12097,6 +12100,7 @@ MonoBehaviour:
   resourcesLib: {fileID: 1809045141}
   sceneLoader: {fileID: 538542694}
   stageManager: {fileID: 119510841}
+  entityManage: {fileID: 119510838}
   actionManager: {fileID: 390938063}
   gpsManager: {fileID: 803468632}
   voiceLogPlayer: {fileID: 1835211563}
@@ -14168,6 +14172,24 @@ MonoBehaviour:
   - {fileID: 7078283964384596602, guid: c984edd80b120f5489adaeae989387e2, type: 3}
   - {fileID: 5207323561071022566, guid: 5585329017e947342a3f580f5f5b20a5, type: 3}
   - {fileID: 2055504098510332683, guid: 7da97705e6c7caf47acef47ba9051493, type: 3}
+  - {fileID: 6795926010935364419, guid: d9cd7e9e753b3284bb1eeb6090f0d789, type: 3}
+  - {fileID: 3011311006877463600, guid: 797c1b1ff4a3fc54e8939bf53aa6030b, type: 3}
+  - {fileID: 2215062536732335482, guid: 8acd2cf14cc6cdc438d399bf20e55981, type: 3}
+  - {fileID: 6917369618003415627, guid: ddc3717206972e548b00ca18188d1db6, type: 3}
+  - {fileID: 1962154482990695107, guid: 81ba06d12962ebe408c3e8b517e1ab4c, type: 3}
+  - {fileID: 4318908266657091810, guid: 97efe6ef78a77634495c3c4e59c06b74, type: 3}
+  - {fileID: 8921130262909947418, guid: a927d38f51cd2184a989a16129b7569c, type: 3}
+  - {fileID: 7712588631448854423, guid: 4b54eb879a74300438ebed2e4791a1d2, type: 3}
+  - {fileID: 87240870301730607, guid: 3af8745e2367f1d4dbdcd8e79675c4e9, type: 3}
+  - {fileID: 4240181892668113695, guid: a11a1a5149005e04e8330d812fc13245, type: 3}
+  - {fileID: 1415939459468703086, guid: dc2f7e6a262633a429fcd252fb9d1d5b, type: 3}
+  - {fileID: 3959276231387423454, guid: c81c90f09b5ae7c4b9653876718c6398, type: 3}
+  - {fileID: 2248004558449254389, guid: dc6728d0808130d4f92acf975ef43611, type: 3}
+  - {fileID: 5963298430170868207, guid: 903cb34b4ca6f65439c86dcf3c61ec1a, type: 3}
+  - {fileID: 1114885678165552062, guid: 416c604278f1848489abf0577dc87418, type: 3}
+  - {fileID: 3636779429506015105, guid: 73789fd7b2b73524aa6abbf9bd1aebc0, type: 3}
+  - {fileID: 42457775331077486, guid: b6d90ceea95efec498186c62589c6092, type: 3}
+  - {fileID: 3817140333320930667, guid: 47c25dbff107481439acfdf11fae3cf4, type: 3}
   lstAudio: []
   voiceLogs:
   - {fileID: 8300000, guid: 1c73bddd761bfb24fbe801a8d0defa37, type: 3}
@@ -14815,7 +14837,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -17793,8 +17815,10 @@ MonoBehaviour:
   latitude: 0
   longitude: 0
   offset: {x: 0, y: 0, z: 0}
+  scale: 1
   isLookAt: 0
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
   maxTolerance: 1

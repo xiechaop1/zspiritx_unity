@@ -9,6 +9,7 @@ public class InteractionView : MonoBehaviour {
 	public ResourcesLibrary resourcesLib;
 	public SceneLoadManager sceneLoader;
 	public FieldStageManager stageManager;
+	public FieldEntityManager entityManage;
 	public EntityActionManager actionManager;
 	public InputGPSManager gpsManager;
 	public AudioSource voiceLogPlayer;
@@ -31,6 +32,7 @@ public class InteractionView : MonoBehaviour {
 		webViewUtility.OnCallback += OnUtilityCallback;
 		webViewMap.OnCallback += OnMapCallback;
 		webViewTask.OnCallback += OnTaskCallback;
+		entityManage.OnEntityPlaced += EntityPlacedAction;
 	}
 
 	float timer = 0f;
@@ -378,7 +380,7 @@ public class InteractionView : MonoBehaviour {
 		}
 	}
 	public void AdvancedLog(int selection) {
-		DialogSentence nextDialog;
+		SerializedEntityAction nextDialog;
 		if (selection == 0) {
 			if (string.IsNullOrWhiteSpace(entityInfo.currDialog.sentence)) {
 				return;
@@ -386,15 +388,15 @@ public class InteractionView : MonoBehaviour {
 			if (entityInfo.currDialog.userSelections.Length != 0) {
 				return;
 			}
-			nextDialog = entityInfo.currDialog.nextSentence[0];
-		} else if (selection <= entityInfo.currDialog.nextSentence.Length) {
-			nextDialog = entityInfo.currDialog.nextSentence[selection - 1];
+			nextDialog = entityInfo.currDialog.nextAction[0];
+		} else if (selection <= entityInfo.currDialog.nextAction.Length) {
+			nextDialog = entityInfo.currDialog.nextAction[selection - 1];
 		} else {
 			return;
 		}
 		AdvancedLog(nextDialog);
 	}
-	void AdvancedLog(DialogSentence sentence) {
+	void AdvancedLog(SerializedEntityAction sentence) {
 		voiceLogPlayer.Pause();
 		if (!string.IsNullOrWhiteSpace(sentence.sentence)) {
 			entityInfo.currDialog = sentence;
@@ -429,12 +431,28 @@ public class InteractionView : MonoBehaviour {
 			webViewQuiz.StartWebView(sentence.url);
 		} else {
 			//Debug.Log("XXX");
-			entityInfo.currDialog = sentence.nextSentence[0];
+			entityInfo.currDialog = sentence.nextAction[0];
 			ExitNPCLog();
 		}
-		stageManager.ShowEntities(sentence.showModels);
-		stageManager.HideEntities(sentence.hideModels);
-		stageManager.PickupEntities(sentence.pickupModels);
+		if (entityInfo is FieldEntityInfo) {
+			DialogAction(sentence, entityInfo as FieldEntityInfo);
+		} else {
+			DialogAction(sentence);
+		}
+
+	}
+	void DialogAction(SerializedEntityAction entityAction, FieldEntityInfo entity = null) {
+		stageManager.ShowEntities(entityAction.showModels);
+		stageManager.HideEntities(entityAction.hideModels);
+		stageManager.PickupEntities(entityAction.pickupModels);
+		if (entity != null) {
+			entity.ForcedMove(entityAction.displacement);
+		}
+	}
+	public void EntityPlacedAction(FieldEntityInfo info) {
+		if (info.actionOnPlaced != null) {
+			DialogAction(info.actionOnPlaced, info);
+		}
 	}
 	void OnQuizCallback(string msg) {
 		string[] args = msg.Split('&');
