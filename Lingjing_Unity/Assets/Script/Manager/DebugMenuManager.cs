@@ -35,6 +35,7 @@ public class DebugMenuManager : MonoBehaviour {
 	public InventoryItemManager inventoryItemManager;
 	//public WebViewBehaviour SplashWebView;
 	public InputGPSManager gpsManager;
+	public CombatManager combatManager;
 	//public UnityEngine.XR.ARFoundation.ARTrackedImageManager imageManager;
 	//public UnityEngine.XR.ARSubsystems.XRReferenceImageLibrary altImageLib;
 
@@ -88,8 +89,15 @@ public class DebugMenuManager : MonoBehaviour {
 		ShowHint(entityInfo.strHintbox);
 	}
 	public void InitBtn() {
-		sceneLoadManager.ExitScene();
+		combatManager.PrepareBattleGround();
+		combatManager.finishCallback += OnCombatFinished;
+		//sceneLoadManager.ExitScene();
 		//SplashWebView.StartWebView("splash.html");
+	}
+
+	void OnCombatFinished(string info) {
+		combatManager.finishCallback -= OnCombatFinished;
+		ShowHint(info);
 	}
 	public void ShowCurrentGeoLoc() {
 		goGeoLoc.SetActive(!goGeoLoc.activeSelf);
@@ -162,12 +170,13 @@ public class DebugMenuManager : MonoBehaviour {
 		//SplashWebView.SetVisibility(false);
 		//UIEventManager.BroadcastEvent("WebViewCall", "Start2DScene");
 		//sceneLoadManager.DebugWebViewCallback("WebViewOff&FalseAnswer");
-		sceneLoadManager.DebugWebViewCallback("{'WebViewOff':1, 'DebugInfo':0}");
+		sceneLoadManager.DebugWebViewCallback("{'WebViewOff':1, 'DebugInfo':1}");
 	}
 	public void PanicBtn() {
 		//SplashWebView.SetVisibility(false);
 		//UIEventManager.BroadcastEvent("WebViewCall", "StartARScene");
-		sceneLoadManager.DebugWebViewCallback("WebViewOff&TrueAnswer");
+		//sceneLoadManager.DebugWebViewCallback("WebViewOff&TrueAnswer");
+		sceneLoadManager.DebugWebViewCallback("{'WebViewOff':1, 'AnswerType':1}");
 	}
 	public void TryPlaceEntity() {
 		fieldEntityManager.TryPlaceRamdomEntities(10);
