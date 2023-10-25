@@ -101,9 +101,10 @@ public class FieldStageManager : MonoBehaviour, IManager {
 	IEnumerator AsyncLoadStageMsg() {
 		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingUser,
 		   "update_user_stage",
-		   string.Format("is_test=1&user_id={0}&stroy_stage_id={1}&story_id={2}&session_id={3}",
+		   string.Format("is_test=1&user_id={0}&story_stage_id={1}&session_stage_id={2}&story_id={3}&session_id={4}",
 			   ConfigInfo.userId,
-			   currentStage.stroy_stage_id,
+			   currentStage.story_stage_id,
+			   currentStage.session_stage_id,
 			   ConfigInfo.storyId,
 			   ConfigInfo.sessionId
 			   )
@@ -315,10 +316,20 @@ LoopEnd:
 			} else {
 				stage.proximity = 0;
 			}
-			if (jsonInfo.TryPraseString("session_stage", ref tmpStr) && JSONReader.TryPraseInt(tmpStr, "stroy_stage_id", ref tmpInt)) {
-				stage.stroy_stage_id = tmpInt;
+			if (jsonInfo.TryPraseString("session_stage", ref tmpStr)) {
+				if (JSONReader.TryPraseInt(tmpStr, "id", ref tmpInt)) {
+					stage.session_stage_id = tmpInt;
+				} else {
+					stage.session_stage_id = 0;
+				}
+				if (JSONReader.TryPraseInt(tmpStr, "story_stage_id", ref tmpInt)) {
+					stage.story_stage_id = tmpInt;
+				} else {
+					stage.story_stage_id = 0;
+				}
 			} else {
-				stage.stroy_stage_id = 0;
+				stage.session_stage_id = 0;
+				stage.story_stage_id = 0;
 			}
 			if (jsonInfo.TryPraseArray("session_models", out List<string> lstModels)) {
 				stage.lstStageEntities = PrepareEntities(lstModels.ToArray());
@@ -530,7 +541,6 @@ BuildEntity:
 			}
 			if (JSONReader.TryPraseString(info.strHintbox, "ActionOnPlaced", ref tmp)) {
 				if (!string.IsNullOrWhiteSpace(tmp)) {
-					Debug.Log(tmp);
 					sentence = new SerializedEntityAction(tmp);
 					info.actionOnPlaced = sentence;
 				}

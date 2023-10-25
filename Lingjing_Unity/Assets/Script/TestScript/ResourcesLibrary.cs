@@ -64,7 +64,7 @@ public class ResourcesLibrary : MonoBehaviour {
 				LogManager.Warning("Missing File extension");
 				goto LoadFail;
 			}
-			Debug.Log(url);
+			//Debug.Log(url);
 			www = WWWManager.getInstance().GetAudioClip(url, audioType);
 			yield return www;
 

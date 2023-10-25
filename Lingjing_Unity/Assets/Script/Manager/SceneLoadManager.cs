@@ -39,6 +39,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 	private WWWManager networkManager;
 	private InputGPSManager gpsManager;
 	public ActorDataManager dataManager;
+	public CombatManager combatManager;
 	public DebugMenuManager debugManager;
 
 	//AR
@@ -98,6 +99,8 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 
 		fieldEntityManager = fieldStageManager.GetComponent<FieldEntityManager>();
 		entityActionManager.Init(eventManager, fieldEntityManager, networkManager);
+
+		combatManager.Init(eventManager, fieldEntityManager);
 
 		//AR Init
 
@@ -356,10 +359,11 @@ ARSystemReady:
 	IEnumerator AsyncEndSession() {
 		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingProcess,
 			"finish",
-			string.Format("is_test=1&user_id={0}&story_id={1}&session_id={2}&goal=retry",
+			string.Format("is_test=1&user_id={0}&story_id={1}&session_id={2}&session_stage_id={3}&goal=retry",
 				ConfigInfo.userId,
 				ConfigInfo.storyId,
-				ConfigInfo.sessionId
+				ConfigInfo.sessionId,
+				fieldStageManager.currentStage.session_stage_id
 				)
 			);
 		yield return www;

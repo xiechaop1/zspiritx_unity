@@ -11,6 +11,7 @@ public class InteractionView : MonoBehaviour {
 	public FieldStageManager stageManager;
 	public FieldEntityManager entityManage;
 	public EntityActionManager actionManager;
+	public CombatManager combatManager;
 	public InputGPSManager gpsManager;
 	public AudioSource voiceLogPlayer;
 	public GameObject goHomeIcon;
@@ -94,7 +95,7 @@ public class InteractionView : MonoBehaviour {
 					ConfigInfo.userId,
 					ConfigInfo.sessionId,
 					ConfigInfo.storyId,
-					stageManager.currentStage.stroy_stage_id,
+					stageManager.currentStage.story_stage_id,
 					gpsManager.camLatitude,
 					gpsManager.camLongitude));
 		} else {
@@ -229,7 +230,7 @@ public class InteractionView : MonoBehaviour {
 
 	public void ShowHint(string hint, string textComfirm = "х╥хо") {
 		goHintBox.SetActive(true);
-		goHomeIcon.SetActive(false);
+		//goHomeIcon.SetActive(false);
 		txtHint.text = hint;
 		if (string.IsNullOrWhiteSpace(textComfirm)) {
 			btnComfirm.SetActive(false);
@@ -316,7 +317,7 @@ public class InteractionView : MonoBehaviour {
 	}
 	void SetHintBoxActive(bool isActive) {
 		goHintBox.SetActive(isActive);
-		goHomeIcon.SetActive(!isActive);
+		//goHomeIcon.SetActive(!isActive);
 		if (entityInfo != null) {
 			entityInfo.SetInteractionState(isActive);
 		}
@@ -371,9 +372,9 @@ public class InteractionView : MonoBehaviour {
 		entityInfo = null;
 	}
 
-	void SetNPCLogActive(bool isActive) {
+	public void SetNPCLogActive(bool isActive) {
 		goNPCBox.SetActive(isActive);
-		goHomeIcon.SetActive(!isActive);
+		//goHomeIcon.SetActive(!isActive);
 		isInDialog = isActive;
 		if (entityInfo != null) {
 			entityInfo.SetInteractionState(isActive);
@@ -442,9 +443,14 @@ public class InteractionView : MonoBehaviour {
 
 	}
 	void DialogAction(SerializedEntityAction entityAction, FieldEntityInfo entity = null) {
+		if (!string.IsNullOrWhiteSpace(entityAction.combatInfo)) {
+			combatManager.PrepareBattleGround();
+			combatManager.finishCallback += OnCombatCallback;
+		}
 		stageManager.ShowEntities(entityAction.showModels);
 		stageManager.HideEntities(entityAction.hideModels);
 		stageManager.PickupEntities(entityAction.pickupModels);
+
 		if (entity != null) {
 			entity.ForcedMove(entityAction.displacement);
 		}
@@ -454,8 +460,17 @@ public class InteractionView : MonoBehaviour {
 			DialogAction(info.actionOnPlaced, info);
 		}
 	}
+	void OnCombatCallback(string msg) {
+		JSONReader jsonMsg = new JSONReader(msg);
+		int tmpInt = 0;
+		if (jsonMsg.TryPraseInt("AnswerType", ref tmpInt)) {
+			AdvancedLog(tmpInt);
+		} else {
+			AdvancedLog(1);
+		}
+		combatManager.finishCallback -= OnCombatCallback;
+	}
 	void OnQuizCallback(string msg) {
-		string[] args = msg.Split('&');
 		try {
 			JSONReader jsonMsg = new JSONReader(msg);
 			int tmpInt = 0;
@@ -468,6 +483,7 @@ public class InteractionView : MonoBehaviour {
 				AdvancedLog(1);
 			}
 		} catch (Exception) {
+			string[] args = msg.Split('&');
 			if (args[0] == "WebViewOff") {
 				webViewQuiz.SetVisibility(false);
 				try {

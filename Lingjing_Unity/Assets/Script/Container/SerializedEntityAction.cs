@@ -21,6 +21,8 @@ public class SerializedEntityAction {
 	public string[] hideModels;
 	public string[] pickupModels;
 	public Vector3 displacement;
+
+	public string combatInfo;
 	public SerializedEntityAction(string json) {
 		JSONReader obj;
 		string tmpStr = "";
@@ -97,6 +99,11 @@ public class SerializedEntityAction {
 			move.z = (float)tmpf;
 		}
 		displacement = move;
+		if (obj.TryPraseString("combatInfo", ref tmpStr) && !string.IsNullOrEmpty(tmpStr)) {
+			combatInfo = tmpStr;
+		} else {
+			combatInfo = "";
+		}
 	}
 	public void LinkSentences(IEnumerable<SerializedEntityAction> lstSentences) {
 		string Id;

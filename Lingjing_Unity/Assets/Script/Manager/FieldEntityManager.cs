@@ -205,6 +205,9 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		}
 		OnEntityRemoved.Invoke(entityInfo);
 	}
+	public void setEntityVisibility(bool value) {
+		goRoot.SetActive(value);
+	}
 	#endregion
 
 	#region ARPlane
