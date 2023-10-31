@@ -6,6 +6,7 @@ public class ARTagDebugListener : MonoBehaviour {
 	public GameObject goDebug;
 	// Start is called before the first frame update
 	void Start() {
+		goDebug.SetActive(Config.ConfigInfo.test.testFlag);
 		UIEventManager.getInstance().SubscribeBroadcast("ARTagDebug", BroadcastHandler);
 	}
 	void BroadcastHandler(string msg) {

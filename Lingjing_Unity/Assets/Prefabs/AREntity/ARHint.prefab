@@ -5039,6 +5039,7 @@ MonoBehaviour:
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
+  prefabUUID: ARHint
   strName: ARHint
   strHintbox: 
   goInteractionMode: {fileID: 0}
@@ -5046,15 +5047,17 @@ MonoBehaviour:
   arUtiity: {fileID: 0}
   entitySessionId: 0
   entityItemId: 0
-  entityName: 0
+  entityUUID: 0
   enumVisibleType: 0
   enumARType: 0
   uuidImageTracking: 
   latitude: 0
   longitude: 0
   offset: {x: 0, y: 0, z: 0}
+  scale: 1
   isLookAt: 0
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
   maxTolerance: 1

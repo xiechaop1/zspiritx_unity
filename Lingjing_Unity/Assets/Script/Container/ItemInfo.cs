@@ -8,6 +8,7 @@ public abstract class ItemInfo : MonoBehaviour, IEventMessage {
 	public EntityActionType enumItemType = EntityActionType.Debug;
 	public Sprite icon;
 	public string iconHint = "";
+	public string prefabUUID = "";
 	public string strName = "";
 	[TextArea]
 	public string strHintbox = "";
@@ -18,11 +19,11 @@ public abstract class ItemInfo : MonoBehaviour, IEventMessage {
 	public SerializedEntityAction currDialog;
 	public SerializedEntityAction introDialog;
 	public SerializedEntityAction[] lstDialogs;
-	public void SetInteractionMode(bool value) {
-		if (goInteractionMode != null) {
-			goInteractionMode?.SetActive(value);
-		}
-	}
+	//public void SetInteractionMode(bool value) {
+	//	if (goInteractionMode != null) {
+	//		goInteractionMode?.SetActive(value);
+	//	}
+	//}
 	public void SetInteractionState(bool value) {
 		if (interactionAnimation != null) {
 			if (value) {
@@ -30,6 +31,9 @@ public abstract class ItemInfo : MonoBehaviour, IEventMessage {
 			} else {
 				interactionAnimation.EndInteraction();
 			}
+		}
+		if (goInteractionMode != null) {
+			goInteractionMode?.SetActive(value);
 		}
 	}
 }
@@ -42,7 +46,7 @@ public class FileInfo : IEventMessage {
 	public FileInfo(ItemInfo origin) {
 		icon = origin.icon;
 		iconHint = origin.iconHint;
-		strName = origin.strName;
+		strName = origin.prefabUUID;
 		strHintbox = origin.strHintbox;
 	}
 }

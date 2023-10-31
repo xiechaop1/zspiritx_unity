@@ -175,25 +175,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entityManager: {fileID: 0}
-  enumActionType: 12
+  enumActionType: 21
   enumItemType: 13
   icon: {fileID: 0}
   iconHint: 
-  strName: Carrot1
+  prefabUUID: Carrot1
+  strName: 
   strHintbox: "\u4E00\u6839\u80E1\u841D\u535C"
   goInteractionMode: {fileID: 0}
+  interactionAnimation: {fileID: 0}
   arUtiity: {fileID: 0}
-  entityItemId: 0
-  entityName: 0
+  session_model_id: 0
+  stroy_model_id: 0
+  model_id: 0
+  story_model_detail_id: 0
+  entityUUID: 0
+  enumVisibleType: 0
   enumARType: 0
   uuidImageTracking: 
   latitude: 0
   longitude: 0
   offset: {x: 0, y: 0, z: 0}
+  scale: 1
   isLookAt: 0
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  maxTolerance: 1
+  geoLocDistance: 20
+  maxShowDistance: 20
   proximityDialog: 0
   hasProximityDialog: 0
   animEmerge: {fileID: 0}

@@ -48,7 +48,7 @@ public class CombatView : MonoBehaviour {
 	}
 	public void SetActive(bool value) {
 		gameObject.SetActive(value);
-		interactionView.SetNPCLogActive(!value);
+		//interactionView.SetNPCLogActive(!value);
 		if (value) {
 
 		} else {

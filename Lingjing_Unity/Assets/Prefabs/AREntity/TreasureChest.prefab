@@ -1407,7 +1407,7 @@ MonoBehaviour:
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
-  strName: Chest1
+  prefabUUID: Chest1
   strHintbox: "\u5B9D\u7BB1\u91CC\u6709\u4EC0\u4E48\u5462\uFF1F\u5FEB\u70B9\u6253\u5F00\u770B\u770B\u5427\uFF01"
   goInteractionMode: {fileID: 0}
   interactionAnimation: {fileID: 4284976315241780357}
@@ -1415,15 +1415,21 @@ MonoBehaviour:
   entitySessionId: 0
   entityItemId: 0
   entityName: 0
+  enumVisibleType: 0
   enumARType: 0
   uuidImageTracking: 
   latitude: 0
   longitude: 0
   offset: {x: 0, y: 0, z: 0}
+  scale: 1
   isLookAt: 0
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  maxTolerance: 1
+  geoLocDistance: 20
+  maxShowDistance: 20
   proximityDialog: 0
   hasProximityDialog: 0
   animEmerge: {fileID: 0}

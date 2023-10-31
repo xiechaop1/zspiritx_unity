@@ -84,7 +84,7 @@ public class FieldStageManager : MonoBehaviour, IManager {
 		yield return null;
 		isStaging = false;
 		if (targetStage.stageToggleType == FieldStageInfo.StageToggleType.ARTag) {
-			entityManager.UpdateImageTracking(targetStage.uuidARTag);
+			entityManager.EnqueueImageTracked(targetStage.uuidARTag);
 		}
 		yield break;
 	}
@@ -146,10 +146,12 @@ public class FieldStageManager : MonoBehaviour, IManager {
 					case FieldEntityInfo.EntityToggleType.ARTagTracking:
 					case FieldEntityInfo.EntityToggleType.ARTagAround:
 					case FieldEntityInfo.EntityToggleType.ARTagPosition:
+					case FieldEntityInfo.EntityToggleType.ARTagPlayer:
 						lstTagged.Add(info);
 						break;
 					case FieldEntityInfo.EntityToggleType.GeoLocAround:
 					case FieldEntityInfo.EntityToggleType.GeoLocPosition:
+					case FieldEntityInfo.EntityToggleType.GeoLocPlayer:
 						lstGeoLoc.Add(info);
 						break;
 					case FieldEntityInfo.EntityToggleType.StageAround:
@@ -381,7 +383,7 @@ LoopEnd:
 BuildEntity:
 		if (JSONReader.TryPraseInt(tmp, "id", ref tmpInt)) {
 			foreach (var entityManaged in entitiesManaged) {
-				if (entityManaged.entitySessionId == tmpInt) {
+				if (entityManaged.session_model_id == tmpInt) {
 					return entityManaged;
 				}
 			}
@@ -391,7 +393,7 @@ BuildEntity:
 		foreach (var entity in resourcesManager.lstPrefabs) {
 			if (entity != null &&
 					entity.TryGetComponent(out info) &&
-					info.strName == prefabName) {
+					info.prefabUUID == prefabName) {
 				prefab = entity;
 				break;
 			}
@@ -402,15 +404,21 @@ BuildEntity:
 		GameObject obj = Instantiate(prefab, entityManager.goStorage.transform);
 		info = obj.GetComponent<FieldEntityInfo>();
 
-		info.entitySessionId = tmpInt;
+		info.session_model_id = tmpInt;
 
 		if (JSONReader.TryPraseInt(tmp, "story_model_id", ref tmpInt)) {
-			info.entityItemId = tmpInt;
+			info.stroy_model_id = tmpInt;
+		}
+		if (JSONReader.TryPraseInt(tmp, "model_id", ref tmpInt)) {
+			info.model_id = tmpInt;
 		}
 
 		if (infoJson.TryPraseString("model_inst_u_id", ref tmp)) {
-			info.entityName = tmp;
+			info.entityUUID = tmp;
 			obj.name = tmp;
+		}
+		if (infoJson.TryPraseInt("story_model_detail_id", ref tmpInt)) {
+			info.story_model_detail_id = tmpInt;
 		}
 
 		double tmpD = 0.0;
@@ -425,11 +433,17 @@ BuildEntity:
 				case 12:
 					info.enumARType = FieldEntityInfo.EntityToggleType.ARTagPosition;
 					break;
+				case 14:
+					info.enumARType = FieldEntityInfo.EntityToggleType.ARTagPlayer;
+					break;
 				case 21:
 					info.enumARType = FieldEntityInfo.EntityToggleType.GeoLocAround;
 					break;
 				case 22:
 					info.enumARType = FieldEntityInfo.EntityToggleType.GeoLocPosition;
+					break;
+				case 24:
+					info.enumARType = FieldEntityInfo.EntityToggleType.GeoLocPlayer;
 					break;
 				default:
 					info.enumARType = FieldEntityInfo.EntityToggleType.RamdomAroundCam;
@@ -509,12 +523,15 @@ BuildEntity:
 				}
 				//Debug.Log(tmp);
 				info.enumActionType = EntityActionType.DialogActor;
-			} else {
-				info.enumActionType = EntityActionType.ViewableInfo;
+				//} else {
+				//	info.enumActionType = EntityActionType.ViewableInfo;
 			}
 		}
 
 		if (info.enumActionType == EntityActionType.DialogActor) {
+			if (JSONReader.TryPraseString(info.strHintbox, "Name", ref tmp)) {
+				info.strName = tmp;
+			}
 			List<string> lstRawDialogs;
 			SerializedEntityAction sentence;
 			if (JSONReader.TryPraseArray(info.strHintbox, "Dialog", out lstRawDialogs)) {
@@ -565,13 +582,13 @@ BuildEntity:
 		return entitiesManaged.Contains(info);
 	}
 	public bool ContainsEntity(string entityName) {
-		return entitiesManaged.Exists(x => x.entityName == entityName);
+		return entitiesManaged.Exists(x => x.entityUUID == entityName);
 	}
 	public FieldEntityInfo FindEntityByName(string entityName) {
 		if (!ContainsEntity(entityName)) {
 			return null;
 		}
-		return entitiesManaged.First(x => x.entityName == entityName);
+		return entitiesManaged.First(x => x.entityUUID == entityName);
 	}
 
 	public void ShowEntities(IEnumerable<string> entitiesName) {

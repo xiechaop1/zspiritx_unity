@@ -9,8 +9,10 @@ public class FieldEntityInfo : ItemInfo {
 		ARTagAround = 11,
 		ARTagPosition = 12,
 		ARTagTracking = 13,
+		ARTagPlayer = 14,
 		GeoLocAround = 21,
 		GeoLocPosition = 22,
+		GeoLocPlayer =24,
 		StageAround = 31,
 		StagePosition = 32
 	}
@@ -20,9 +22,11 @@ public class FieldEntityInfo : ItemInfo {
 		Horizontal = 1,
 		Vertical = 2
 	}
-	public int entitySessionId = 0;
-	public int entityItemId = 0;
-	public string entityName = "0";
+	public int session_model_id = 0;
+	public int stroy_model_id = 0;
+	public int model_id = 0;
+	public int story_model_detail_id = 0;
+	public string entityUUID = "0";
 	public int enumVisibleType = 0;
 	public EntityToggleType enumARType = EntityToggleType.RamdomAroundCam;
 	public string uuidImageTracking = "";

@@ -65,6 +65,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		} else {
 			timeLastCheck -= Time.deltaTime;
 		}
+		UpdateImageTracked();
 	}
 
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
@@ -282,7 +283,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	public void SetEntityPassive(string entityName) {
 		FieldEntityInfo entityInfo = null;
 		foreach (FieldEntityInfo entity in lstPlacedEntity) {
-			if (entity.entityName == entityName) {
+			if (entity.entityUUID == entityName) {
 				entityInfo = entity;
 			}
 		}
@@ -293,7 +294,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	public void SetEntityActive(string entityName) {
 		FieldEntityInfo entityInfo = null;
 		foreach (FieldEntityInfo entity in lstPlacedEntity) {
-			if (entity.entityName == entityName) {
+			if (entity.entityUUID == entityName) {
 				entityInfo = entity;
 			}
 		}
@@ -304,7 +305,7 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	public void ShowHiddenEntity(string entityName) {
 		FieldEntityInfo entityInfo = null;
 		for (int i = 0; i < queHiddenEntity.Count; i++) {
-			if (queHiddenEntity[i].entityName == entityName) {
+			if (queHiddenEntity[i].entityUUID == entityName) {
 				entityInfo = queHiddenEntity[i];
 			}
 		}
@@ -333,21 +334,23 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 	public void HideExistEntity(string entityName) {
 		FieldEntityInfo entityInfo = null;
 		foreach (FieldEntityInfo entity in queTaggedEntity) {
-			if (entity.entityName == entityName) {
+			if (entity.entityUUID == entityName) {
 				entityInfo = entity;
 			}
 		}
 		if (entityInfo != null) {
+			//Debug.Log("tagged: " + entityName);
 			queTaggedEntity.Remove(entityInfo);
 			goto BackStageHiding;
 		}
 
 		foreach (FieldEntityInfo entity in queLatLonEntity) {
-			if (entity.entityName == entityName) {
+			if (entity.entityUUID == entityName) {
 				entityInfo = entity;
 			}
 		}
 		if (entityInfo != null) {
+			//Debug.Log("geoloc: " + entityName);
 			queLatLonEntity.Remove(entityInfo);
 			goto BackStageHiding;
 		}
@@ -369,23 +372,25 @@ public class FieldEntityManager : MonoBehaviour, IManager {
 		int cnt = queFieldEntity.Count;
 		for (int i = 0; i < cnt; i++) {
 			tmpInfo = queFieldEntity.Dequeue();
-			if (tmpInfo.entityName == entityName) {
+			if (tmpInfo.entityUUID == entityName) {
 				entityInfo = tmpInfo;
 			} else {
 				queFieldEntity.Enqueue(tmpInfo);
 			}
 		}
 		if (entityInfo != null) {
+			//Debug.Log("field: " + entityName);
 			goto BackStageHiding;
 		}
 		foreach (FieldEntityInfo entity in lstPlacedEntity) {
-			if (entity.entityName == entityName) {
+			if (entity.entityUUID == entityName) {
 				entityInfo = entity;
 			}
 		}
 		if (entityInfo == null) {
 			return;
 		}
+		//Debug.Log("placed: " + entityName);
 		entityInfo.RemoveFromField();
 		lstPlacedEntity.Remove(entityInfo);
 BackStageHiding:
@@ -397,8 +402,8 @@ BackStageHiding:
 	#region GeoLoc Pre-process
 	//List<GameObject> geolocDir = new List<GameObject>();
 	public void PlaceGeoLocEntities(int maxTries) {
-		GameObject obj;
-		FieldEntityInfo entityInfo;
+		//GameObject obj;
+		//FieldEntityInfo entityInfo;
 		for (int i = 0; i < maxTries; i++) {
 			//if (queLatLonEntity.Count <= 0) {
 			//	break;
@@ -437,6 +442,10 @@ BackStageHiding:
 				entityInfo.goReference = obj;
 				queLatLonEntity.RemoveAt(i);
 				queFieldEntity.Enqueue(entityInfo);
+			} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.GeoLocPlayer) {
+				//entityInfo.goReference = obj;
+				queLatLonEntity.RemoveAt(i);
+				queFieldEntity.Enqueue(entityInfo);
 			}
 		}
 	}
@@ -445,6 +454,7 @@ BackStageHiding:
 	#region ARTag Pre-process
 	Dictionary<string, GameObject> imageDirs = new Dictionary<string, GameObject>();
 	Dictionary<string, GameObject> imageTrackers = new Dictionary<string, GameObject>();
+	Queue<string> queImageUpdateList = new Queue<string>();
 	public void PlaceImageTrackingEntity(string imgName, GameObject goImageTracker) {
 		GameObject obj;
 		if (imageDirs.ContainsKey(imgName)) {
@@ -463,10 +473,19 @@ BackStageHiding:
 		} else {
 			imageTrackers.Add(imgName, goImageTracker);
 		}
-		UpdateImageTracking(imgName);
+		EnqueueImageTracked(imgName);
+	}
+	public void EnqueueImageTracked(string imgName) {
+		queImageUpdateList.Enqueue(imgName);
+	}
+	void UpdateImageTracked() {
+		while (queImageUpdateList.Count > 0) {
+			//Debug.Log(queImageUpdateList.Peek());
+			UpdateImageTracking(queImageUpdateList.Dequeue());
+		}
 	}
 
-	public void UpdateImageTracking(string imgName) {
+	void UpdateImageTracking(string imgName) {
 		if (queTaggedEntity.Count == 0) {
 			return;
 		}
@@ -480,9 +499,7 @@ BackStageHiding:
 					entityInfo.transform.localRotation = Quaternion.identity;
 					queTaggedEntity.RemoveAt(i);
 					lstPlacedEntity.Add(entityInfo);
-					if (OnEntityPlaced != null) {
-						OnEntityPlaced.Invoke(entityInfo);
-					}
+					OnEntityPlaced?.Invoke(entityInfo);
 				} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagAround) {
 					entityInfo.goReference = imageDirs[imgName];
 					queTaggedEntity.RemoveAt(i);
@@ -491,6 +508,9 @@ BackStageHiding:
 					entityInfo.goReference = imageDirs[imgName];
 					queTaggedEntity.RemoveAt(i);
 					ForcePlacing(entityInfo);
+				} else if (entityInfo.enumARType == FieldEntityInfo.EntityToggleType.ARTagPlayer) {
+					queTaggedEntity.RemoveAt(i);
+					queFieldEntity.Enqueue(entityInfo);
 				}
 			}
 		}
@@ -508,9 +528,7 @@ BackStageHiding:
 	private void ForcePlacing(FieldEntityInfo entityInfo) {
 		entityInfo.ForcePlacing(goRoot.transform);
 		lstPlacedEntity.Add(entityInfo);
-		if (OnEntityPlaced != null) {
-			OnEntityPlaced.Invoke(entityInfo);
-		}
+		OnEntityPlaced?.Invoke(entityInfo);
 	}
 	#endregion
 
@@ -583,10 +601,8 @@ BackStageHiding:
 				entityInfo.goReference = goCamDir;
 			}
 			if (TryPlaceEntityAround(entityInfo, entityInfo.maxTolerance)) {
-				if (OnEntityPlaced != null) {
-					OnEntityPlaced.Invoke(entityInfo);
-				}
 				lstPlacedEntity.Add(entityInfo);
+				OnEntityPlaced?.Invoke(entityInfo);
 			} else {
 				queFieldEntity.Enqueue(entityInfo);
 			}

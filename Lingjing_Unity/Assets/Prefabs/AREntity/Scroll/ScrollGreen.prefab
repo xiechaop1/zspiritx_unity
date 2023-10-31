@@ -73,7 +73,7 @@ MonoBehaviour:
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
-  strName: ScrollGreen
+  prefabUUID: ScrollGreen
   strHintbox: 
   goInteractionMode: {fileID: 0}
   interactionAnimation: {fileID: 0}
@@ -87,8 +87,10 @@ MonoBehaviour:
   latitude: 0
   longitude: 0
   offset: {x: 0, y: 0, z: 0}
+  scale: 1
   isLookAt: 0
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
   maxTolerance: 1

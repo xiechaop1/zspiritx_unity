@@ -264,17 +264,30 @@ MonoBehaviour:
   enumItemType: 3
   icon: {fileID: 0}
   iconHint: 
-  strName: FlowerPot1
+  prefabUUID: FlowerPot1
   strHintbox: "\u8FD9\u662F\u4E00\u4E2A\u82B1\u76C6\uFF0C\u4E0A\u9762\u5199\u4E86\u4E00\u6BB5\u6587\u5B57\uFF1A\u201C1135\u201D"
   goInteractionMode: {fileID: 0}
+  interactionAnimation: {fileID: 0}
   arUtiity: {fileID: 0}
+  entitySessionId: 0
+  entityItemId: 0
+  entityName: 0
+  enumVisibleType: 0
   enumARType: 1
   uuidImageTracking: Dino1
+  latitude: 0
+  longitude: 0
   offset: {x: 3, y: 0, z: 0}
+  scale: 1
+  isLookAt: 0
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  maxTolerance: 1
+  geoLocDistance: 20
+  maxShowDistance: 20
   proximityDialog: 0
   hasProximityDialog: 0
-  goAnimEmerge: {fileID: 0}
+  animEmerge: {fileID: 0}
   goVisual: {fileID: 4341209631723431091}

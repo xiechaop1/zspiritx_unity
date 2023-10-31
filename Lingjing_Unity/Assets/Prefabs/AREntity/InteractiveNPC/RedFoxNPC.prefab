@@ -1454,7 +1454,7 @@ MonoBehaviour:
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
-  strName: RedFoxNPC
+  prefabUUID: RedFoxNPC
   strHintbox: "{\"Intro\":\"\u4F60\u597D\",\"Dialog\":[\"\u6709\u4E8B\u5C31\u95EE\u5927\u72D0\u72F8\",\"\u6211\u53EA\u662F\u4ED6\u7684\u8DDF\u73ED\"]}"
   goInteractionMode: {fileID: 0}
   interactionAnimation: {fileID: 0}
@@ -1462,15 +1462,21 @@ MonoBehaviour:
   entitySessionId: 0
   entityItemId: 0
   entityName: 0
+  enumVisibleType: 0
   enumARType: 0
   uuidImageTracking: cafe2
   latitude: 0
   longitude: 0
   offset: {x: 0, y: 0, z: -3}
+  scale: 1
   isLookAt: 0
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  maxTolerance: 1
+  geoLocDistance: 20
+  maxShowDistance: 20
   proximityDialog: 0
   hasProximityDialog: 0
   animEmerge: {fileID: 0}

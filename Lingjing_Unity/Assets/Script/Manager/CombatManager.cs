@@ -17,6 +17,7 @@ public class CombatManager : MonoBehaviour, IManager {
 	Queue<CombatActorInfo> queFieldEntity = new Queue<CombatActorInfo>();
 	FieldEntityManager entityManager;
 	Transform fieldCenter;
+	public Action<string> startCallback;
 	public Action<string> finishCallback;
 	public void Init(UIEventManager eventManager, params IManager[] managers) {
 		foreach (var manager in managers) {
@@ -77,6 +78,7 @@ public class CombatManager : MonoBehaviour, IManager {
 	}
 	public void CombatPrepareDone() {
 		combatView.SetActive(true);
+		startCallback?.Invoke("");
 		combatView.UpdateHint("战斗将在5秒后开始");
 		StartCoroutine(AsyncBeginCombat());
 	}
