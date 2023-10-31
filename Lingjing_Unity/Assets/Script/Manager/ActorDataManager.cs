@@ -152,7 +152,7 @@ public class ActorDataManager : MonoBehaviour, IManager {
 				NotificationMessage note = new NotificationMessage();
 				note.id = tmpInt;
 				if (json.TryPraseString("action_detail", ref tmp)) {
-					Debug.Log(tmp);
+					//Debug.Log(tmp);
 					note.msg = tmp;
 				}
 				interactionView.AddNotice(note);

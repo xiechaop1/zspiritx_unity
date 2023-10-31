@@ -659,7 +659,7 @@ MonoBehaviour:
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
-  strName: PantherNPC
+  prefabUUID: PantherNPC
   strHintbox: "{\"Name\":\"\u730E\u8C79\u6C64\u59C6\", \"Dialog\":[\r\n{\"localID\":\"liebao-01\",
     \"name\":\"\u730E\u8C79\u6C64\u59C6\", \"sentence\":\"\u4F60\u4EEC\u662F\u8C01\uFF0C\u8BF7\u4E0D\u8981\u6253\u6270\u6211\u7684\u2F2F\u4F5C\uFF0C\u6211\u6B63\u5728\u4FEE\u590D\u8FD9\u4E2A\u5DE8\u578B\u6050\u2EF0\u7684\u9AB8\u2FBB\u3002\",
     \"sentenceClip\":\"liebao-01\", \"userSelections\":[\"\u6709\u4EC0\u4E48\u662F\u6211\u53EF\u4EE5\u5E2E\u5FD9\u5417\uFF1F\",
@@ -699,17 +699,26 @@ MonoBehaviour:
     \"sentenceClip\":\"liebao-06\", \"nextID\":[\"liebao-C1\"]},\r\n{\"localID\":\"liebao-X1\",
     \"nextID\":[\"liebao-01\"]},\r\n],\"Intro\":\"liebao-01\"}\r\n"
   goInteractionMode: {fileID: 0}
+  interactionAnimation: {fileID: 0}
   arUtiity: {fileID: 0}
-  nameNPC: 
+  entitySessionId: 0
+  entityItemId: 0
+  entityName: 0
+  enumVisibleType: 0
   enumARType: 0
   uuidImageTracking: DinoSk1
   latitude: 0
   longitude: 0
   offset: {x: 0, y: 0, z: 1}
+  scale: 1
   isLookAt: 1
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  maxTolerance: 1
+  geoLocDistance: 20
+  maxShowDistance: 20
   proximityDialog: 3
   hasProximityDialog: 0
   animEmerge: {fileID: 0}

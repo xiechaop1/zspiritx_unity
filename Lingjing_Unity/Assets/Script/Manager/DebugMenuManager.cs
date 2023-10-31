@@ -60,7 +60,7 @@ public class DebugMenuManager : MonoBehaviour {
 		//WorldInit();
 	}
 	private void Start() {
-		entityActionManager.eventEntityFound += ShowInfo;
+		entityActionManager.eventEntitySelected += ShowInfo;
 		//sceneLoadManager.eventDebugInfo += ShowHint;
 		//DebugInfo
 		//StartCoroutine(Testloader());
@@ -89,8 +89,9 @@ public class DebugMenuManager : MonoBehaviour {
 		ShowHint(entityInfo.strHintbox);
 	}
 	public void InitBtn() {
-		combatManager.PrepareBattleGround();
-		combatManager.finishCallback += OnCombatFinished;
+		FakeImageFound();
+		//combatManager.PrepareBattleGround();
+		//combatManager.finishCallback += OnCombatFinished;
 		//sceneLoadManager.ExitScene();
 		//SplashWebView.StartWebView("splash.html");
 	}
@@ -104,13 +105,17 @@ public class DebugMenuManager : MonoBehaviour {
 		//ShowHint(GetLatLon());
 	}
 	private string GetLatLon() {
-		gpsManager.GetCurrentLatLonWGS84(out double wgsLat, out double wgsLon);
+		//gpsManager.GetCurrentLatLonWGS84(out double wgsLat, out double wgsLon);
 		gpsManager.GetCurrentLatLonGCJ02(out double gcjLat, out double gcjLon);
-		gpsManager.GetCurrentLatLonBD09(out double bdLat, out double bdLon);
-		return wgsLat.ToString("F9") + ", " + wgsLon.ToString("F9") + "\n" +
+		//gpsManager.GetCurrentLatLonBD09(out double bdLat, out double bdLon);
+		Vector3 playerPos = fieldEntityManager.goCamDir.transform.position;
+		string output =
+			//wgsLat.ToString("F9") + ", " + wgsLon.ToString("F9") + "\n" +
 			gcjLat.ToString("F9") + ", " + gcjLon.ToString("F9") + "\n" +
-			bdLat.ToString("F9") + ", " + bdLon.ToString("F9") + "\n" +
-			gpsManager.groundLatitude.ToString("F9") + ", " + gpsManager.groundLongitude.ToString("F9") + "\n";
+			//bdLat.ToString("F9") + ", " + bdLon.ToString("F9") + "\n" +
+			//gpsManager.groundLatitude.ToString("F9") + ", " + gpsManager.groundLongitude.ToString("F9") + "\n";
+			playerPos.x.ToString("F2") + ", " + playerPos.y.ToString("F2") + ", " + playerPos.z.ToString("F2");
+		return output;
 	}
 	private string GetObjectList() {
 		List<FieldEntityInfo> lstEntities = new List<FieldEntityInfo>();
@@ -121,13 +126,20 @@ public class DebugMenuManager : MonoBehaviour {
 		string output = "";
 		string tmp;
 		foreach (FieldEntityInfo entity in lstEntities) {
-			tmp = entity.entityName;
+			tmp = entity.entityUUID;
 			if (entity.enumARType == FieldEntityInfo.EntityToggleType.GeoLocAround || entity.enumARType == FieldEntityInfo.EntityToggleType.GeoLocPosition) {
 				tmp += ": " + InputGPSManager.FastGetDistance(entity.latitude, entity.longitude, newLat, newLng).ToString("F3");
 			} else if (entity.enumARType == FieldEntityInfo.EntityToggleType.ARTagAround || entity.enumARType == FieldEntityInfo.EntityToggleType.ARTagPosition) {
 				tmp += ": " + entity.uuidImageTracking;
 			}
 			//tmp = string.Format("{1}:{2}\n",entity.entityName,entity.geoLocDistance);
+			output += tmp + "\n";
+		}
+		lstEntities.Clear();
+		lstEntities.AddRange(fieldEntityManager.arrPlacedEntity);
+		foreach (FieldEntityInfo entity in lstEntities) {
+			tmp = entity.entityUUID;
+			tmp += entity.transform.position.x + ", " + entity.transform.position.y + ", " + entity.transform.position.z;
 			output += tmp + "\n";
 		}
 		return output;
@@ -176,7 +188,7 @@ public class DebugMenuManager : MonoBehaviour {
 		//SplashWebView.SetVisibility(false);
 		//UIEventManager.BroadcastEvent("WebViewCall", "StartARScene");
 		//sceneLoadManager.DebugWebViewCallback("WebViewOff&TrueAnswer");
-		sceneLoadManager.DebugWebViewCallback("{'WebViewOff':1, 'AnswerType':1}");
+		interactionController.OnQuizCallback("{'WebViewOff':1, 'AnswerType':1}");
 	}
 	public void TryPlaceEntity() {
 		fieldEntityManager.TryPlaceRamdomEntities(10);

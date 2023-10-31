@@ -73,7 +73,7 @@ MonoBehaviour:
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
-  strName: BrownRabbitNPC
+  prefabUUID: BrownRabbitNPC
   strHintbox: "{\"Name\":\"\u5154\u5B50\", \"Dialog\":[\r\n{\"localID\":\"tuzi-01\",
     \"name\":\"\u5154\u5B50\u67E5\u7406\", \"sentence\":\"\u662F\u8C01\uFF1F\u554A\u539F\u6765\u662F\u2F00\u4F4D\u63A2\u9669\u8005\uFF0C\u8FD9\u4E48\u7740\u6025\u627E\u6211\u6709\u4EC0\u4E48\u4E8B\u60C5\u5417\uFF1F\",
     \"sentenceClip\":\"tuzi-01\", \"userSelections\":[\"\u4F60\u597D\uFF0C\u5154\u2F26\u5148\u2F63\",
@@ -120,16 +120,26 @@ MonoBehaviour:
     \"sentenceClip\":\"tuzi-04\", \"nextID\":[\"tuzi-C1\"]},\r\n{\"localID\":\"tuzi-X1\",
     \"nextID\":[\"tuzi-01\"]},\r\n{\"localID\":\"tuzi-X2\", \"nextID\":[\"tuzi-02\"]}\r\n],\"Intro\":\"tuzi-01\"}"
   goInteractionMode: {fileID: 0}
+  interactionAnimation: {fileID: 0}
   arUtiity: {fileID: 0}
+  entitySessionId: 0
+  entityItemId: 0
+  entityName: 0
+  enumVisibleType: 0
   enumARType: 0
   uuidImageTracking: Mc1
   latitude: 0
   longitude: 0
   offset: {x: 0, y: 0, z: 1}
+  scale: 1
   isLookAt: 1
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  maxTolerance: 1
+  geoLocDistance: 20
+  maxShowDistance: 20
   proximityDialog: 2
   hasProximityDialog: 0
   animEmerge: {fileID: 0}

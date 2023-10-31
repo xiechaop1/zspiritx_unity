@@ -73,20 +73,29 @@ MonoBehaviour:
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
-  strName: Puzzle
+  prefabUUID: Puzzle
   strHintbox: "\u4E00\u5957\u513F\u7AE5\u79EF\u6728"
   goInteractionMode: {fileID: 0}
+  interactionAnimation: {fileID: 0}
   arUtiity: {fileID: 0}
-  nameNPC: 
+  entitySessionId: 0
+  entityItemId: 0
+  entityName: 0
+  enumVisibleType: 0
   enumARType: 4
   uuidImageTracking: toy2
   latitude: 39.93468469083179
   longitude: 116.28647125446336
   offset: {x: 0, y: 0, z: 0}
+  scale: 1
   isLookAt: 0
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  maxTolerance: 1
+  geoLocDistance: 20
+  maxShowDistance: 20
   proximityDialog: 0
   hasProximityDialog: 0
   animEmerge: {fileID: 0}

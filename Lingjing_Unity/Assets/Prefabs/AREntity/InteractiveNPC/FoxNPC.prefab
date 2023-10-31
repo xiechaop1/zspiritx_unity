@@ -1984,19 +1984,32 @@ MonoBehaviour:
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
-  strName: FoxNPC
+  prefabUUID: FoxNPC
   strHintbox: "{\"Intro\":\"\u4F60\u597D\uFF01\",\"Quiz\":\"1\",\"Dialog\":[\"\u4F60\u597D\",\"\u6211\u662F\u72D0\u72F8\",\"\u806A\u660E\u7684\u72D0\u72F8\u5148\u751F\u8BF4\u7684\u5C31\u662F\u6211\",\"\u8FD9\u8BF4\u660E\u6211\u5F88\u806A\u660E\"]}"
   goInteractionMode: {fileID: 0}
+  interactionAnimation: {fileID: 0}
   arUtiity: {fileID: 0}
+  entitySessionId: 0
+  entityItemId: 0
+  entityName: 0
+  enumVisibleType: 0
   enumARType: 2
   uuidImageTracking: cafe2
+  latitude: 0
+  longitude: 0
   offset: {x: 0, y: 0, z: -3}
+  scale: 1
+  isLookAt: 0
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  maxTolerance: 1
+  geoLocDistance: 20
+  maxShowDistance: 20
   proximityDialog: 2
   hasProximityDialog: 0
-  goAnimEmerge: {fileID: 0}
+  animEmerge: {fileID: 0}
   goVisual: {fileID: 7800494600271269529}
 --- !u!1 &7392961716483352878
 GameObject:

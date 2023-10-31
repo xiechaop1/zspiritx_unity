@@ -325,19 +325,32 @@ MonoBehaviour:
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
-  strName: Table
+  prefabUUID: Table
   strHintbox: "\u4E00\u5F20\u684C\u5B50"
   goInteractionMode: {fileID: 0}
+  interactionAnimation: {fileID: 0}
   arUtiity: {fileID: 0}
+  entitySessionId: 0
+  entityItemId: 0
+  entityName: 0
+  enumVisibleType: 0
   enumARType: 0
   uuidImageTracking: 
+  latitude: 0
+  longitude: 0
   offset: {x: 0, y: 0, z: 0}
+  scale: 1
+  isLookAt: 0
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  maxTolerance: 1
+  geoLocDistance: 20
+  maxShowDistance: 20
   proximityDialog: 0
   hasProximityDialog: 0
-  goAnimEmerge: {fileID: 0}
+  animEmerge: {fileID: 0}
   goVisual: {fileID: 4264224592023524265}
 --- !u!1 &6306343231073201170
 GameObject:

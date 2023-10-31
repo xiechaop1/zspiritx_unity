@@ -4,7 +4,9 @@ using System.Linq;
 using UnityEngine;
 
 public class SerializedEntityAction {
-	string localID;
+	public bool isEmpty = true;
+	public string raw = "";
+	public string localID;
 	public string name = "";
 	public string sentence = "";
 	public string url = "";
@@ -24,6 +26,7 @@ public class SerializedEntityAction {
 
 	public string combatInfo;
 	public SerializedEntityAction(string json) {
+		raw = json;
 		JSONReader obj;
 		string tmpStr = "";
 		double tmpf = 0.0;
@@ -38,21 +41,24 @@ public class SerializedEntityAction {
 		if (obj.TryPraseString("localID", ref tmpStr)) {
 			localID = tmpStr;
 		} else {
-			Debug.LogError("NONE-ID-SENTENCE: " + json);
+			Debug.LogWarning("NONE-ID-SENTENCE: " + json);
 		}
 		if (obj.TryPraseString("name", ref tmpStr)) {
 			name = tmpStr;
 		}
-		if (obj.TryPraseString("sentence", ref tmpStr)) {
+		if (obj.TryPraseString("sentence", ref tmpStr) && !string.IsNullOrEmpty(tmpStr)) {
 			sentence = tmpStr;
+			isEmpty = false;
 		}
 
-		if (obj.TryPraseString("url", ref tmpStr)) {
+		if (obj.TryPraseString("url", ref tmpStr) && !string.IsNullOrEmpty(tmpStr)) {
 			url = tmpStr;
+			isEmpty = false;
 		}
 		if (obj.TryPraseString("quizID", ref tmpStr)) {
 			if (int.TryParse(tmpStr, out int tmpInt) && tmpInt > 0) {
 				quizID = tmpStr;
+				isEmpty = false;
 			}
 		}
 		if (obj.TryPraseString("sentenceClip", ref tmpStr)) {
@@ -120,7 +126,7 @@ public class SerializedEntityAction {
 			}
 
 			if (output == null) {
-				Debug.LogError("MISSING-SENTENCE OR WRONG ID: " + nextID);
+				Debug.LogError("MISSING-SENTENCE OR WRONG ID: " + nextID[i] + " @ " + name + " " + localID);
 			}
 		}
 	}

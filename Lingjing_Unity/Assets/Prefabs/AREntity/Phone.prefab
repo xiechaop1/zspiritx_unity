@@ -227,19 +227,32 @@ MonoBehaviour:
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
-  strName: phone
+  prefabUUID: Phone
   strHintbox: "\u8FD9\u662F\u4E00\u90E8\u7535\u8BDD\uFF0C\u53EF\u4EE5\u62E8\u901A\u3002"
   goInteractionMode: {fileID: 1859037249983814374}
+  interactionAnimation: {fileID: 0}
   arUtiity: {fileID: 0}
+  entitySessionId: 0
+  entityItemId: 0
+  entityName: 0
+  enumVisibleType: 0
   enumARType: 1
   uuidImageTracking: phone
+  latitude: 0
+  longitude: 0
   offset: {x: 0, y: 0, z: 0}
+  scale: 1
+  isLookAt: 0
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 7978133358413937823}
+  maxTolerance: 1
+  geoLocDistance: 20
+  maxShowDistance: 20
   proximityDialog: 0
   hasProximityDialog: 0
-  goAnimEmerge: {fileID: 0}
+  animEmerge: {fileID: 0}
   goVisual: {fileID: 6966257056354083220}
 --- !u!114 &6496807366593760362
 MonoBehaviour:

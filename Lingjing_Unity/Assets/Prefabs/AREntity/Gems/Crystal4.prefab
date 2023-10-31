@@ -15409,7 +15409,7 @@ MonoBehaviour:
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
-  strName: Crystal4
+  prefabUUID: Crystal4
   strHintbox: "\u9B54\u6CD5\u7684\u9EC4\u6C34\u6676\uFF0C\u6216\u8BB8\u6709\u4EC0\u4E48\u7528\uFF1F"
   goInteractionMode: {fileID: 0}
   interactionAnimation: {fileID: 0}
@@ -15423,8 +15423,10 @@ MonoBehaviour:
   latitude: 0
   longitude: 0
   offset: {x: 0, y: 0, z: 0}
+  scale: 1
   isLookAt: 0
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
   maxTolerance: 1

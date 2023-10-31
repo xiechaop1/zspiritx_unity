@@ -2123,7 +2123,7 @@ MonoBehaviour:
   enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
-  strName: RacconNPC
+  prefabUUID: RacconNPC
   strHintbox: "{\"Name\":\"\u6D63\u718A\u76AE\u76AE\", \"Dialog\":[\r\n{\"localID\":\"huanxiong-01\",
     \"name\":\"\u6D63\u718A\u76AE\u76AE\", \"sentence\":\"\u5728\u2F00\u4E2A\u2F46\u9650\u7684\u5B87\u5B99\uFF0C\u6BCF\u2F00\u70B9\u90FD\u53EF\u4EE5\u8BA4\u4E3A\u662F\u4E2D\u2F3C\uFF0C\u56E0\u4E3A\u5728\u5B83\u7684\u6BCF\u2F00\u8FB9\u90FD\u6709\u2F46\u9650\u9897\u6052\u661F\u2026\u2026\u8FD9\u672C\u300A\u65F6\u95F4\u7B80\u53F2\u300B\u7684\u5185\u5BB9\u2FAE\u5E38\u6DF1\u5965\uFF0C\u6211\u73B0\u5728\u770B\u8FD8\u6709\u4E9B\u65E9\u3002\",
     \"sentenceClip\":\"huanxiong-01\", \"nextID\":[\"huanxiong-02\"]},\r\n{\"localID\":\"huanxiong-02\",
@@ -2173,17 +2173,26 @@ MonoBehaviour:
     \"sentenceClip\":\"huanxiong-08\", \"nextID\":[\"huanxiong-C1\"]},\r\n{\"localID\":\"huanxiong-X1\",
     \"nextID\":[\"huanxiong-01\"]},\r\n],\"Intro\":\"huanxiong-01\"}"
   goInteractionMode: {fileID: 0}
+  interactionAnimation: {fileID: 0}
   arUtiity: {fileID: 0}
-  nameNPC: 
+  entitySessionId: 0
+  entityItemId: 0
+  entityName: 0
+  enumVisibleType: 0
   enumARType: 0
   uuidImageTracking: Dino1
   latitude: 0
   longitude: 0
   offset: {x: 0, y: 0, z: 1}
+  scale: 1
   isLookAt: 1
   enumSurfaceType: 1
+  isUpdateFloor: 1
   goReference: {fileID: 0}
   goFPSightMode: {fileID: 0}
+  maxTolerance: 1
+  geoLocDistance: 20
+  maxShowDistance: 20
   proximityDialog: 2
   hasProximityDialog: 0
   animEmerge: {fileID: 0}

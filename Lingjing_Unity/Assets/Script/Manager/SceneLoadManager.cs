@@ -25,7 +25,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		Unsupport
 	}
 
-	public event Action<string> webViewCallback;
+	//public event Action<string> webViewCallback;
 
 	//public GameObject Notch;
 	public GameObject LoadingScreen;
@@ -98,7 +98,7 @@ public class SceneLoadManager : MonoBehaviour, IManager {
 		entityActionManager = inventoryItemManager.GetComponent<EntityActionManager>();
 
 		fieldEntityManager = fieldStageManager.GetComponent<FieldEntityManager>();
-		entityActionManager.Init(eventManager, fieldEntityManager, networkManager);
+		entityActionManager.Init(eventManager, fieldEntityManager, networkManager, fieldStageManager, combatManager);
 
 		combatManager.Init(eventManager, fieldEntityManager);
 
@@ -227,7 +227,8 @@ ARSystemReady:
 				StartCoroutine(ARLoader());
 			}
 			if (jsonMsg.TryPraseInt("DebugInfo", ref tmpInt)) {
-				debugManager.isDebugMode = (tmpInt == 1);
+				ConfigInfo.test.testFlag = (tmpInt == 1);
+				debugManager.isDebugMode = ConfigInfo.test.testFlag;
 			}
 			if (jsonMsg.TryPraseInt("UserId", ref tmpInt)) {
 				ConfigInfo.userId = tmpInt;
