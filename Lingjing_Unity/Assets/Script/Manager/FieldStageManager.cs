@@ -257,6 +257,9 @@ LoopEnd:
 		}
 		yield return null;
 		lstLoadedStages = tmpStages.ToArray();
+		while (!resourcesManager.canBackground) {
+			yield return null;
+		}
 		PrepareBackstage(tmpStages[0]);
 		yield break;
 	}
@@ -307,7 +310,7 @@ LoopEnd:
 				stage.lng = 0;
 			}
 			if (jsonStage.TryPraseString("bgm", ref tmpStr) && !string.IsNullOrWhiteSpace(tmpStr)) {
-				resourcesManager.AddAudioClip(tmpStr);
+				resourcesManager.AddPriorityAudioClip(tmpStr);
 				stage.uuidBGM = tmpStr.Split('/').Last();
 			} else {
 				stage.uuidBGM = "BGM_01";
@@ -521,10 +524,8 @@ BuildEntity:
 				} else {
 					info.strHintbox = tmp;
 				}
-				//Debug.Log(tmp);
+				//Debug.Log(info.entityUUID+"\n "+tmp);
 				info.enumActionType = EntityActionType.DialogActor;
-				//} else {
-				//	info.enumActionType = EntityActionType.ViewableInfo;
 			}
 		}
 

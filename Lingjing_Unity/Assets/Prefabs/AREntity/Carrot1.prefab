@@ -175,8 +175,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entityManager: {fileID: 0}
-  enumActionType: 21
-  enumItemType: 13
+  enumActionType: 22
+  enumItemType: -1
   icon: {fileID: 0}
   iconHint: 
   prefabUUID: Carrot1

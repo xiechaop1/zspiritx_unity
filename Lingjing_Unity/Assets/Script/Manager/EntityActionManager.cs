@@ -59,8 +59,7 @@ public class EntityActionManager : MonoBehaviour, IManager {
 						case EntityActionType.DialogActor:
 							selectedEntityInfo = entityInfo;
 							if (ShowNPCDialog()) {
-								//if (interactionView.ShowNPCLog(entityInfo)) {
-								actionMode = ActionMode.Idle;
+								//actionMode = ActionMode.Idle;
 								entityInfo.hasProximityDialog = false;
 							}
 							break;
@@ -94,6 +93,13 @@ public class EntityActionManager : MonoBehaviour, IManager {
 	}
 
 	public void Set2ARMode() {
+		actionMode = ActionMode.Idle;
+		StartCoroutine(AsyncSet2ARMode());
+	}
+	IEnumerator AsyncSet2ARMode() {
+		yield return null;
+		yield return null;
+		yield return null;
 		actionMode = ActionMode.World;
 	}
 	public void Set2IdleMode() {
@@ -127,14 +133,12 @@ public class EntityActionManager : MonoBehaviour, IManager {
 	}
 	public void GotoAction(string actionLocalID) {
 		if (selectedEntityInfo != null) {
-			try {
-				selectedEntityInfo.currDialog = selectedEntityInfo.lstDialogs.First(x => x.localID == actionLocalID);
-				if (selectedEntityInfo.currDialog.isEmpty) {
-					CurrentDialogAction();
-				}
-				ShowNPCDialog();
-			} catch (Exception) {
-
+			selectedEntityInfo.currDialog = selectedEntityInfo.lstDialogs.First(x => x.localID == actionLocalID);
+			if (selectedEntityInfo.currDialog.isEmpty) {
+				CurrentDialogAction();
+			}
+			if (ShowNPCDialog()) {
+				//actionMode = ActionMode.Idle;
 			}
 		}
 	}
@@ -162,6 +166,9 @@ public class EntityActionManager : MonoBehaviour, IManager {
 			return false;
 		}
 		if (interactionView.ShowNPCLog()) {
+			SetWorldInteractive(true);
+			//SetEntityInteractive(true);
+			//actionMode = ActionMode.Idle;
 			if (selectedEntityInfo.currDialog.isEmpty) {
 				selectedEntityInfo.currDialog = selectedEntityInfo.currDialog.nextAction[0];
 			}
@@ -177,14 +184,14 @@ public class EntityActionManager : MonoBehaviour, IManager {
 	}
 	public void ActionWithTarget(SerializedEntityAction entityAction, FieldEntityInfo entity) {
 		ActionWithoutTarget(entityAction);
-		entity.ForcedMove(entityAction.displacement);
-	}
-	public void ActionWithoutTarget(SerializedEntityAction entityAction) {
 		if (!string.IsNullOrWhiteSpace(entityAction.combatInfo)) {
 			combatManager.startCallback += OnCombatStartCallback;
 			combatManager.PrepareBattleGround();
 			combatManager.finishCallback += OnCombatFinishCallback;
 		}
+		entity.ForcedMove(entityAction.displacement);
+	}
+	public void ActionWithoutTarget(SerializedEntityAction entityAction) {
 		stageManager.ShowEntities(entityAction.showModels);
 		stageManager.HideEntities(entityAction.hideModels);
 		stageManager.PickupEntities(entityAction.pickupModels);
@@ -192,10 +199,14 @@ public class EntityActionManager : MonoBehaviour, IManager {
 	void OnCombatStartCallback(string msg) {
 		interactionView.SetNPCLogActive(false);
 		SetEntityInteractive(false);
+		modeBeforeCombat = actionMode;
+		actionMode = ActionMode.Idle;
 	}
+	ActionMode modeBeforeCombat = ActionMode.Idle;
 	void OnCombatFinishCallback(string msg) {
 		interactionView.SetNPCLogActive(true);
 		SetEntityInteractive(true);
+		actionMode = modeBeforeCombat;
 		JSONReader jsonMsg = new JSONReader(msg);
 		int tmpInt = 0;
 		if (jsonMsg.TryPraseInt("AnswerType", ref tmpInt)) {
@@ -206,21 +217,25 @@ public class EntityActionManager : MonoBehaviour, IManager {
 		combatManager.startCallback -= OnCombatStartCallback;
 		combatManager.finishCallback -= OnCombatFinishCallback;
 	}
-
-
 	#endregion
 
 	public void DeselectEntity() {
 		selectedEntityInfo = null;
 	}
+	public void SetWorldInteractive(bool value) {
+		if (value) {
+			actionMode = ActionMode.Interactive;
+		} else {
+			Set2ARMode();
+		}
+		SetEntityInteractive(value);
+	}
 	public void SetEntityInteractive(bool value) {
 		selectedEntityInfo?.SetInteractionState(value);
-		//selectedEntityInfo.SetInteractionMode(value);
 	}
 	public void InteractWithEntity(ItemInfo entityInfo) {
 		interactionView.HideHint();
 		SetEntityInteractive(false);
-		//OnInteractionFinished();
 		selectedEntityInfo = entityInfo;
 		switch (selectedEntityInfo.enumActionType) {
 			case EntityActionType.Debug:
@@ -229,41 +244,39 @@ public class EntityActionManager : MonoBehaviour, IManager {
 			case EntityActionType.ViewableInfo:
 			case EntityActionType.CollectedInfo:
 			case EntityActionType.CollectedItem:
-				actionMode = ActionMode.Idle;
+			case EntityActionType.InteractiveItem:
+				SetWorldInteractive(true);
+				//actionMode = ActionMode.Interactive;
+				//SetEntityInteractive(true);
 				interactionView.ShowHint(selectedEntityInfo.strHintbox);
-				SetEntityInteractive(true);
 				break;
 			case EntityActionType.CollectableInfo:
-				actionMode = ActionMode.Idle;
+				SetWorldInteractive(true);
+				//actionMode = ActionMode.Idle;
+				//SetEntityInteractive(true);
 				interactionView.ShowCollectableHint(selectedEntityInfo.strHintbox);
-				SetEntityInteractive(true);
-				break;
-			case EntityActionType.InteractiveItem:
-				actionMode = ActionMode.Interactive;
-				interactionView.ShowHint(selectedEntityInfo.strHintbox);
-				SetEntityInteractive(true);
-				//selectedEntityInfo.SetInteractionMode(true);
 				break;
 			case EntityActionType.CollectableItem:
-				actionMode = ActionMode.Interactive;
+				SetWorldInteractive(true);
+				//actionMode = ActionMode.Interactive;
+				//SetEntityInteractive(true);
 				interactionView.ShowCollectableItem(selectedEntityInfo.strHintbox);
-				SetEntityInteractive(true);
-				//selectedEntityInfo.SetInteractionMode(true);
 				break;
 			case EntityActionType.UtilityItem:
-				actionMode = ActionMode.Idle;
+				SetWorldInteractive(true);
+				//actionMode = ActionMode.Idle;
+				//SetEntityInteractive(true);
 				selectedEntityInfo.GetComponent<ARUtilityListener>()?.UseARUtility();
-				interactionView.ShowHint(selectedEntityInfo.strHintbox);//, "х╥хо");
-				SetEntityInteractive(true);
+				interactionView.ShowHint(selectedEntityInfo.strHintbox);
 				break;
 			case EntityActionType.DialogActor:
 				if (ShowNPCDialog()) {
-					//if (interactionView.ShowNPCLog(selectedEntityInfo)) {
-					actionMode = ActionMode.Idle;
+					//actionMode = ActionMode.Idle;
 				} else {
-					actionMode = ActionMode.Idle;
+					SetWorldInteractive(true);
+					//actionMode = ActionMode.Idle;
+					//SetEntityInteractive(true);
 					interactionView.ShowHint(selectedEntityInfo.strHintbox);
-					SetEntityInteractive(true);
 				}
 				break;
 			//case EntityActionType.Quiz:
@@ -273,7 +286,8 @@ public class EntityActionManager : MonoBehaviour, IManager {
 			//case EntityActionType.PlacableItem:
 			default:
 				selectedEntityInfo = null;
-				actionMode = ActionMode.World;
+				Set2ARMode();
+				//actionMode = ActionMode.World;
 				break;
 		}
 	}
@@ -286,37 +300,59 @@ public class EntityActionManager : MonoBehaviour, IManager {
 		//interactionView.ShowTextHint(fileInfo.strHintbox, "");
 	}
 
-	public void ConfirmWithEntiry() {
+	public void ConfirmHintWithEntiry() {
 		switch (selectedEntityInfo.enumActionType) {
-
 			case EntityActionType.CollectableInfo:
 				selectedEntityInfo.enumActionType = selectedEntityInfo.enumItemType;
 				UIEventManager.CallEvent("InventoryItemManager", "AddInfo", selectedEntityInfo);
-				ExitEntity();
+				//ExitHint();
 				break;
 			case EntityActionType.CollectableItem:
 				selectedEntityInfo.enumActionType = selectedEntityInfo.enumItemType;
 				PickUpItem(selectedEntityInfo);
-				ExitEntity();
+				//ExitHint();
 				break;
-			case EntityActionType.DialogActor:
-				//interactionView.AdvancedDialog();
-				break;
-			case EntityActionType.Debug:
-			case EntityActionType.ViewableInfo:
-			case EntityActionType.CollectedInfo:
-			case EntityActionType.InteractiveItem:
+			//case EntityActionType.DialogActor:
+				//if (!string.IsNullOrEmpty(selectedEntityInfo.strHintbox) && selectedEntityInfo.currDialog != null) {
+				//	return;
+				//}
+				//ExitHint();
+				//break;
+			//case EntityActionType.Debug:
+			//case EntityActionType.ViewableInfo:
+			//case EntityActionType.CollectedInfo:
+			//case EntityActionType.InteractiveItem:
 			default:
-				ExitEntity();
+				//ExitHint();
 				break;
 		}
+		ExitHint();
 	}
-	public void ExitEntity() {
+	public void ExitHint() {
 		interactionView.HideHint();
-		OnInteractionFinished();
-		//SetEntityInteractive(false);
-		//actionMode = ActionMode.World;
-		//interactionView.ShowEntitySelection();
+		//LogManager.Debug("Finished Interaction");
+		SetWorldInteractive(false);
+		if (selectedEntityInfo != null) {
+			if (entityManager.arrPlacedEntity.Contains(selectedEntityInfo)) {
+				interactionView.ShowEntitySelection(GetEntityName());
+			} else {
+				selectedEntityInfo = null;
+			}
+		}
+		//OnInteractionFinished();
+	}
+	public void ExitNPCLog() {
+		interactionView.HideNPCLog();
+		//LogManager.Debug("Finished Interaction");
+		SetWorldInteractive(false);
+		if (selectedEntityInfo != null) {
+			if (entityManager.arrPlacedEntity.Contains(selectedEntityInfo)) {
+				interactionView.ShowEntitySelection(GetEntityName());
+			} else {
+				selectedEntityInfo = null;
+			}
+		}
+		//OnInteractionFinished();
 	}
 	public void TryPickUpItem(string entityName) {
 
@@ -327,7 +363,6 @@ public class EntityActionManager : MonoBehaviour, IManager {
 		UIEventManager.CallEvent("InventoryItemManager", "AddItem", entityInfo);
 	}
 	IEnumerator AsyncPickUpItem(ItemInfo entityInfo) {
-		//is_test=1&session_id=6&user_id=1&story_id=1&story_model_id=19
 		WWWData www = networkManager.GetHttpInfo(HttpUrlInfo.urlLingjingProcess,
 			"pickup",
 			string.Format("is_test=1&session_id={0}&user_id={1}&story_id={2}&story_model_id={3}",
@@ -350,29 +385,20 @@ public class EntityActionManager : MonoBehaviour, IManager {
 		yield break;
 	}
 
-	public void OnInteractionFinished() {
-		SetEntityInteractive(false);
-		//LogManager.Debug("Finished Interaction");
-		//if (selectedEntityInfo != null) {
-		//	switch (selectedEntityInfo.enumActionType) {
-		//		case EntityActionType.CollectableInfo:
-		//			break;
-		//		case EntityActionType.InteractiveItem:
-		//		case EntityActionType.CollectableItem:
-		//			//selectedEntityInfo.SetInteractionMode(false);
-		//			break;
-		//		case EntityActionType.Debug:
-		//		case EntityActionType.ViewableInfo:
-		//		case EntityActionType.CollectedInfo:
-		//		default:
-		//			break;
-		//	}
-		//}
-		actionMode = ActionMode.World;
-		if (selectedEntityInfo != null) {
-			interactionView.ShowEntitySelection(GetEntityName());
-		}
-	}
+	//public void OnInteractionFinished() {
+	//	//LogManager.Debug("Finished Interaction");
+	//	SetWorldInteractive(false);
+	//	//SetEntityInteractive(false);
+	//	//Set2ARMode();
+	//	//actionMode = ActionMode.World;
+	//	if (selectedEntityInfo != null) {
+	//		if (entityManager.arrPlacedEntity.Contains(selectedEntityInfo)) {
+	//			interactionView.ShowEntitySelection(GetEntityName());
+	//		} else {
+	//			selectedEntityInfo = null;
+	//		}
+	//	}
+	//}
 
 	public void UpdateHintText(string newText) {
 		interactionView.UpdateHint(newText);

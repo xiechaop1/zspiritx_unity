@@ -22,11 +22,11 @@ public class InputGPSManager : MonoBehaviour, IManager {
 	#endregion
 #if UNITY_EDITOR
 	private void Start() {
-		if (ConfigInfo.test.testFlag) {
+		if (ConfigInfo.Test.testFlag) {
 			//测试模式阻止GPS刷新
 			//groundLatLon = ConfigInfo.test.testLatLon;
-			camLatitude = ConfigInfo.test.testLatLon.x;
-			camLongitude = ConfigInfo.test.testLatLon.y;
+			camLatitude = ConfigInfo.Test.testLatLon.x;
+			camLongitude = ConfigInfo.Test.testLatLon.y;
 		}
 	}
 #endif
@@ -92,8 +92,8 @@ public class InputGPSManager : MonoBehaviour, IManager {
 
 	public void GetCurrentLatLonWGS84(out double latitude, out double longitude) {
 #if UNITY_EDITOR
-		latitude = ConfigInfo.test.testLatLon.x;
-		longitude = ConfigInfo.test.testLatLon.y;
+		latitude = ConfigInfo.Test.testLatLon.x;
+		longitude = ConfigInfo.Test.testLatLon.y;
 #else
 		latitude = NativeGPSPlugin.GetLatitude();
 		longitude = NativeGPSPlugin.GetLongitude();

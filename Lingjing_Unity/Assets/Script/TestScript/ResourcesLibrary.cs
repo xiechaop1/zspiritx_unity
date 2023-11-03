@@ -14,27 +14,43 @@ public class ResourcesLibrary : MonoBehaviour {
 	private void Awake() {
 		StartCoroutine(LoadAudioFromUrl());
 	}
+	public bool canBackground => priorityList.Count == 0;
+	public void AddPriorityAudioClip(string url) {
+		priorityList.Enqueue(url);
+	}
 	public void AddAudioClip(string url) {
 		updateList.Enqueue(url);
 	}
-	CoroutineQueue<string> updateList = new CoroutineQueue<string>();
+
+	Queue<string> priorityList = new Queue<string>();
+	Queue<string> updateList = new Queue<string>();
 	private IEnumerator LoadAudioFromUrl() {
 		yield return null;
 		//initialize
-		string url;
+		string url = "";
 		string extention;
 		AudioType audioType;
 		AudioClip audioClip;
 		WWWData www;
 
 		for (; ; ) {
-			//wait for item in queue
-			yield return updateList;
-
-			url = updateList.Dequeue();
-			if (string.IsNullOrEmpty(url)) {
-				continue;
+			url = "";
+			while (string.IsNullOrEmpty(url)) {
+				yield return null;
+				if (priorityList.Count > 0) {
+					url = priorityList.Dequeue();
+				} else if (updateList.Count > 0) {
+					url = updateList.Dequeue();
+				}
 			}
+
+			////wait for item in queue
+			//yield return updateList;
+
+			//url = updateList.Dequeue();
+			//if (string.IsNullOrEmpty(url)) {
+			//	continue;
+			//}
 			try {
 				extention = url.Split('.').Last();
 				switch (extention) {

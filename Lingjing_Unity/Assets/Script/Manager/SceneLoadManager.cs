@@ -203,8 +203,10 @@ HuaweiAR:
 ARSystemReady:
 		SplashWebView.OnCallback += WebviewCallbackSceneControl;
 		//SplashWebView.OnWebClose += LoadAR;
-		SplashWebView.StartWebView("https://h5.zspiritx.com.cn/home");
-		//SplashWebView.StartWebView("splash.html");
+		SplashWebView.StartWebView(HttpUrlInfo.urlLingjingHtml +
+				string.Format("home?unity_version={0}",
+					ConfigInfo.versionId));
+		//SplashWebView.StartWebView("https://h5.zspiritx.com.cn/home");
 
 		yield return null;
 		gpsManager.BackStagePrepare();
@@ -226,27 +228,30 @@ ARSystemReady:
 				SplashWebView.SetVisibility(false);
 				StartCoroutine(ARLoader());
 			}
+			//if (ConfigInfo.isDevelop) {
 			if (jsonMsg.TryPraseInt("DebugInfo", ref tmpInt)) {
-				ConfigInfo.test.testFlag = (tmpInt == 1);
-				debugManager.isDebugMode = ConfigInfo.test.testFlag;
+				ConfigInfo.Test.testFlag = (tmpInt == 1);
 			}
+			//}else{
+			//	ConfigInfo.Test.testFlag = false;
+			//}
+			debugManager.isDebugMode = ConfigInfo.Test.testFlag;
+
 			if (jsonMsg.TryPraseInt("UserId", ref tmpInt)) {
 				ConfigInfo.userId = tmpInt;
-				//debugManager.isDebugMode = (tmpInt == 1);
 			}
 			if (jsonMsg.TryPraseInt("StoryId", ref tmpInt)) {
 				ConfigInfo.storyId = tmpInt;
-				//debugManager.isDebugMode = (tmpInt == 1);
 			}
 		} catch (Exception) {
-			string[] args = msg.Split('&');
-			if (args[0] == "WebViewOff") {
-				SplashWebView.SetVisibility(false);
-				StartCoroutine(ARLoader());
-			} else if (args[0] == "Start2DScene") {
-				SplashWebView.SetVisibility(false);
-				StartCoroutine(ScrollerLoader());
-			}
+			//string[] args = msg.Split('&');
+			//if (args[0] == "WebViewOff") {
+			//	SplashWebView.SetVisibility(false);
+			//	StartCoroutine(ARLoader());
+			//} else if (args[0] == "Start2DScene") {
+			//	SplashWebView.SetVisibility(false);
+			//	StartCoroutine(ScrollerLoader());
+			//}
 		}
 	}
 	void LoadAR() {
@@ -256,9 +261,6 @@ ARSystemReady:
 	IEnumerator ARLoader() {
 		LoadingScreen.SetActive(true);
 		yield return null;
-		//if (isLoading) {
-		//	yield return new WaitForSeconds(5);
-		//}
 		while (isLoading) {
 			yield return null;
 		}
